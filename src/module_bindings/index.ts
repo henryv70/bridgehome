@@ -60,8 +60,8 @@ import RevokeInviteReducer from "./revoke_invite_reducer";
 import SaveProfileReducer from "./save_profile_reducer";
 import SeedDemoReducer from "./seed_demo_reducer";
 import SendMoneyReducer from "./send_money_reducer";
-import SetCredentialReducer from "./set_credential_reducer";
 import SetBudgetTargetReducer from "./set_budget_target_reducer";
+import SetCredentialReducer from "./set_credential_reducer";
 import SetPostVisibilityReducer from "./set_post_visibility_reducer";
 import SetRequestPublicReducer from "./set_request_public_reducer";
 import SignInReducer from "./sign_in_reducer";
@@ -151,6 +151,13 @@ const tablesSchema = __schema({
     constraints: [
     ],
   }, VisibleContributionRow),
+  visibleCredential: __table({
+    name: 'my_credential',
+    indexes: [
+    ],
+    constraints: [
+    ],
+  }, VisibleCredentialRow),
   visibleFamily: __table({
     name: 'my_family',
     indexes: [
@@ -193,20 +200,6 @@ const tablesSchema = __schema({
     constraints: [
     ],
   }, VisibleProfileRow),
-  visibleCredential: __table({
-    name: 'my_credential',
-    indexes: [
-    ],
-    constraints: [
-    ],
-  }, VisibleCredentialRow),
-  visibleSignInResult: __table({
-    name: 'my_sign_in_result',
-    indexes: [
-    ],
-    constraints: [
-    ],
-  }, VisibleSignInResultRow),
   myReactionOnPublic: __table({
     name: 'my_public_reaction',
     indexes: [
@@ -242,6 +235,13 @@ const tablesSchema = __schema({
     constraints: [
     ],
   }, VisibleRequestRow),
+  visibleSignInResult: __table({
+    name: 'my_sign_in_result',
+    indexes: [
+    ],
+    constraints: [
+    ],
+  }, VisibleSignInResultRow),
   visibleTransferRevision: __table({
     name: 'my_transfer_revision',
     indexes: [
@@ -314,8 +314,8 @@ const reducersSchema = __reducers(
   __reducerSchema("save_profile", SaveProfileReducer),
   __reducerSchema("seed_demo", SeedDemoReducer),
   __reducerSchema("send_money", SendMoneyReducer),
-  __reducerSchema("set_credential", SetCredentialReducer),
   __reducerSchema("set_budget_target", SetBudgetTargetReducer),
+  __reducerSchema("set_credential", SetCredentialReducer),
   __reducerSchema("set_post_visibility", SetPostVisibilityReducer),
   __reducerSchema("set_request_public", SetRequestPublicReducer),
   __reducerSchema("sign_in", SignInReducer),

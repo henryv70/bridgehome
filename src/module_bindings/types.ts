@@ -82,6 +82,23 @@ export const Contribution = __t.object("Contribution", {
 });
 export type Contribution = __Infer<typeof Contribution>;
 
+export const Credential = __t.object("Credential", {
+  identity: __t.identity(),
+  username: __t.string(),
+  authKey: __t.string(),
+  sealedToken: __t.string(),
+  failures: __t.u32(),
+  lockedUntil: __t.timestamp(),
+  createdAt: __t.timestamp(),
+});
+export type Credential = __Infer<typeof Credential>;
+
+export const CredentialSummary = __t.object("CredentialSummary", {
+  username: __t.string(),
+  createdAt: __t.timestamp(),
+});
+export type CredentialSummary = __Infer<typeof CredentialSummary>;
+
 export const Family = __t.object("Family", {
   id: __t.u64(),
   name: __t.string(),
@@ -290,6 +307,15 @@ export const Request = __t.object("Request", {
 });
 export type Request = __Infer<typeof Request>;
 
+export const SignInResult = __t.object("SignInResult", {
+  identity: __t.identity(),
+  attempt: __t.string(),
+  ok: __t.bool(),
+  message: __t.string(),
+  sealedToken: __t.string(),
+});
+export type SignInResult = __Infer<typeof SignInResult>;
+
 export const TransferRevision = __t.object("TransferRevision", {
   id: __t.u64(),
   groupId: __t.u64(),
@@ -323,6 +349,9 @@ export type VisibleCommitment = __Infer<typeof VisibleCommitment>;
 export const VisibleContribution = __t.object("VisibleContribution", {});
 export type VisibleContribution = __Infer<typeof VisibleContribution>;
 
+export const VisibleCredential = __t.object("VisibleCredential", {});
+export type VisibleCredential = __Infer<typeof VisibleCredential>;
+
 export const VisibleFamily = __t.object("VisibleFamily", {});
 export type VisibleFamily = __Infer<typeof VisibleFamily>;
 
@@ -352,6 +381,9 @@ export type VisibleRecordedTransfer = __Infer<typeof VisibleRecordedTransfer>;
 
 export const VisibleRequest = __t.object("VisibleRequest", {});
 export type VisibleRequest = __Infer<typeof VisibleRequest>;
+
+export const VisibleSignInResult = __t.object("VisibleSignInResult", {});
+export type VisibleSignInResult = __Infer<typeof VisibleSignInResult>;
 
 export const VisibleTransferRevision = __t.object("VisibleTransferRevision", {});
 export type VisibleTransferRevision = __Infer<typeof VisibleTransferRevision>;
