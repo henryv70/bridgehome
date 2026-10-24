@@ -25,7 +25,7 @@ export function PublicLayout({ children }: { children: ReactNode }) {
           <div className="flex items-center gap-1 md:order-last">
             <LanguageSelect />
             {!(profile && families.length) && <Link to="/login" className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }), 'h-11 px-3')}>{t('Log in')}</Link>}
-            <Link to={profile && families.length ? '/' : '/welcome'} className={cn(buttonVariants({ size: 'sm' }), 'h-11 px-4')}>{profile && families.length ? t('My family') : t('Get started')}</Link>
+            <Link to={profile && families.length ? '/' : '/signup'} className={cn(buttonVariants({ size: 'sm' }), 'h-11 px-4')}>{profile && families.length ? t('My family') : t('Get started')}</Link>
           </div>
           <nav aria-label={t('Main navigation')} className="col-span-2 grid min-w-0 grid-cols-3 gap-1 pb-2 md:ml-auto md:flex md:pb-0">
             {publicLinks.map(({ to, label }) => (

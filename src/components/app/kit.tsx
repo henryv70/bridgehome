@@ -13,6 +13,20 @@ import { t } from '@/lib/i18n';
 import { usePhotoUrl } from '@/lib/photo';
 import { useIsMobile } from '@/hooks/use-media';
 
+// Large selectable card for one-of-a-few choices (role, how to start).
+export function Choice({ icon, title, children, onClick, selected }: { icon: ReactNode; title: string; children: ReactNode; onClick: () => void; selected?: boolean }) {
+  return (
+    <button type="button" onClick={onClick} aria-pressed={selected}
+      className={cn('flex w-full items-start gap-4 rounded-2xl border bg-card p-4 text-left transition hover:border-foreground/30 hover:shadow-sm', selected && 'border-foreground ring-1 ring-foreground')}>
+      <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted [&_svg]:size-5">{icon}</span>
+      <span>
+        <span className="block font-medium">{title}</span>
+        <span className="mt-0.5 block text-sm text-muted-foreground">{children}</span>
+      </span>
+    </button>
+  );
+}
+
 export function PageHeader({ title, subtitle, actions, className }: { title: ReactNode; subtitle?: ReactNode; actions?: ReactNode; className?: string }) {
   return (
     <header className={cn('mb-6 flex flex-wrap items-end justify-between gap-3', className)}>

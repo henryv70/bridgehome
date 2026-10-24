@@ -2,7 +2,7 @@ import { DbConnection, tables } from '../src/module_bindings/index';
 import assert from 'node:assert/strict';
 
 const connect = () => new Promise<DbConnection>((resolve, reject) => {
-  DbConnection.builder().withUri('ws://localhost:3000').withDatabaseName('bridgehome-3386g')
+  DbConnection.builder().withUri('ws://localhost:3000').withDatabaseName('bridgehome-3386g-v2')
     .onConnect(c => resolve(c)).onConnectError((_c, e) => reject(e)).build();
 });
 const ready = (c: DbConnection) => new Promise<void>((resolve, reject) => {
@@ -130,7 +130,30 @@ try {
   await owner.reducers.removeCredential({});
   await wait(() => rows(owner.db.visibleCredential.iter()).length === 0);
 
-  console.log('PASS: demo seeds (PH + VN), demo payments, public-view isolation, pledge rules, photo posts and visibility, transfer edits with revisions, edit locks, budget target upsert, public page ownership, username sign-in and lockout.');
+  // Sign-up creates the profile (username as display name, chosen language and role) and the sign-in together.
+  const newcomer = await connect();
+  try {
+    await new Promise<void>((resolve, reject) => newcomer.subscriptionBuilder().onApplied(() => resolve()).onError(e => reject(e))
+      .subscribe([tables.visibleProfile, tables.visibleCredential]));
+    const newName = `new-${Date.now()}`;
+    const signUp = (o: Partial<Parameters<typeof newcomer.reducers.signUp>[0]>) =>
+      newcomer.reducers.signUp({ username: newName, authKey, sealedToken, language: 'vi', role: 'recipient', ...o });
+    await assert.rejects(signUp({ language: 'fr' }), 'unsupported language');
+    await assert.rejects(signUp({ role: 'admin' }), 'unknown role');
+    assert.equal(rows(newcomer.db.visibleProfile.iter()).length, 0, 'failed sign-ups leave nothing behind');
+    await signUp({});
+    await wait(() => rows(newcomer.db.visibleProfile.iter()).length === 1 && rows(newcomer.db.visibleCredential.iter()).length === 1);
+    const p = rows(newcomer.db.visibleProfile.iter())[0];
+    assert.deepEqual([p.name, p.language, p.role], [newName, 'vi', 'recipient']);
+    await assert.rejects(signUp({ username: newName + '-2' }), 'one account per identity');
+    await newcomer.reducers.setLanguage({ language: 'zh' });
+    await wait(() => rows(newcomer.db.visibleProfile.iter())[0]?.language === 'zh');
+    await newcomer.reducers.removeCredential({});
+  } finally {
+    newcomer.disconnect();
+  }
+
+  console.log('PASS: demo seeds (PH + VN), demo payments, public-view isolation, pledge rules, photo posts and visibility, transfer edits with revisions, edit locks, budget target upsert, public page ownership, username sign-in and lockout, sign-up.');
 } finally {
   owner.disconnect();
   visitor.disconnect();

@@ -1,4 +1,4 @@
-import { createContext, Fragment, useContext, useEffect, useState, type ReactNode } from 'react';
+import { createContext, Fragment, useCallback, useContext, useEffect, useState, type ReactNode } from 'react';
 import vi from '@/locales/vi';
 import zh from '@/locales/zh';
 
@@ -50,11 +50,11 @@ const LangContext = createContext<{ lang: Lang; setLang: (l: Lang) => void } | n
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [value, setValue] = useState<Lang>(current);
   useEffect(() => { document.documentElement.lang = value; }, [value]);
-  const setLang = (l: Lang) => {
+  const setLang = useCallback((l: Lang) => {
     current = l;
     try { localStorage.setItem(KEY, l); } catch { /* storage unavailable */ }
     setValue(l);
-  };
+  }, []);
   return <LangContext.Provider value={{ lang: value, setLang }}><Fragment key={value}>{children}</Fragment></LangContext.Provider>;
 }
 

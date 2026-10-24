@@ -824,4 +824,15 @@ export default {
   "{who} asked for {amount}.": "{who} 申请了 {amount}。",
   "{who} hasn't added a receiving account": "{who} 还没有添加收款账户",
   "{who} receives": "{who} 收到",
+  // Sign-up page (pages/signup.tsx) and its server messages.
+  "Create your BridgeHome account": "创建 BridgeHome 账户",
+  "You can log in with it on any phone or computer.": "您可以用它在任何手机或电脑上登录。",
+  "I am a…": "我是…",
+  "Receiver": "收款人",
+  "Sign up": "注册",
+  "Creating account…": "正在创建账户…",
+  "Choose a language.": "请选择语言。",
+  "Choose whether you send or receive support.": "请选择您是汇款人还是收款人。",
+  "This device already has an account. Log out to create another.": "此设备已有账户。请先退出登录再创建新账户。",
+  "Unsupported language.": "不支持该语言。",
 } satisfies Record<string, string>;

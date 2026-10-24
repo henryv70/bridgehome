@@ -34,9 +34,11 @@ import SeedDemoReducer from "../seed_demo_reducer";
 import SendMoneyReducer from "../send_money_reducer";
 import SetBudgetTargetReducer from "../set_budget_target_reducer";
 import SetCredentialReducer from "../set_credential_reducer";
+import SetLanguageReducer from "../set_language_reducer";
 import SetPostVisibilityReducer from "../set_post_visibility_reducer";
 import SetRequestPublicReducer from "../set_request_public_reducer";
 import SignInReducer from "../sign_in_reducer";
+import SignUpReducer from "../sign_up_reducer";
 import ToggleReactionReducer from "../toggle_reaction_reducer";
 import UpdatePublicPageReducer from "../update_public_page_reducer";
 
@@ -68,9 +70,11 @@ export type SeedDemoParams = __Infer<typeof SeedDemoReducer>;
 export type SendMoneyParams = __Infer<typeof SendMoneyReducer>;
 export type SetBudgetTargetParams = __Infer<typeof SetBudgetTargetReducer>;
 export type SetCredentialParams = __Infer<typeof SetCredentialReducer>;
+export type SetLanguageParams = __Infer<typeof SetLanguageReducer>;
 export type SetPostVisibilityParams = __Infer<typeof SetPostVisibilityReducer>;
 export type SetRequestPublicParams = __Infer<typeof SetRequestPublicReducer>;
 export type SignInParams = __Infer<typeof SignInReducer>;
+export type SignUpParams = __Infer<typeof SignUpReducer>;
 export type ToggleReactionParams = __Infer<typeof ToggleReactionReducer>;
 export type UpdatePublicPageParams = __Infer<typeof UpdatePublicPageReducer>;
 

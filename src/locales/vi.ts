@@ -824,4 +824,15 @@ export default {
   "{who} asked for {amount}.": "{who} đã xin {amount}.",
   "{who} hasn't added a receiving account": "{who} chưa thêm tài khoản nhận tiền",
   "{who} receives": "{who} nhận được",
+  // Sign-up page (pages/signup.tsx) and its server messages.
+  "Create your BridgeHome account": "Tạo tài khoản BridgeHome",
+  "You can log in with it on any phone or computer.": "Bạn có thể dùng tài khoản này để đăng nhập trên bất kỳ điện thoại hay máy tính nào.",
+  "I am a…": "Tôi là…",
+  "Receiver": "Người nhận",
+  "Sign up": "Đăng ký",
+  "Creating account…": "Đang tạo tài khoản…",
+  "Choose a language.": "Hãy chọn ngôn ngữ.",
+  "Choose whether you send or receive support.": "Hãy chọn bạn là người gửi hay người nhận hỗ trợ.",
+  "This device already has an account. Log out to create another.": "Thiết bị này đã có tài khoản. Hãy đăng xuất để tạo tài khoản khác.",
+  "Unsupported language.": "Ngôn ngữ không được hỗ trợ.",
 } satisfies Record<string, string>;

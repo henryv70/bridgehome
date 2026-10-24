@@ -4,6 +4,8 @@ import { schema, table, t } from 'spacetimedb/server';
 export const profile = table({ name: 'profile' }, {
   identity: t.identity().primaryKey(),
   name: t.string(),
+  language: t.string().default('en'),
+  role: t.string().default(''),
 });
 
 export const family = table({ name: 'family' }, {

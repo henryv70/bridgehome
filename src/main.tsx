@@ -8,6 +8,7 @@ import { Toaster } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { AppDataProvider } from '@/lib/data';
 import { LanguageProvider } from '@/lib/i18n';
+import { LanguageSync } from '@/components/app/language';
 import { DB_NAME, HOST, TOKEN_KEY, storedToken } from '@/lib/session';
 import App from './App';
 import './style.css';
@@ -25,6 +26,7 @@ createRoot(document.getElementById('root')!).render(
       <SpacetimeDBProvider connectionBuilder={connectionBuilder}>
         <AppDataProvider>
           <LanguageProvider>
+          <LanguageSync />
           <TooltipProvider>
             <BrowserRouter>
               <App />

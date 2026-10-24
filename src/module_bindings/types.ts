@@ -170,6 +170,8 @@ export type Post = __Infer<typeof Post>;
 export const Profile = __t.object("Profile", {
   identity: __t.identity(),
   name: __t.string(),
+  language: __t.string(),
+  role: __t.string(),
 });
 export type Profile = __Infer<typeof Profile>;
 

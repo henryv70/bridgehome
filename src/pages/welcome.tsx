@@ -1,30 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router';
+import { Link, Navigate, useLocation, useNavigate, useSearchParams } from 'react-router';
 import { ArrowLeft, ArrowRight, HandHeart, Home, KeyRound, Send, Sparkles } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import { useAction, useApp } from '@/lib/data';
 import { t } from '@/lib/i18n';
 import { Button } from '@/components/ui/button';
 import { Wordmark } from '@/components/app/brand';
-import { TextField, formValue } from '@/components/app/kit';
+import { Choice, TextField, formValue } from '@/components/app/kit';
 import { Splash } from '@/components/app/shell';
 import { DemoPicker } from '@/components/app/demo-picker';
 import { LanguageSelect } from '@/components/app/language';
 
 type Step = 'name' | 'family' | 'create' | 'join';
-
-function Choice({ icon, title, children, onClick, selected }: { icon: React.ReactNode; title: string; children: React.ReactNode; onClick: () => void; selected?: boolean }) {
-  return (
-    <button type="button" onClick={onClick}
-      className={cn('flex w-full items-start gap-4 rounded-2xl border bg-card p-4 text-left transition hover:border-foreground/30 hover:shadow-sm', selected && 'border-foreground ring-1 ring-foreground')}>
-      <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted [&_svg]:size-5">{icon}</span>
-      <span>
-        <span className="block font-medium">{title}</span>
-        <span className="mt-0.5 block text-sm text-muted-foreground">{children}</span>
-      </span>
-    </button>
-  );
-}
 
 export default function Welcome() {
   const app = useApp();
@@ -33,9 +19,13 @@ export default function Welcome() {
   const [params] = useSearchParams();
   const code = params.get('code') ?? '';
   const [step, setStep] = useState<Step>((params.get('step') as Step) || 'name');
-  const [role, setRole] = useState<'sender' | 'recipient'>('sender');
+  const { search } = useLocation();
+  const [role, setRole] = useState<'sender' | 'recipient'>(profile?.role === 'recipient' ? 'recipient' : 'sender');
   const { run, busy } = useAction();
   const [demo, setDemo] = useState(false);
+
+  // The profile arrives after the first render; adopt the role chosen at sign-up once it does.
+  useEffect(() => { if (profile?.role === 'sender' || profile?.role === 'recipient') setRole(profile.role); }, [profile?.role]);
 
   // Returning users skip straight to the right step (decided once, on first load).
   const decided = useRef(false);
@@ -50,6 +40,8 @@ export default function Welcome() {
   }, [ready, profile, families.length, code, params, navigate]);
 
   if (!ready) return <Splash />;
+  // First-time visitors create an account before anything else; invite codes and demo flags carry over.
+  if (!profile) return <Navigate to={'/signup' + search} replace />;
 
   const back = (to: Step) => <Button type="button" variant="ghost" size="sm" className="-ml-2 mb-4" onClick={() => setStep(to)}><ArrowLeft />{t('Back')}</Button>;
 
@@ -90,7 +82,6 @@ export default function Welcome() {
               <TextField name="name" label={t('Display name')} placeholder={t('e.g. Marco')} defaultValue={profile?.name} required maxLength={80} autoFocus
                 hint={t('Shown to people in your family groups. You can change it later.')} />
               <Button size="lg" className="h-11 w-full" disabled={busy}>{t('Continue')}<ArrowRight /></Button>
-              {!profile && <p className="text-center text-sm text-muted-foreground">{t('Already have an account?')} <Link to="/login" className="font-medium text-foreground underline-offset-4 hover:underline">{t('Log in')}</Link></p>}
               <p className="text-center text-sm text-muted-foreground">{t('Just looking?')} <Link to="/explore" className="font-medium text-foreground underline-offset-4 hover:underline">{t('Explore public families')}</Link></p>
             </form>
           )}

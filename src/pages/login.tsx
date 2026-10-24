@@ -9,7 +9,7 @@ import { deriveKeys, newAttemptId, normalizeUsername, switchIdentity, unsealToke
 import { Button } from '@/components/ui/button';
 import { Wordmark } from '@/components/app/brand';
 import { TextField, formValue } from '@/components/app/kit';
-import { LanguageSelect } from '@/components/app/language';
+import { LanguageSelect, adoptAccountLanguage } from '@/components/app/language';
 import { USERNAME_PATTERN } from '@/components/app/sign-in';
 
 type Pending = { attempt: string; keys: Awaited<ReturnType<typeof deriveKeys>> };
@@ -37,7 +37,9 @@ export default function Login() {
     void reducers?.clearSignInResult({}).catch(() => {});
     if (!result.ok) { setError(signInMessage(result.message)); setBusy(false); return; }
     try {
-      switchIdentity(unsealToken(p.keys, result.sealedToken));
+      const token = unsealToken(p.keys, result.sealedToken);
+      adoptAccountLanguage();
+      switchIdentity(token);
     } catch (e) {
       setError(errorText(e));
       setBusy(false);
@@ -87,7 +89,7 @@ export default function Login() {
           <TextField name="password" label={t('Password')} type="password" required minLength={8} maxLength={128} autoComplete="current-password" />
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
           <Button size="lg" className="h-11 w-full" disabled={busy}>{busy ? <Loader2 className="animate-spin" /> : <LogIn />}{busy ? t('Checking…') : t('Log in')}</Button>
-          <p className="text-center text-sm text-muted-foreground">{t('New to BridgeHome?')} <Link to="/welcome" className="font-medium text-foreground underline-offset-4 hover:underline">{t('Get started')}</Link></p>
+          <p className="text-center text-sm text-muted-foreground">{t('New to BridgeHome?')} <Link to="/signup" className="font-medium text-foreground underline-offset-4 hover:underline">{t('Get started')}</Link></p>
         </form>
       </main>
     </div>

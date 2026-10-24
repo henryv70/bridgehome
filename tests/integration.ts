@@ -1,6 +1,6 @@
 import { DbConnection, tables } from '../src/module_bindings/index';
 import assert from 'node:assert/strict';
-const connect = () => new Promise<DbConnection>((resolve, reject) => { DbConnection.builder().withUri('ws://localhost:3000').withDatabaseName('bridgehome-3386g').onConnect(c => resolve(c)).onConnectError((_c, e) => reject(e)).build(); });
+const connect = () => new Promise<DbConnection>((resolve, reject) => { DbConnection.builder().withUri('ws://localhost:3000').withDatabaseName('bridgehome-3386g-v2').onConnect(c => resolve(c)).onConnectError((_c, e) => reject(e)).build(); });
 const ready = (c: DbConnection) => new Promise<void>((resolve, reject) => { c.subscriptionBuilder().onApplied(() => resolve()).onError(e => reject(e)).subscribe([tables.visibleFamily, tables.visibleMembership, tables.visibleRequest, tables.visibleInvitation, tables.visibleAudit, tables.visibleReceipt, tables.visibleRecordedTransfer]); });
 const wait = async (p: () => boolean) => { for (let i = 0; i < 100; i++) {
     if (p())

@@ -9,6 +9,7 @@ export const CURRENCIES = [
   'NGN', 'GHS', 'KES', 'ZAR', 'EGP', 'MAD', 'BRL', 'COP', 'PEN', 'GTQ', 'HNL', 'DOP', 'JMD', 'HTG', 'UAH', 'PLN', 'TRY',
 ];
 export const ROLES = ['sender', 'recipient'];
+export const LANGUAGES = ['en', 'vi', 'zh'];
 export const OPEN_FOR_FUNDING = ['submitted', 'approved', 'sent'];
 
 export function fail(message: string): never {

@@ -62,9 +62,11 @@ import SeedDemoReducer from "./seed_demo_reducer";
 import SendMoneyReducer from "./send_money_reducer";
 import SetBudgetTargetReducer from "./set_budget_target_reducer";
 import SetCredentialReducer from "./set_credential_reducer";
+import SetLanguageReducer from "./set_language_reducer";
 import SetPostVisibilityReducer from "./set_post_visibility_reducer";
 import SetRequestPublicReducer from "./set_request_public_reducer";
 import SignInReducer from "./sign_in_reducer";
+import SignUpReducer from "./sign_up_reducer";
 import ToggleReactionReducer from "./toggle_reaction_reducer";
 import UpdatePublicPageReducer from "./update_public_page_reducer";
 
@@ -326,9 +328,11 @@ const reducersSchema = __reducers(
   __reducerSchema("send_money", SendMoneyReducer),
   __reducerSchema("set_budget_target", SetBudgetTargetReducer),
   __reducerSchema("set_credential", SetCredentialReducer),
+  __reducerSchema("set_language", SetLanguageReducer),
   __reducerSchema("set_post_visibility", SetPostVisibilityReducer),
   __reducerSchema("set_request_public", SetRequestPublicReducer),
   __reducerSchema("sign_in", SignInReducer),
+  __reducerSchema("sign_up", SignUpReducer),
   __reducerSchema("toggle_reaction", ToggleReactionReducer),
   __reducerSchema("update_public_page", UpdatePublicPageReducer),
 );

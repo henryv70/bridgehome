@@ -2,13 +2,13 @@ import { t } from 'spacetimedb/server';
 import { Timestamp } from 'spacetimedb';
 import db from './schema';
 import { insertTransfer } from './transfers';
-import { ROLES, date, fail, log, member, money, owner, randomHex, rate, req, text } from './lib';
+import { LANGUAGES, ROLES, date, fail, log, member, money, owner, randomHex, rate, req, text } from './lib';
 
 export const saveProfile = db.reducer({ name: t.string() }, (ctx, { name }) => {
   name = text(name, 'Name', 80);
-  const row = { identity: ctx.sender, name };
-  if (ctx.db.profile.identity.find(ctx.sender)) ctx.db.profile.identity.update(row);
-  else ctx.db.profile.insert(row);
+  const existing = ctx.db.profile.identity.find(ctx.sender);
+  if (existing) ctx.db.profile.identity.update({ ...existing, name });
+  else ctx.db.profile.insert({ identity: ctx.sender, name, language: 'en', role: '' });
   for (const m of ctx.db.membership.identity.filter(ctx.sender)) {
     if (m.name === name) continue;
     ctx.db.membership.id.update({ ...m, name });
@@ -16,7 +16,13 @@ export const saveProfile = db.reducer({ name: t.string() }, (ctx, { name }) => {
   }
 });
 
-export const createGroup = db.reducer({ name: t.string(), role: t.string() }, (ctx, { name, role }) => {
+export const setLanguage = db.reducer({ language: t.string() }, (ctx, { language }) => {
+  if (!LANGUAGES.includes(language)) fail('Unsupported language.');
+  const p = ctx.db.profile.identity.find(ctx.sender);
+  if (p && p.language !== language) ctx.db.profile.identity.update({ ...p, language });
+});
+
+export const createGroup =db.reducer({ name: t.string(), role: t.string() }, (ctx, { name, role }) => {
   if (!ROLES.includes(role)) fail('Choose a role.');
   const p = ctx.db.profile.identity.find(ctx.sender);
   if (!p) fail('Save your name first.');

@@ -1,7 +1,7 @@
 import { t } from 'spacetimedb/server';
 import { Timestamp } from 'spacetimedb';
 import db from './schema';
-import { fail } from './lib';
+import { LANGUAGES, ROLES, fail, type Ctx } from './lib';
 
 // Username sign-in (see `credential` in schema.ts). The auth key only gates who may fetch the
 // sealed token; without the password-derived encryption key it cannot be unsealed, so it is
@@ -11,8 +11,9 @@ const KEY = /^[0-9a-f]{64}$/;
 const MAX_FAILURES = 5;
 const LOCK_MICROS = 5n * 60_000_000n;
 
-export const setCredential = db.reducer({ username: t.string(), authKey: t.string(), sealedToken: t.string() }, (ctx, a) => {
-  if (!ctx.db.profile.identity.find(ctx.sender)) fail('Choose a display name before setting up sign-in.');
+type CredentialArgs = { username: string; authKey: string; sealedToken: string };
+
+function writeCredential(ctx: Ctx, a: CredentialArgs) {
   const username = a.username.trim().toLowerCase();
   if (!USERNAME.test(username)) fail('Usernames are 3 to 32 characters: lowercase letters, numbers, dots, dashes or underscores.');
   if (!KEY.test(a.authKey) || !/^[0-9a-f]{100,16000}$/.test(a.sealedToken)) fail('Sign-in details are malformed. Reload and try again.');
@@ -24,6 +25,26 @@ export const setCredential = db.reducer({ username: t.string(), authKey: t.strin
   };
   if (ctx.db.credential.identity.find(ctx.sender)) ctx.db.credential.identity.update(row);
   else ctx.db.credential.insert(row);
+  return username;
+}
+
+export const setCredential = db.reducer({ username: t.string(), authKey: t.string(), sealedToken: t.string() }, (ctx, a) => {
+  if (!ctx.db.profile.identity.find(ctx.sender)) fail('Choose a display name before setting up sign-in.');
+  writeCredential(ctx, a);
+});
+
+// First-time sign-up: creates the profile and its sign-in together. The username doubles as the
+// display name until the person changes it.
+export const signUp = db.reducer({
+  username: t.string(), authKey: t.string(), sealedToken: t.string(), language: t.string(), role: t.string(),
+}, (ctx, a) => {
+  if (ctx.db.credential.identity.find(ctx.sender)) fail('This device already has an account. Log out to create another.');
+  if (!LANGUAGES.includes(a.language)) fail('Choose a language.');
+  if (!ROLES.includes(a.role)) fail('Choose whether you send or receive support.');
+  const username = writeCredential(ctx, a);
+  const existing = ctx.db.profile.identity.find(ctx.sender);
+  if (existing) ctx.db.profile.identity.update({ ...existing, language: a.language, role: a.role });
+  else ctx.db.profile.insert({ identity: ctx.sender, name: username, language: a.language, role: a.role });
 });
 
 export const removeCredential = db.reducer(ctx => {

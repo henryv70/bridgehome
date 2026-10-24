@@ -265,7 +265,7 @@ const TRUST = [
 export default function Landing() {
   const { profile, families } = useApp();
   const signedIn = !!profile && families.length > 0;
-  const primary = signedIn ? { to: '/', label: t('Open my family') } : { to: '/welcome', label: t('Get started') };
+  const primary = signedIn ? { to: '/', label: t('Open my family') } : { to: '/signup', label: t('Get started') };
 
   return (
     <div className="min-h-dvh overflow-x-hidden">
