@@ -10,6 +10,7 @@ import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Drawer, Initials, PageHeader, Panel, Photo, Section, Stat } from '@/components/app/kit';
 import { CredentialForm } from '@/components/app/sign-in';
+import { SupportIllustration } from '@/components/app/support-illustration';
 
 function greeting() {
   const h = new Date().getHours();
@@ -32,14 +33,32 @@ export default function Home() {
   const actionText = (action: string) => (lang() === 'en' ? auditAction(action).toLowerCase() : auditAction(action));
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <PageHeader title={t('{greeting}, {name}', { greeting: greeting(), name: profile?.name.split(' ')[0] ?? '' })} subtitle={group?.name} />
 
-      {group?.isDemo && (
-        <div className="flex gap-3 rounded-2xl border border-dashed p-4 text-sm">
-          <Sparkles className="mt-0.5 size-4 shrink-0 text-brand" />
-          <p className="text-muted-foreground"><b className="font-medium text-foreground">{t('This is a demo family.')}</b> {t('The other members are sample people, so you can try every sender step here, including sending with BridgeHome Pay. To try the recipient side, open BridgeHome on another device (or in the Expo app), then invite it under')} <Link to="/family" className="underline">{t('Family')}</Link>.</p>
+      <section className="support-summary flex flex-col items-center rounded-3xl px-4 py-5 text-center md:flex-row-reverse md:justify-between md:px-8 md:text-left">
+        <SupportIllustration className="w-44 shrink-0 md:w-52" />
+        <div className="min-w-0">
+          <p className="text-sm font-medium text-muted-foreground">{role === 'recipient' ? t('Received this month') : t('Sent this month')}</p>
+          <p className="tabular mt-1 text-4xl font-bold tracking-tight md:text-5xl">{formatMoney(sum(monthTransfers.filter(x => x.currency === mainCurrency), x => x.amount), mainCurrency)}</p>
+          <p className="mt-2 text-xs text-muted-foreground">{tn('{n} transfer', '{n} transfers', monthTransfers.filter(x => x.currency === mainCurrency).length)}</p>
         </div>
+      </section>
+
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+        <Link to={role === 'recipient' ? '/requests?new=1' : '/requests'} className="action-tile">{role === 'recipient' ? <Plus /> : <ArrowRight />}{role === 'recipient' ? t('Ask for support') : t('Requests')}</Link>
+        <Link to="/feed?new=1" className="action-tile"><ImagePlus />{t('Share a moment')}</Link>
+        <Link to="/budget" className="action-tile"><Wallet />{t('Household budget')}</Link>
+        <Link to="/accounts" className="action-tile"><Landmark />{t('Bank accounts')}</Link>
+      </div>
+
+      {group?.isDemo && (
+        <details className="rounded-2xl bg-card/70 p-4 text-sm">
+          <summary className="flex cursor-pointer items-center gap-2 font-medium text-primary"><Sparkles className="size-4" />{t('This is a demo family.')}</summary>
+          <div className="mt-3">
+          <p className="text-muted-foreground"><b className="font-medium text-foreground">{t('This is a demo family.')}</b> {t('The other members are sample people, so you can try every sender step here, including sending with BridgeHome Pay. To try the recipient side, open BridgeHome on another device (or in the Expo app), then invite it under')} <Link to="/family" className="underline">{t('Family')}</Link>.</p>
+          </div>
+        </details>
       )}
 
       {!app.myAccounts.some(a => a.purpose === (role === 'sender' ? 'send' : 'receive')) && (
@@ -92,23 +111,17 @@ export default function Home() {
         )}
       </Section>
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Stat label={role === 'recipient' ? t('Received this month') : t('Sent this month')} value={formatMoney(sum(monthTransfers.filter(x => x.currency === mainCurrency), x => x.amount), mainCurrency)} sub={tn('{n} transfer', '{n} transfers', monthTransfers.length)} />
+      <div className="home-stats grid gap-3 sm:grid-cols-3">
         <Stat label={t('Open requests')} value={open.length} sub={t('{amount} total', { amount: formatMoney(sum(open.filter(r => r.currency === mainCurrency), r => r.amount), mainCurrency, { compact: true }) })} />
         <Stat label={t('On the way')} value={onTheWay} sub={t('Waiting for confirmation')} />
         <Stat label={t('Confirmed received')} value={receipts.length} sub={t('All time')} />
       </div>
 
-      <div className="flex flex-wrap gap-2">
-        {role === 'recipient' && <Link to="/requests?new=1" className={buttonVariants({ size: 'lg' })}><Plus />{t('Ask for support')}</Link>}
-        <Link to="/feed?new=1" className={buttonVariants({ variant: 'outline', size: 'lg' })}><ImagePlus />{t('Share a moment')}</Link>
-        <Link to="/budget" className={buttonVariants({ variant: 'outline', size: 'lg' })}><Wallet />{t('Household budget')}</Link>
-        {group?.isPublic && <Link to={`/p/${group.slug}`} className={buttonVariants({ variant: 'outline', size: 'lg' })}><Globe />{t('Public page')}</Link>}
-      </div>
+      {group?.isPublic && <Link to={`/p/${group.slug}`} className={buttonVariants({ variant: 'outline', size: 'lg' })}><Globe />{t('Public page')}</Link>}
 
       <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
         <Section title={t('Recent activity')} action={<Link to="/family?tab=history" className="text-xs text-muted-foreground hover:text-foreground">{t('History')}</Link>}>
-          <ol className="space-y-4">
+          <ol className="activity-list surface-card rounded-2xl bg-card px-4">
             {[...audit].sort(byNewest).slice(0, 7).map(a => (
               <li key={String(a.id)} className="flex gap-3">
                 <Initials name={auditActor(app, a)} className="size-7 text-[10px]" />

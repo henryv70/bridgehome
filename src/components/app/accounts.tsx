@@ -2,27 +2,20 @@ import { useMemo, useState, type ReactNode } from 'react';
 import { ArrowLeft, Check, Landmark, Loader2, Lock, Search, ShieldCheck, Smartphone, Trash2, TriangleAlert } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAction, useApp, type Account } from '@/lib/data';
-import { COUNTRIES, INSTITUTIONS, institution, type Institution } from '@/lib/banks';
+import { COUNTRIES, INSTITUTIONS, type Institution } from '@/lib/banks';
 import { countryName, t } from '@/lib/i18n';
 import { formatMoney } from '@/lib/money';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { NativeSelect, SelectField, TextField, formValue } from './kit';
+import { BankMark } from './bank-mark';
+export { BankMark } from './bank-mark';
 
 const KIND_LABELS: Record<string, string> = { checking: 'Checking', savings: 'Savings', wallet: 'Wallet', debit: 'Debit' };
 export const kindLabel = (kind: string) => t(KIND_LABELS[kind] ?? kind);
 
 export function DemoBadge({ className }: { className?: string }) {
   return <span className={cn('inline-flex h-5 items-center rounded-full border border-dashed px-2 text-[10px] font-medium tracking-wide text-muted-foreground uppercase', className)}>{t('Demo')}</span>;
-}
-
-export function BankMark({ name, className }: { name: string; className?: string }) {
-  const inst = institution(name);
-  return (
-    <span aria-hidden className={cn('inline-flex size-9 shrink-0 items-center justify-center rounded-xl text-sm font-bold text-white', className)} style={{ background: inst?.color ?? '#64748b' }}>
-      {name.replace(/^(the|banco)\s+/i, '')[0]}
-    </span>
-  );
 }
 
 export function AccountLine({ a, right, className }: { a: Account; right?: React.ReactNode; className?: string }) {
@@ -222,7 +215,7 @@ export function AccountList({ list }: { list: Account[] }) {
   const { reducers } = useApp();
   const { run, busy } = useAction();
   return (
-    <div className="divide-y rounded-2xl border bg-card">
+    <div className="surface-card divide-y rounded-2xl border bg-card">
       {list.map(a => (
         <AccountLine key={String(a.id)} a={a} className="px-4 py-3"
           right={<Button variant="ghost" size="icon-sm" aria-label={t('Remove {bank}', { bank: a.institution })} disabled={busy} onClick={() => run(() => reducers?.removePaymentMethod({ id: a.id }), 'Account removed')}><Trash2 /></Button>} />

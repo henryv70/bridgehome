@@ -14,6 +14,7 @@ import { useCountUp, useReveal } from '@/hooks/use-reveal';
 import { buttonVariants } from '@/components/ui/button';
 import { Wordmark } from '@/components/app/brand';
 import { LanguageSelect } from '@/components/app/language';
+import { BankMark } from '@/components/app/bank-mark';
 
 // Fades and lifts its children into place the first time they scroll into view.
 function Reveal({ children, delay = 0, className, as: Tag = 'div' }: { children: ReactNode; delay?: number; className?: string; as?: 'div' | 'li' | 'section' }) {
@@ -56,7 +57,7 @@ function HeroVisual() {
       <div className="reveal absolute top-[18%] right-0 w-[56%] animate-float" data-shown={shown} style={{ '--delay': '350ms', animationDelay: '-2s' } as CSSProperties}>
         <div className="space-y-3 rounded-3xl border bg-card p-4 shadow-xl shadow-black/5">
           <div className="flex items-center gap-2">
-            <span className="flex size-8 items-center justify-center rounded-xl bg-[#a50064] text-xs font-bold text-white">M</span>
+            <BankMark name="MoMo" className="size-8" />
             <div className="min-w-0">
               <p className="truncate text-xs font-medium">{t('Deposited to {account}', { account: 'MoMo ••9124' })}</p>
               <p className="text-[11px] text-muted-foreground">Minh · {t('just now')}</p>
@@ -146,7 +147,7 @@ function SendVisual() {
   return (
     <div className="space-y-4 rounded-3xl border bg-card p-5 shadow-sm sm:p-6">
       <div className="flex items-center gap-3">
-        <span className="flex size-10 items-center justify-center rounded-xl bg-[#117aca] font-bold text-white">C</span>
+        <BankMark name="Chase" className="size-10" />
         <div className="flex-1"><p className="text-sm font-medium">Chase ••4821</p><p className="text-xs text-muted-foreground">San Jose · USD</p></div>
       </div>
       <div className="relative mx-5 h-8">
@@ -155,7 +156,7 @@ function SendVisual() {
         <span className="animate-travel absolute top-1/2 size-2.5 -translate-y-1/2 rounded-full bg-brand" style={{ animationDelay: '1.4s' }} />
       </div>
       <div className="flex items-center gap-3">
-        <span className="animate-pulse-ring flex size-10 items-center justify-center rounded-xl bg-[#006b3f] font-bold text-white">V</span>
+        <BankMark name="Vietcombank" className="animate-pulse-ring size-10" />
         <div className="flex-1"><p className="text-sm font-medium">Vietcombank ••3307</p><p className="text-xs text-muted-foreground">Bà Ngoại Lan · Huế · VND</p></div>
         <Check className="size-4 text-good" />
       </div>

@@ -18,8 +18,8 @@ function webUrl() {
 }
 
 const COLORS = {
-  light: { bg: '#fcfcfb', text: '#141413', muted: '#6b6b66', button: '#141413', buttonText: '#fcfcfb' },
-  dark: { bg: '#141413', text: '#f0efec', muted: '#a3a29b', button: '#f0efec', buttonText: '#141413' },
+  light: { bg: '#eef7f3', text: '#142c32', muted: '#596f73', button: '#007f91', buttonText: '#ffffff' },
+  dark: { bg: '#10272b', text: '#f0f8f6', muted: '#a9c2c3', button: '#6edbd8', buttonText: '#10272b' },
 };
 
 function BridgeHome() {
@@ -82,7 +82,7 @@ function BridgeHome() {
         onContentProcessDidTerminate={() => web.current?.reload()}
         onRenderProcessGone={() => web.current?.reload()}
         startInLoadingState
-        renderLoading={() => <View style={[styles.loading, { backgroundColor: c.bg }]}><ActivityIndicator color={c.text} /></View>}
+        renderLoading={() => <View style={[styles.loading, { backgroundColor: c.bg }]}><ActivityIndicator color={c.button} /></View>}
         allowsBackForwardNavigationGestures
         pullToRefreshEnabled
         allowsInlineMediaPlayback

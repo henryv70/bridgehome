@@ -35,7 +35,7 @@ export default function SignUp() {
         <Link to="/"><Wordmark /></Link>
       </div>
       <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center py-10">
-        <form className="space-y-6" onSubmit={async e => {
+        <form className="space-y-6 rounded-3xl bg-card/70 p-5 sm:p-8" onSubmit={async e => {
           e.preventDefault();
           const f = new FormData(e.currentTarget);
           const name = normalizeUsername(formValue(f, 'username'));
@@ -67,7 +67,7 @@ export default function SignUp() {
             <div className="grid grid-cols-3 gap-2">
               {LANGUAGES.map(l => (
                 <button key={l.code} type="button" aria-pressed={lang === l.code} onClick={() => setLang(l.code)}
-                  className={cn('h-10 rounded-lg border text-sm transition hover:border-foreground/30', lang === l.code && 'border-foreground font-medium ring-1 ring-foreground')}>
+                  className={cn('h-12 rounded-xl border bg-card/60 text-sm transition hover:border-foreground/30', lang === l.code && 'border-primary bg-card font-semibold text-primary ring-1 ring-primary')}>
                   {l.label}
                 </button>
               ))}

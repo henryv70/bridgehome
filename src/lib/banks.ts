@@ -1,5 +1,7 @@
-// Demo directory of institutions. Names are shown as text only; no logos or real connections.
-export type Institution = { name: string; country: string; kind: 'bank' | 'wallet'; color: string };
+import { BANK_LOGOS } from './bank-logos';
+
+// Demo institution directory. Brand marks identify banks; no real bank connection is made.
+export type Institution = { name: string; country: string; kind: 'bank' | 'wallet'; color: string; logo: string };
 
 export const COUNTRIES: Record<string, { name: string; currency: string }> = {
   US: { name: 'United States', currency: 'USD' }, CA: { name: 'Canada', currency: 'CAD' }, GB: { name: 'United Kingdom', currency: 'GBP' },
@@ -10,7 +12,7 @@ export const COUNTRIES: Record<string, { name: string; currency: string }> = {
   KR: { name: 'South Korea', currency: 'KRW' }, BR: { name: 'Brazil', currency: 'BRL' }, CO: { name: 'Colombia', currency: 'COP' },
 };
 
-const I = (country: string, kind: Institution['kind'], color: string, ...names: string[]) => names.map(name => ({ name, country, kind, color }));
+const I = (country: string, kind: Institution['kind'], color: string, ...names: string[]) => names.map(name => ({ name, country, kind, color, logo: BANK_LOGOS[name] }));
 
 export const INSTITUTIONS: Institution[] = [
   ...I('US', 'bank', '#117aca', 'Chase'), ...I('US', 'bank', '#e31837', 'Bank of America'), ...I('US', 'bank', '#d71e28', 'Wells Fargo'),

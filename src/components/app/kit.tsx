@@ -17,8 +17,8 @@ import { useIsMobile } from '@/hooks/use-media';
 export function Choice({ icon, title, children, onClick, selected }: { icon: ReactNode; title: string; children: ReactNode; onClick: () => void; selected?: boolean }) {
   return (
     <button type="button" onClick={onClick} aria-pressed={selected}
-      className={cn('flex w-full items-start gap-4 rounded-2xl border bg-card p-4 text-left transition hover:border-foreground/30 hover:shadow-sm', selected && 'border-foreground ring-1 ring-foreground')}>
-      <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-muted [&_svg]:size-5">{icon}</span>
+      className={cn('flex w-full items-start gap-4 surface-card flex-1 rounded-2xl border bg-card p-4 text-left transition hover:border-primary/30 hover:shadow-sm', selected && 'border-primary bg-accent ring-1 ring-primary')}>
+      <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-secondary text-primary [&_svg]:size-5">{icon}</span>
       <span>
         <span className="block font-medium">{title}</span>
         <span className="mt-0.5 block text-sm text-muted-foreground">{children}</span>
@@ -29,9 +29,9 @@ export function Choice({ icon, title, children, onClick, selected }: { icon: Rea
 
 export function PageHeader({ title, subtitle, actions, className }: { title: ReactNode; subtitle?: ReactNode; actions?: ReactNode; className?: string }) {
   return (
-    <header className={cn('mb-6 flex flex-wrap items-end justify-between gap-3', className)}>
+    <header className={cn('mb-6 flex flex-wrap items-center justify-between gap-3', className)}>
       <div className="min-w-0">
-        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">{title}</h1>
+        <h1 className="text-[26px] leading-tight font-bold tracking-tight md:text-3xl">{title}</h1>
         {subtitle && <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>}
       </div>
       {actions && <div className="flex items-center gap-2">{actions}</div>}
@@ -44,7 +44,7 @@ export function Section({ title, action, children, className }: { title?: ReactN
     <section className={cn('space-y-3', className)}>
       {(title || action) && (
         <div className="flex items-center justify-between gap-2">
-          {title && <h2 className="text-sm font-medium text-muted-foreground">{title}</h2>}
+          {title && <h2 className="text-sm font-semibold text-foreground">{title}</h2>}
           {action}
         </div>
       )}
@@ -54,7 +54,7 @@ export function Section({ title, action, children, className }: { title?: ReactN
 }
 
 export function Panel({ className, ...props }: ComponentProps<'div'>) {
-  return <div className={cn('rounded-2xl border bg-card p-4 md:p-5', className)} {...props} />;
+  return <div className={cn('surface-card rounded-2xl border bg-card p-4 md:p-5', className)} {...props} />;
 }
 
 export function StatusBadge({ status, className }: { status: string; className?: string }) {
@@ -93,7 +93,7 @@ export function Field({ label, hint, children, className }: { label: ReactNode; 
 }
 
 export function TextField({ label, hint, className, ...props }: { label: ReactNode; hint?: ReactNode } & ComponentProps<typeof Input>) {
-  return <Field label={label} hint={hint} className={className}>{id => <Input id={id} className="h-10" {...props} />}</Field>;
+  return <Field label={label} hint={hint} className={className}>{id => <Input id={id} className="h-12 bg-card" {...props} />}</Field>;
 }
 
 export function AreaField({ label, hint, className, ...props }: { label: ReactNode; hint?: ReactNode } & ComponentProps<typeof Textarea>) {
@@ -103,7 +103,7 @@ export function AreaField({ label, hint, className, ...props }: { label: ReactNo
 export function NativeSelect({ className, ...props }: ComponentProps<'select'>) {
   return (
     <select
-      className={cn('h-10 w-full min-w-0 rounded-lg border border-input bg-transparent px-3 text-base outline-none md:text-sm focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30', className)}
+      className={cn('h-12 w-full min-w-0 rounded-xl border border-input bg-card px-3 text-base outline-none md:text-sm focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30', className)}
       {...props}
     />
   );
@@ -129,10 +129,10 @@ export function MoneyField({ label, hint, name = 'amount', currencyName = 'curre
   return (
     <Field label={label} hint={hint}>
       {id => (
-        <div className="flex rounded-lg border border-input focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50 dark:bg-input/30">
+        <div className="flex rounded-xl border border-input bg-card focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50 dark:bg-input/30">
           <input id={id} name={name} inputMode="decimal" autoComplete="off" required placeholder="0.00"
             {...(onValueChange ? { value, onChange: e => onValueChange(e.target.value) } : { defaultValue })}
-            className="tabular h-10 min-w-0 flex-1 bg-transparent px-3 text-base outline-none md:text-sm" />
+            className="tabular h-12 min-w-0 flex-1 bg-transparent px-3 text-base outline-none md:text-sm" />
           {lockCurrency
             ? <span className="flex items-center border-l px-3 text-sm text-muted-foreground">{currency}<input type="hidden" name={currencyName} value={currency} /></span>
             : <select name={currencyName} defaultValue={currency ?? 'USD'} onChange={e => onCurrencyChange?.(e.target.value)} aria-label={t('Currency')}
@@ -160,8 +160,8 @@ export function Photo({ bytes, type, url: src, alt, className }: { bytes: Uint8A
 
 export function Empty({ icon, title, children, action }: { icon?: ReactNode; title: string; children?: ReactNode; action?: ReactNode }) {
   return (
-    <div className="flex flex-col items-center rounded-2xl border border-dashed px-6 py-12 text-center">
-      {icon && <div className="mb-3 text-muted-foreground [&_svg]:size-6">{icon}</div>}
+    <div className="surface-card flex flex-col items-center rounded-2xl border bg-card px-6 py-12 text-center">
+      {icon && <div className="mb-4 flex size-14 items-center justify-center rounded-full bg-secondary text-primary [&_svg]:size-6">{icon}</div>}
       <p className="font-medium">{title}</p>
       {children && <p className="mt-1 max-w-sm text-sm text-muted-foreground">{children}</p>}
       {action && <div className="mt-4">{action}</div>}
@@ -176,8 +176,8 @@ export function Drawer({ open, onOpenChange, title, description, children }: {
   const mobile = useIsMobile();
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side={mobile ? 'bottom' : 'right'} className={cn('gap-0', mobile ? 'max-h-[92dvh] rounded-t-2xl' : 'w-full sm:max-w-md')}>
-        <SheetHeader className="border-b px-5 py-4">
+      <SheetContent side={mobile ? 'bottom' : 'right'} className={cn('gap-0 bg-background', mobile ? 'max-h-[92dvh] rounded-t-3xl' : 'w-full sm:max-w-md')}>
+        <SheetHeader className="border-b px-5 py-5">
           <SheetTitle>{title}</SheetTitle>
           {description && <SheetDescription>{description}</SheetDescription>}
         </SheetHeader>
@@ -189,7 +189,7 @@ export function Drawer({ open, onOpenChange, title, description, children }: {
 
 export function Stat({ label, value, sub, className }: { label: ReactNode; value: ReactNode; sub?: ReactNode; className?: string }) {
   return (
-    <div className={cn('rounded-2xl border bg-card p-4', className)}>
+    <div className={cn('surface-card rounded-2xl border bg-card p-4', className)}>
       <p className="text-xs text-muted-foreground">{label}</p>
       <p className="tabular mt-1 text-xl font-semibold tracking-tight md:text-2xl">{value}</p>
       {sub && <p className="mt-0.5 text-xs text-muted-foreground">{sub}</p>}

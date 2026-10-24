@@ -87,7 +87,7 @@ function FamilySwitcher({ compact }: { compact?: boolean }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className={cn('flex min-w-0 items-center gap-2 rounded-xl text-left outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50', compact ? 'px-2 py-1.5' : 'w-full p-2')}>
-        <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted text-sm font-semibold">{group?.name.replace(/^the\s+/i, '')[0]}</span>
+        <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-secondary text-sm font-semibold text-primary">{group?.name.replace(/^the\s+/i, '')[0]}</span>
         <span className="min-w-0 flex-1">
           <span className="block truncate text-sm font-medium">{group?.name}</span>
           {!compact && <span className="block truncate text-xs text-muted-foreground capitalize">{me ? t(me.role === 'sender' ? 'Sender' : 'Recipient') : ''}{isOwner ? ` · ${t('owner')}` : ''}</span>}
@@ -186,7 +186,7 @@ export function AppShell() {
         <FamilySwitcher />
         <nav className="mt-4 space-y-0.5">
           {NAV.map(n => (
-            <NavLink key={n.to} to={n.to} end={n.end} className={({ isActive }) => cn('flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground', isActive && 'bg-muted font-medium text-foreground')}>
+            <NavLink key={n.to} to={n.to} end={n.end} className={({ isActive }) => cn('flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground', isActive && 'bg-accent font-semibold text-primary')}>
               <n.icon className="size-4" />{t(n.label)}
               {n.to === '/' && tasks > 0 && <span className="tabular ml-auto rounded-full bg-foreground px-1.5 text-[11px] font-medium text-background">{tasks}</span>}
             </NavLink>
@@ -203,8 +203,8 @@ export function AppShell() {
 
       <div className="min-w-0">
         {/* Mobile top bar */}
-        <header className="pt-safe sticky top-0 z-30 border-b bg-background/85 backdrop-blur-md md:hidden">
-          <div className="flex h-14 items-center justify-between gap-2 px-3">
+        <header className="pt-safe sticky top-0 z-30 bg-background/95 backdrop-blur-md md:hidden">
+          <div className="flex h-16 items-center justify-between gap-2 px-4">
             <FamilySwitcher compact />
             <AccountMenu />
           </div>
@@ -216,10 +216,10 @@ export function AppShell() {
         </main>
 
         {/* Mobile tab bar */}
-        <nav aria-label={t('Family navigation')} className="pb-safe fixed inset-x-0 bottom-0 z-30 border-t bg-background/95 backdrop-blur-md md:hidden">
+        <nav aria-label={t('Family navigation')} className="pb-safe fixed inset-x-0 bottom-0 z-30 border-t border-border/60 bg-card/95 backdrop-blur-md md:hidden">
           <div className="grid h-16 grid-cols-5">
             {NAV.map(n => (
-              <NavLink key={n.to} to={n.to} end={n.end} className={({ isActive }) => cn('relative flex h-16 min-w-0 touch-manipulation flex-col items-center justify-center gap-1 text-[11px] leading-4 font-medium whitespace-nowrap text-muted-foreground select-none', isActive && 'text-foreground')}>
+              <NavLink key={n.to} to={n.to} end={n.end} className={({ isActive }) => cn('relative flex h-16 min-w-0 touch-manipulation flex-col items-center justify-center gap-1 text-[10px] leading-4 font-semibold whitespace-nowrap text-muted-foreground select-none', isActive && 'text-primary')}>
                 <n.icon className="size-5 shrink-0" strokeWidth={1.75} aria-hidden="true" />
                 <span className="block h-4">{t(n.label)}</span>
                 {n.to === '/' && tasks > 0 && <span className="absolute top-1 left-1/2 ml-2 size-2 rounded-full bg-brand" />}

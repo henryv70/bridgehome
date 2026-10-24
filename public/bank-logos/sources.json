@@ -1,0 +1,336 @@
+[
+  {
+    "name": "Chase",
+    "domain": "chase.com",
+    "file": "chase.png",
+    "source": "https://www.google.com/s2/favicons?domain=chase.com&sz=128",
+    "sha256": "41f0d6c445613be84da984399e19c146011de1cdd7aebff632a0fb5a96eca507"
+  },
+  {
+    "name": "Bank of America",
+    "domain": "bankofamerica.com",
+    "file": "bank-of-america.png",
+    "source": "https://www.google.com/s2/favicons?domain=bankofamerica.com&sz=128",
+    "sha256": "06889b6e68b93e6a18e5e42bf860dd83aa61428ef2c7ee9993d3df93b63fc05a"
+  },
+  {
+    "name": "Wells Fargo",
+    "domain": "wellsfargo.com",
+    "file": "wells-fargo.png",
+    "source": "https://www.google.com/s2/favicons?domain=wellsfargo.com&sz=128",
+    "sha256": "ede67c33efcf505a35f96bdca5bcdabab73d59e4f810731db6f709f1f3d4d210"
+  },
+  {
+    "name": "Citi",
+    "domain": "citi.com",
+    "file": "citi.png",
+    "source": "https://www.google.com/s2/favicons?domain=citi.com&sz=128",
+    "sha256": "7d50ae09dec6a99c9330073b613dc8eb6643365973aca576dd91923f31accc5d"
+  },
+  {
+    "name": "Capital One",
+    "domain": "capitalone.com",
+    "file": "capital-one.png",
+    "source": "https://www.google.com/s2/favicons?domain=capitalone.com&sz=128",
+    "sha256": "5a88bdb01660e26d9ea80d5f0f2fc2be606b53bb44355e4c1dc08e8335d595a9"
+  },
+  {
+    "name": "U.S. Bank",
+    "domain": "usbank.com",
+    "file": "u-s-bank.png",
+    "source": "https://www.google.com/s2/favicons?domain=usbank.com&sz=128",
+    "sha256": "fc65f9bac84de2626f5b3debe85c480db160d1455874c0b06e483df5a33ff0da"
+  },
+  {
+    "name": "Navy Federal Credit Union",
+    "domain": "navyfederal.org",
+    "file": "navy-federal-credit-union.svg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/3/3c/Navy_Federal_Credit_Union_Logo.svg",
+    "sha256": "67343e3d78de1d721c51124ea2cffc033cd0af7067cfb19454b681520de5a6bb"
+  },
+  {
+    "name": "RBC Royal Bank",
+    "domain": "rbcroyalbank.com",
+    "file": "rbc-royal-bank.png",
+    "source": "https://www.google.com/s2/favicons?domain=rbcroyalbank.com&sz=128",
+    "sha256": "9e11776725246b890a9d4a0907313be7a06e04e713a08f3c05d56c73819e2ea1"
+  },
+  {
+    "name": "Scotiabank",
+    "domain": "scotiabank.com",
+    "file": "scotiabank.png",
+    "source": "https://www.google.com/s2/favicons?domain=scotiabank.com&sz=128",
+    "sha256": "433e05f23f87fe8e81063ffed7830558799e889bd33a2b09105aaf85d003e696"
+  },
+  {
+    "name": "TD Canada Trust",
+    "domain": "td.com",
+    "file": "td-canada-trust.png",
+    "source": "https://www.google.com/s2/favicons?domain=td.com&sz=128",
+    "sha256": "d117944e270b8bc90e7d9c05c0d6c06e2a2770d4631cfd49b133490192717198"
+  },
+  {
+    "name": "Barclays",
+    "domain": "barclays.co.uk",
+    "file": "barclays.png",
+    "source": "https://www.google.com/s2/favicons?domain=barclays.co.uk&sz=128",
+    "sha256": "e0397c181c1d6811fb49428fcc26321a97c9765d2c1b58ba092a4f4b6554f1e9"
+  },
+  {
+    "name": "HSBC UK",
+    "domain": "hsbc.co.uk",
+    "file": "hsbc-uk.png",
+    "source": "https://www.google.com/s2/favicons?domain=hsbc.co.uk&sz=128",
+    "sha256": "88f1e9baaff2357b584497b73b30cce72f1595de16394654cafe0bc70c635e52"
+  },
+  {
+    "name": "Wise",
+    "domain": "wise.com",
+    "file": "wise.png",
+    "source": "https://www.google.com/s2/favicons?domain=wise.com&sz=128",
+    "sha256": "e961cdcc13e7612d295c5614bc5cd8305c1a28d9f1b076275272fbb40f32e426"
+  },
+  {
+    "name": "Commonwealth Bank",
+    "domain": "commbank.com.au",
+    "file": "commonwealth-bank.png",
+    "source": "https://www.google.com/s2/favicons?domain=commbank.com.au&sz=128",
+    "sha256": "1e197869a42003dc5f74e8aa0d022841fd126cf6a410b514b0766b22e033ccd9"
+  },
+  {
+    "name": "Vietcombank",
+    "domain": "vietcombank.com.vn",
+    "file": "vietcombank.png",
+    "source": "https://www.google.com/s2/favicons?domain=vietcombank.com.vn&sz=128",
+    "sha256": "e409a3012af1660a9a5097efbce3493000763edb133c20de757f227eaa457767"
+  },
+  {
+    "name": "Techcombank",
+    "domain": "techcombank.com",
+    "file": "techcombank.png",
+    "source": "https://www.google.com/s2/favicons?domain=techcombank.com&sz=128",
+    "sha256": "489057a4cea50e9425ef845771fe61a6cef786b3f08db0c8243a75bef8457481"
+  },
+  {
+    "name": "BIDV",
+    "domain": "bidv.com.vn",
+    "file": "bidv.png",
+    "source": "https://www.google.com/s2/favicons?domain=bidv.com.vn&sz=128",
+    "sha256": "ade213e27930e896cff527267be5ac159c35ddfdc02f64d2da2aa3d26a300c5a"
+  },
+  {
+    "name": "VietinBank",
+    "domain": "vietinbank.vn",
+    "file": "vietinbank.png",
+    "source": "https://www.google.com/s2/favicons?domain=vietinbank.vn&sz=128",
+    "sha256": "584c7a0751c6dccdb26cc284401b81f0633984e375e3dd0bc5f7ebf755406489"
+  },
+  {
+    "name": "MB Bank",
+    "file": "mb-bank.png",
+    "source": "https://www.google.com/s2/favicons?domain=online.mbbank.com.vn&sz=128",
+    "sha256": "d6de172d92aff1a0d7711ecc781a3d3e8248f6665f6416952ed5c8c401606677"
+  },
+  {
+    "name": "Agribank",
+    "domain": "agribank.com.vn",
+    "file": "agribank.png",
+    "source": "https://www.google.com/s2/favicons?domain=agribank.com.vn&sz=128",
+    "sha256": "02a561a12b025d6313b3b20d54a2123ee6fefcdd98bfaabd7b9be1d07b1c428d"
+  },
+  {
+    "name": "MoMo",
+    "domain": "momo.vn",
+    "file": "momo.png",
+    "source": "https://www.google.com/s2/favicons?domain=momo.vn&sz=128",
+    "sha256": "88cf82c6b7222f7cfa885da5907870bbd6ff64b5c43b41aff0fe9c7255b24828"
+  },
+  {
+    "name": "ZaloPay",
+    "domain": "zalopay.vn",
+    "file": "zalopay.png",
+    "source": "https://www.google.com/s2/favicons?domain=zalopay.vn&sz=128",
+    "sha256": "ea2a2df185418f0ac5cb1ef8eabc6fd773e6a8dfdc0288e4f0ff428f1285d7c8"
+  },
+  {
+    "name": "BDO Unibank",
+    "domain": "bdo.com.ph",
+    "file": "bdo-unibank.png",
+    "source": "https://www.google.com/s2/favicons?domain=bdo.com.ph&sz=128",
+    "sha256": "ed03ca90abf3101a443278cbc699b76e433cc7d79d080e5cb9ca691a70244298"
+  },
+  {
+    "name": "BPI",
+    "domain": "bpi.com.ph",
+    "file": "bpi.png",
+    "source": "https://www.google.com/s2/favicons?domain=bpi.com.ph&sz=128",
+    "sha256": "7231b0132cb548e6c8e4e8b440379640e86341ec72d188f7f2ecf5723525e47e"
+  },
+  {
+    "name": "Metrobank",
+    "domain": "metrobank.com.ph",
+    "file": "metrobank.png",
+    "source": "https://www.google.com/s2/favicons?domain=metrobank.com.ph&sz=128",
+    "sha256": "cc660fafb403049bbe201efaf315e4aa8b0f66ecf261cbc33c7b82f9d6eb451a"
+  },
+  {
+    "name": "Landbank",
+    "domain": "landbank.com",
+    "file": "landbank.png",
+    "source": "https://www.google.com/s2/favicons?domain=landbank.com&sz=128",
+    "sha256": "98c2a44fee3245e8c5653d12ff0e1bf974d5423bb464def8548ba1c6f76de7a7"
+  },
+  {
+    "name": "GCash",
+    "domain": "gcash.com",
+    "file": "gcash.png",
+    "source": "https://www.google.com/s2/favicons?domain=gcash.com&sz=128",
+    "sha256": "0beeb1de80f0d206fe82c4c4112be13bb9eb5a903a28809ae1d357f67d4f5adf"
+  },
+  {
+    "name": "Maya",
+    "domain": "maya.ph",
+    "file": "maya.png",
+    "source": "https://www.google.com/s2/favicons?domain=maya.ph&sz=128",
+    "sha256": "0576b0c933cc9759d062b591659a74c263d75898c10e668d0fdf03111120ba93"
+  },
+  {
+    "name": "BBVA M\u00e9xico",
+    "domain": "bbva.mx",
+    "file": "bbva-m-xico.png",
+    "source": "https://www.google.com/s2/favicons?domain=bbva.mx&sz=128",
+    "sha256": "2ef27037b454abd4506423cef618ed0a151bf5a20de56ee4be9ba270959c7b0d"
+  },
+  {
+    "name": "Banorte",
+    "domain": "banorte.com",
+    "file": "banorte.png",
+    "source": "https://www.google.com/s2/favicons?domain=banorte.com&sz=128",
+    "sha256": "2f31ac8dfbe5321ce21aba29a37916163f49185ed9d805d244482110a8c69592"
+  },
+  {
+    "name": "Santander M\u00e9xico",
+    "domain": "santander.com.mx",
+    "file": "santander-m-xico.png",
+    "source": "https://www.google.com/s2/favicons?domain=santander.com.mx&sz=128",
+    "sha256": "3efb357825fb1dfca6e82334c8509ae6f8f0d9f320732bc92935c49b173c074c"
+  },
+  {
+    "name": "State Bank of India",
+    "domain": "sbi.co.in",
+    "file": "state-bank-of-india.png",
+    "source": "https://www.google.com/s2/favicons?domain=sbi.co.in&sz=128",
+    "sha256": "70f8326e5f519959ab7311a3e794af580d119fe4d25b7ed87a23b02494f5fb1a"
+  },
+  {
+    "name": "HDFC Bank",
+    "domain": "hdfcbank.com",
+    "file": "hdfc-bank.png",
+    "source": "https://www.google.com/s2/favicons?domain=hdfcbank.com&sz=128",
+    "sha256": "e3d1ff82f47fc2b21ef94543322a79903dfb47f58e747e3569255c3ee10d6dca"
+  },
+  {
+    "name": "ICICI Bank",
+    "domain": "icicibank.com",
+    "file": "icici-bank.png",
+    "source": "https://www.google.com/s2/favicons?domain=icicibank.com&sz=128",
+    "sha256": "461479427628f2ef8f277e934eb5fac037fdd30ff640378d980fffc647382fda"
+  },
+  {
+    "name": "Paytm",
+    "domain": "paytm.com",
+    "file": "paytm.png",
+    "source": "https://www.google.com/s2/favicons?domain=paytm.com&sz=128",
+    "sha256": "3af5206d94f712c454572e711aa15b9dcf958d9a247da24e5f343a9fc47464eb"
+  },
+  {
+    "name": "GTBank",
+    "domain": "gtbank.com",
+    "file": "gtbank.png",
+    "source": "https://www.google.com/s2/favicons?domain=gtbank.com&sz=128",
+    "sha256": "0f15abc317ffd89b0094e731e3a9a397ac3841edbf440b66ddb3a1300b94511c"
+  },
+  {
+    "name": "Access Bank",
+    "domain": "accessbankplc.com",
+    "file": "access-bank.png",
+    "source": "https://www.google.com/s2/favicons?domain=accessbankplc.com&sz=128",
+    "sha256": "b4f657fd2e7ccb2b6cb4236837a6364c2b70f6bdb500cf2f34dcfbdd73edd5a2"
+  },
+  {
+    "name": "M-Pesa",
+    "domain": "safaricom.co.ke",
+    "file": "m-pesa.svg",
+    "source": "https://upload.wikimedia.org/wikipedia/commons/1/15/M-PESA_LOGO-01.svg",
+    "sha256": "50895e583be6aa2a380cdb01710c26beb32e8a3bea79d210abc186b168f4e838"
+  },
+  {
+    "name": "Equity Bank",
+    "file": "equity-bank.png",
+    "source": "https://trouverlogo.fr/logos/equity-bank.png",
+    "sha256": "a9fcd84b5608306e86f9ba0f53aa27c040bcfa056c8a4be63c929987dd61516e"
+  },
+  {
+    "name": "Banco Industrial",
+    "domain": "corporacionbi.com",
+    "file": "banco-industrial.png",
+    "source": "https://www.google.com/s2/favicons?domain=corporacionbi.com&sz=128",
+    "sha256": "9f04465346cc8393e34f8cc7c5c5c7b4730b61c4a9d89e8cf0a29eeca9eec485"
+  },
+  {
+    "name": "Banco Popular Dominicano",
+    "domain": "popularenlinea.com",
+    "file": "banco-popular-dominicano.png",
+    "source": "https://www.google.com/s2/favicons?domain=popularenlinea.com&sz=128",
+    "sha256": "3d9809ea665e37d9f98b2c018b88e377050fd97b4838fcd0c91ed0d7500f9d82"
+  },
+  {
+    "name": "bKash",
+    "domain": "bkash.com",
+    "file": "bkash.png",
+    "source": "https://www.google.com/s2/favicons?domain=bkash.com&sz=128",
+    "sha256": "9f2c4513623444ea3257faf4bd407e72cd5f69a0f830340324df66e8a9d4148e"
+  },
+  {
+    "name": "JazzCash",
+    "domain": "jazzcash.com.pk",
+    "file": "jazzcash.png",
+    "source": "https://www.google.com/s2/favicons?domain=jazzcash.com.pk&sz=128",
+    "sha256": "a42bd2025544a124a627e87d907dd13ca6f952c96bf8739d98a2d54a93a97218"
+  },
+  {
+    "name": "BCA",
+    "domain": "bca.co.id",
+    "file": "bca.png",
+    "source": "https://www.google.com/s2/favicons?domain=bca.co.id&sz=128",
+    "sha256": "174001d8b7f12b8b9b8707ecdb79fff9484f5d9de8d255b7479dffbf7ab1d355"
+  },
+  {
+    "name": "KB Kookmin",
+    "domain": "kbstar.com",
+    "file": "kb-kookmin.png",
+    "source": "https://www.google.com/s2/favicons?domain=kbstar.com&sz=128",
+    "sha256": "2061d9289b91998eefe8ee8a3fb05488cc1bd9064120e0cc935379db10b29c19"
+  },
+  {
+    "name": "Banco do Brasil",
+    "domain": "bb.com.br",
+    "file": "banco-do-brasil.png",
+    "source": "https://www.google.com/s2/favicons?domain=bb.com.br&sz=128",
+    "sha256": "a8ceaa254ae253b276cf2d9ff530b07f87a846e3fbe9df8b3ffff4f5aa1717c2"
+  },
+  {
+    "name": "Nubank",
+    "domain": "nubank.com.br",
+    "file": "nubank.png",
+    "source": "https://www.google.com/s2/favicons?domain=nubank.com.br&sz=128",
+    "sha256": "31083f30ec6ba08a6d711f69bb96a3da50462552ce77a761bd83062705f37a3e"
+  },
+  {
+    "name": "Bancolombia",
+    "domain": "bancolombia.com",
+    "file": "bancolombia.png",
+    "source": "https://www.google.com/s2/favicons?domain=bancolombia.com&sz=128",
+    "sha256": "7ce5bf4b834756aaacdbc16e0ac4298b23044d64d4f0cb3b9eea2e445a66f83a"
+  }
+]

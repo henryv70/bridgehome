@@ -24,7 +24,7 @@ export function Steps({ status, compact }: { status: string; compact?: boolean }
         const current = i === at && status !== 'completed';
         return (
           <li key={s.key} className={cn('flex flex-1 flex-col gap-1.5', compact && 'gap-0')} aria-current={current ? 'step' : undefined}>
-            <span className={cn('h-1 rounded-full bg-muted', done && 'bg-foreground', current && (rejected ? 'bg-muted-foreground/40' : 'bg-brand'))} />
+            <span className={cn('h-1 rounded-full bg-muted', done && 'bg-primary', current && (rejected ? 'bg-muted-foreground/40' : 'bg-brand'))} />
             {!compact && (
               <span className={cn('flex items-center gap-1 text-[11px] text-muted-foreground', (done || current) && 'text-foreground')}>
                 {done && <Check className="size-3" />}{s.label}
@@ -42,7 +42,7 @@ export function RequestCard({ r }: { r: Request }) {
   const sent = sum(app.transfers.filter(x => x.requestId === r.id), x => x.amount);
   const explanation = useTranslated('request', r.id, r.explanation);
   return (
-    <Link to={`/requests/${r.id}`} className="group block rounded-2xl border bg-card p-4 transition hover:border-foreground/20 hover:shadow-sm">
+    <Link to={`/requests/${r.id}`} className="surface-card group block rounded-2xl border bg-card p-4 transition hover:border-foreground/20 hover:shadow-sm">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="flex items-center gap-2">
@@ -61,7 +61,7 @@ export function RequestCard({ r }: { r: Request }) {
       <div className="mt-4"><Steps status={r.status} compact /></div>
       <div className="mt-3 flex items-center justify-between gap-2 text-xs text-muted-foreground">
         <span className="truncate">{app.nameOf(r.author)} · {waitingOn(app, r)}</span>
-        <span className="flex shrink-0 items-center gap-1">{['completed', 'received'].includes(r.status) ? <StatusBadge status={r.status} /> : dueLabel(r.dueDate)}<ChevronRight className="size-4 opacity-0 transition group-hover:opacity-100" /></span>
+        <span className="flex shrink-0 items-center gap-1">{['completed', 'received'].includes(r.status) ? <StatusBadge status={r.status} /> : dueLabel(r.dueDate)}<ChevronRight className="size-4 text-primary transition group-hover:translate-x-0.5" /></span>
       </div>
     </Link>
   );
