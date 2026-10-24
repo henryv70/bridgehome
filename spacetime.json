@@ -1,5 +1,5 @@
 {
-  "database": "bridgehome-3386g",
+  "database": "bridgehome-3386g-v2",
   "module-path": "./spacetimedb",
   "server": "local"
 }
