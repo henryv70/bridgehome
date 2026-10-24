@@ -69,6 +69,8 @@ import ToggleReactionReducer from "./toggle_reaction_reducer";
 import UpdatePublicPageReducer from "./update_public_page_reducer";
 
 // Import all procedure arg schemas
+import * as TranslateContentProcedure from "./translate_content_procedure";
+import * as TranslationEnabledProcedure from "./translation_enabled_procedure";
 
 // Import all table schema definitions
 import MyReactionOnPublicRow from "./my_reaction_on_public_table";
@@ -97,6 +99,7 @@ import VisibleRecordedTransferRow from "./visible_recorded_transfer_table";
 import VisibleRequestRow from "./visible_request_table";
 import VisibleSignInResultRow from "./visible_sign_in_result_table";
 import VisibleTransferRevisionRow from "./visible_transfer_revision_table";
+import VisibleTranslationRow from "./visible_translation_table";
 
 /** Type-only namespace exports for generated type groups. */
 
@@ -249,6 +252,13 @@ const tablesSchema = __schema({
     constraints: [
     ],
   }, VisibleTransferRevisionRow),
+  visibleTranslation: __table({
+    name: 'my_translation',
+    indexes: [
+    ],
+    constraints: [
+    ],
+  }, VisibleTranslationRow),
   publicContribution: __table({
     name: 'public_contribution',
     indexes: [
@@ -325,6 +335,8 @@ const reducersSchema = __reducers(
 
 /** The schema information for all procedures in this module. This is defined the same way as the procedures would have been defined in the server. */
 const proceduresSchema = __procedures(
+  __procedureSchema("translate_content", TranslateContentProcedure.params, TranslateContentProcedure.returnType),
+  __procedureSchema("translation_enabled", TranslationEnabledProcedure.params, TranslationEnabledProcedure.returnType),
 );
 
 /** The remote SpacetimeDB module schema, both runtime and type information. */

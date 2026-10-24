@@ -1,7 +1,7 @@
 import { t, type AnonymousViewCtx, type InferSchema, type ViewCtx } from 'spacetimedb/server';
 import db, {
   audit, budget, budgetTarget, comment, commitment, contribution, family, invitation, membership, post, profile, reaction,
-  receipt, recordedTransfer, request, transferRevision, paymentMethod, signInResult,
+  receipt, recordedTransfer, request, transferRevision, paymentMethod, signInResult, translation,
 } from './schema';
 import { OPEN_FOR_FUNDING } from './lib';
 
@@ -59,6 +59,10 @@ export const visibleSignInResult = db.view({ name: 'my_sign_in_result', public: 
   const r = ctx.db.signInResult.identity.find(ctx.sender);
   return r ? [r] : [];
 });
+
+// Cached translations of what members wrote, for every family the caller belongs to.
+export const visibleTranslation = db.view({ name: 'my_translation', public: true }, t.array(translation.rowType),
+  ctx => [...myGroups(ctx)].flatMap(id => [...ctx.db.translation.groupId.filter(id)]));
 
 // Public views: only data a family explicitly published, and never identities.
 const PublicFamilyRow = t.row('PublicFamilyRow', {

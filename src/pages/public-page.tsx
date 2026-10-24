@@ -85,7 +85,7 @@ export default function PublicPage() {
                   const ps = need ? forNeed(need.id) : [];
                   const open = !!need && openNeeds.includes(need);
                   return (
-                    <PostCard key={String(p.id)} photo={p.photo} photoType={p.photoType} photoUrl={p.photoUrl} caption={p.caption} author={p.authorName} createdAt={p.createdAt}
+                    <PostCard key={String(p.id)} photo={p.photo} photoType={p.photoType} photoUrl={p.photoUrl} postId={p.id} caption={p.caption} author={p.authorName} createdAt={p.createdAt}
                       context={p.requestTitle || undefined}
                       reactions={summarize(reactions.filter(r => r.postId === p.id).map(r => ({ emoji: r.emoji, mine: mine.some(m => m.id === r.id) })))}
                       onReact={emoji => run(() => app.reducers?.toggleReaction({ postId: p.id, emoji }))}

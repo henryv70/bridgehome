@@ -7,6 +7,7 @@ import { t } from '@/lib/i18n';
 import { formatMoney, sum, toDecimal, toMinor } from '@/lib/money';
 import { STEPS, stepIndex, waitingOn } from '@/lib/status';
 import { dueLabel, today } from '@/lib/time';
+import { useTranslated } from '@/lib/translate';
 import { Button } from '@/components/ui/button';
 import { AreaField, MoneyField, SelectField, StatusBadge, TextField, formValue } from './kit';
 
@@ -39,6 +40,7 @@ export function Steps({ status, compact }: { status: string; compact?: boolean }
 export function RequestCard({ r }: { r: Request }) {
   const app = useApp();
   const sent = sum(app.transfers.filter(x => x.requestId === r.id), x => x.amount);
+  const explanation = useTranslated('request', r.id, r.explanation);
   return (
     <Link to={`/requests/${r.id}`} className="group block rounded-2xl border bg-card p-4 transition hover:border-foreground/20 hover:shadow-sm">
       <div className="flex items-start justify-between gap-3">
@@ -48,7 +50,7 @@ export function RequestCard({ r }: { r: Request }) {
             {r.priority === 'urgent' && <span className="text-[11px] font-medium text-critical">{t('Urgent')}</span>}
             {r.isPublic && <Globe className="size-3.5 text-muted-foreground" aria-label={t('Shared publicly')} />}
           </div>
-          <p className="mt-0.5 line-clamp-1 text-sm text-muted-foreground">{r.explanation}</p>
+          <p className="mt-0.5 line-clamp-1 text-sm text-muted-foreground">{explanation.text}</p>
         </div>
         <div className="text-right">
           <p className="tabular font-semibold">{formatMoney(r.amount, r.currency)}</p>

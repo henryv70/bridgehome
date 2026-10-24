@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import type { Timestamp } from 'spacetimedb';
 import { cn } from '@/lib/utils';
 import { ago } from '@/lib/time';
+import { TranslateToggle, useTranslated } from '@/lib/translate';
 import { Initials, Photo } from './kit';
 
 export const EMOJIS = ['❤️', '🙏', '🎉'];
@@ -12,10 +13,11 @@ export function summarize(rows: readonly { emoji: string; mine: boolean }[]): Re
   return EMOJIS.map(emoji => ({ emoji, count: rows.filter(r => r.emoji === emoji).length, mine: rows.some(r => r.emoji === emoji && r.mine) }));
 }
 
-export function PostCard({ photo, photoType, photoUrl, caption, author, context, createdAt, reactions, onReact, badge, menu, support }: {
-  photo: Uint8Array; photoType: string; photoUrl?: string; caption: string; author: string; context?: ReactNode; createdAt: Timestamp;
+export function PostCard({ postId, photo, photoType, photoUrl, caption, author, context, createdAt, reactions, onReact, badge, menu, support }: {
+  postId: bigint; photo: Uint8Array; photoType: string; photoUrl?: string; caption: string; author: string; context?: ReactNode; createdAt: Timestamp;
   reactions: ReactionSummary[]; onReact?: (emoji: string) => void; badge?: ReactNode; menu?: ReactNode; support?: ReactNode;
 }) {
+  const translated = useTranslated('post', postId, caption);
   return (
     <article className="overflow-hidden rounded-2xl border bg-card">
       <header className="flex items-center gap-3 px-4 py-3">
@@ -37,7 +39,10 @@ export function PostCard({ photo, photoType, photoUrl, caption, author, context,
             </button>
           ))}
         </div>
-        <p className="text-sm leading-relaxed"><span className="font-medium">{author}</span> {caption}</p>
+        <div>
+          <p className="text-sm leading-relaxed"><span className="font-medium">{author}</span> {translated.text}</p>
+          <TranslateToggle state={translated} className="mt-1" />
+        </div>
         {support}
       </div>
     </article>

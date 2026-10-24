@@ -55,7 +55,7 @@ for (const s of ['Debt repayment', 'Checking', 'Savings', 'Wallet', 'Debit', 'Ro
   'Most supported', 'Closest to goal', 'Newest', 'Family only', 'Public',
   'Could you add a bank account or mobile wallet under Bank accounts (in your profile menu)? Then I can send this straight to you with BridgeHome Pay.',
   "Your password never leaves this device. It unlocks a sealed copy of this device's sign-in, so you can log back in here or on another phone or computer.",
-  'Username or password is incorrect.', 'Too many attempts. Try again in {n} minutes.',
+  'Username or password is incorrect.', 'Too many attempts. Try again in {n} minutes.', 'Translation is busy right now. Try again in a minute.',
   // Audit actions the server builds dynamically or the demo seed writes.
   'Request draft', 'Request submitted', 'Request rejected', 'Public page published', 'Public page updated (private)',
   'Request shared publicly', 'Request made private', 'Transfer recorded', 'Receipt confirmed', 'Money sent with BridgeHome Pay (demo)', 'Demo data loaded']) keys.add(s);
@@ -67,7 +67,7 @@ const IGNORED = ['PBKDF2', 'Request ', 'English', 'Tiếng Việt', '简体中�
 for (const f of server) {
   const src = readFileSync(f, 'utf8');
   for (const m of src.matchAll(new RegExp(String.raw`\blog\(ctx,[^,]+,\s*(?:${str})`, 'g'))) keys.add(lit(m).replace(/ \(self-reported\)/, ''));
-  for (const m of src.matchAll(new RegExp(String.raw`\bfail\(\s*(?:${str})\s*\)`, 'g'))) keys.add(lit(m));
+  for (const m of src.matchAll(new RegExp(String.raw`(?:\bfail|new SenderError)\(\s*(?:${str})\s*\)`, 'g'))) keys.add(lit(m));
 }
 for (const m of readFileSync(join(repo, 'spacetimedb/src/demo.ts'), 'utf8').matchAll(new RegExp(String.raw`\blog\(ctx,[^,]+,\s*(?:${str})`, 'g'))) keys.add(lit(m));
 

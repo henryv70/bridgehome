@@ -31,7 +31,7 @@ export default function Feed() {
             const request = app.requests.find(r => r.id === p.requestId);
             const canManage = app.isMe(p.author) || app.isOwner;
             return (
-              <PostCard key={String(p.id)} photo={p.photo} photoType={p.photoType} photoUrl={p.photoUrl} caption={p.caption} author={app.nameOf(p.author)} createdAt={p.createdAt}
+              <PostCard key={String(p.id)} photo={p.photo} photoType={p.photoType} photoUrl={p.photoUrl} postId={p.id} caption={p.caption} author={app.nameOf(p.author)} createdAt={p.createdAt}
                 context={request && <Link to={`/requests/${request.id}`} className="hover:underline">{t(request.category)}</Link>}
                 support={request && (request.isPublic || app.contributions.some(c => c.requestId === request.id)) && (() => {
                   const ps = app.contributions.filter(c => c.requestId === request.id);

@@ -13,6 +13,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Drawer, Empty, Initials, Panel, Photo, Section, StatusBadge, TextField, formValue } from '@/components/app/kit';
 import { DepositTracker, SendMoneyFlow } from '@/components/app/send-money';
 import { MissingAccountNotice } from '@/components/app/accounts';
+import { TranslatedText } from '@/lib/translate';
 import { EditTransferForm, ReceiptForm, ReviewForm, ReviseForm, Steps, TransferForm, priorityLabel, sentFor } from '@/components/app/request-parts';
 
 // Statuses where a sender may still deposit money for the request.
@@ -71,7 +72,7 @@ export default function RequestDetail() {
             {r.approved > 0n && <p className="tabular text-sm text-muted-foreground">{t('{approved} approved · {sent} sent', { approved: formatMoney(r.approved, r.currency), sent: formatMoney(sent, r.currency) })}</p>}
           </div>
         </div>
-        <p className="max-w-2xl text-[15px] leading-relaxed">{r.explanation}</p>
+        <div className="max-w-2xl"><TranslatedText kind="request" id={r.id} text={r.explanation} className="text-[15px] leading-relaxed" /></div>
         <Steps status={r.status} />
       </header>
 
@@ -106,7 +107,7 @@ export default function RequestDetail() {
                   <Initials name={app.nameOf(c.author)} />
                   <div className="min-w-0 flex-1">
                     <p className="text-sm"><span className="font-medium">{app.nameOf(c.author)}</span> <span className="text-xs text-muted-foreground">{ago(c.createdAt)}</span></p>
-                    <p className="mt-0.5 text-sm leading-relaxed">{c.text}</p>
+                    <TranslatedText kind="comment" id={c.id} text={c.text} className="mt-0.5 text-sm leading-relaxed" />
                   </div>
                 </div>
               ))}

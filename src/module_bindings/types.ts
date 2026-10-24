@@ -331,6 +331,17 @@ export const TransferRevision = __t.object("TransferRevision", {
 });
 export type TransferRevision = __Infer<typeof TransferRevision>;
 
+export const Translation = __t.object("Translation", {
+  id: __t.u64(),
+  groupId: __t.u64(),
+  source: __t.string(),
+  lang: __t.string(),
+  original: __t.string(),
+  text: __t.string(),
+  createdAt: __t.timestamp(),
+});
+export type Translation = __Infer<typeof Translation>;
+
 export const VisibleAudit = __t.object("VisibleAudit", {});
 export type VisibleAudit = __Infer<typeof VisibleAudit>;
 
@@ -387,4 +398,7 @@ export type VisibleSignInResult = __Infer<typeof VisibleSignInResult>;
 
 export const VisibleTransferRevision = __t.object("VisibleTransferRevision", {});
 export type VisibleTransferRevision = __Infer<typeof VisibleTransferRevision>;
+
+export const VisibleTranslation = __t.object("VisibleTranslation", {});
+export type VisibleTranslation = __Infer<typeof VisibleTranslation>;
 

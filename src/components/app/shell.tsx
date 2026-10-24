@@ -1,11 +1,12 @@
 import { Suspense, useState } from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router';
 import { useTheme } from '@/lib/theme';
-import { BookOpen, Check, HandHeart, ChevronsUpDown, Compass, Globe, Home, Images, KeyRound, Landmark, LogOut, Moon, Plus, ReceiptText, Sparkles, Sun, Users, Wallet } from 'lucide-react';
+import { BookOpen, Check, HandHeart, ChevronsUpDown, Compass, Globe, Home, Images, KeyRound, Landmark, Languages, LogOut, Moon, Plus, ReceiptText, Sparkles, Sun, Users, Wallet } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useApp } from '@/lib/data';
 import { taskFor } from '@/lib/status';
 import { LANGUAGES, t, useLanguage } from '@/lib/i18n';
+import { setAutoTranslate, useAutoTranslate } from '@/lib/translate';
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
@@ -63,7 +64,8 @@ function FamilySwitcher({ compact }: { compact?: boolean }) {
 }
 
 function AccountMenu() {
-  const { profile, username } = useApp();
+  const { profile, username, translationEnabled } = useApp();
+  const autoTranslate = useAutoTranslate();
   const { resolvedTheme, setTheme } = useTheme();
   const { lang, setLang } = useLanguage();
   const navigate = useNavigate();
@@ -96,6 +98,11 @@ function AccountMenu() {
               <span className="flex-1">{l.label}</span>{l.code === lang && <Check className="size-4" />}
             </DropdownMenuItem>
           ))}
+          {translationEnabled && (
+            <DropdownMenuItem onClick={() => setAutoTranslate(!autoTranslate)}>
+              <Languages className="size-4" /><span className="flex-1">{t('Translate family messages')}</span>{autoTranslate && <Check className="size-4" />}
+            </DropdownMenuItem>
+          )}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => navigate('/about')}><Sparkles className="size-4" />{t('About BridgeHome')}</DropdownMenuItem>

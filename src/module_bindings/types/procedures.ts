@@ -6,5 +6,11 @@
 import { type Infer as __Infer } from "spacetimedb";
 
 // Import all procedure arg schemas
+import * as TranslateContentProcedure from "../translate_content_procedure";
+import * as TranslationEnabledProcedure from "../translation_enabled_procedure";
 
+export type TranslateContentArgs = __Infer<typeof TranslateContentProcedure.params>;
+export type TranslateContentResult = __Infer<typeof TranslateContentProcedure.returnType>;
+export type TranslationEnabledArgs = __Infer<typeof TranslationEnabledProcedure.params>;
+export type TranslationEnabledResult = __Infer<typeof TranslationEnabledProcedure.returnType>;
 

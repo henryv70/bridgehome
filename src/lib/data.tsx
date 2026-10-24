@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useSpacetimeDB, useTable } from 'spacetimedb/react';
 import type { Identity } from 'spacetimedb';
 import { toast } from 'sonner';
@@ -65,6 +65,13 @@ function useAppValue() {
   const { isActive, identity, getConnection } = useSpacetimeDB();
   const conn = getConnection() as DbConnection | null | undefined;
   const t = useFamilyTables();
+  // Cached translations load in the background; they never hold up the app.
+  const [translations] = useTable(tables.visibleTranslation);
+  const [translationEnabled, setTranslationEnabled] = useState(false);
+  useEffect(() => {
+    if (!isActive || !conn) return;
+    conn.procedures.translationEnabled({}).then(setTranslationEnabled, () => setTranslationEnabled(false));
+  }, [isActive, conn]);
   const [selected, setSelected] = useState(() => localStorage.getItem(GROUP_KEY) ?? '');
   const selectGroup = useCallback((id: bigint) => { localStorage.setItem(GROUP_KEY, String(id)); setSelected(String(id)); }, []);
 
@@ -76,7 +83,8 @@ function useAppValue() {
     const me = s.members.find(m => isMe(m.identity));
     const nameOf = (id: Identity) => s.members.find(m => m.identity.isEqual(id))?.name ?? 'Former member';
     return {
-      isActive, identity, reducers: conn?.reducers, ready: t.ready,
+      isActive, identity, reducers: conn?.reducers, procedures: conn?.procedures, ready: t.ready,
+      translations, translationEnabled,
       profile: t.profiles[0], username: t.credentials[0]?.username, families, group, selectGroup, ...s,
       accounts: t.accounts,
       myAccounts: t.accounts.filter(a => isMe(a.owner)),
@@ -84,7 +92,7 @@ function useAppValue() {
       me, role: me?.role as 'sender' | 'recipient' | undefined, isOwner: !!group && isMe(group.owner),
       isMe, nameOf,
     };
-  }, [t, selected, identity, isActive, conn, selectGroup]);
+  }, [t, selected, identity, isActive, conn, selectGroup, translations, translationEnabled]);
 }
 
 export type AppData = ReturnType<typeof useAppValue>;
@@ -103,7 +111,7 @@ export function useApp() {
 // Server messages are English; known ones are translated, the rest pass through.
 export function errorText(e: unknown) {
   const m = e instanceof Error ? e.message : String(e);
-  return t(m.replace(/^(Error|SenderError):\s*/i, '').replace(/^The reducer .*? failed: /, ''));
+  return t(m.replace(/^(Error|SenderError):\s*/i, '').replace(/^The reducer .*? failed: /, '').replace(/^The module instance encountered a fatal error: /, ''));
 }
 
 // Runs a reducer call with consistent feedback. Resolves true on success.

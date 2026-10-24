@@ -59,6 +59,20 @@ Each browser profile, device and the Expo app has its own identity, which makes 
 
 Interface text goes through `t()` from `src/lib/i18n.tsx`. The English sentence is the key, and `{name}` placeholders are filled in: `t('Send {amount}', { amount })`. Use `tn(one, other, n)` for counts. Translations live in `src/locales/vi.ts` and `src/locales/zh.ts`. A missing entry falls back to English. Known server messages (errors and audit actions) are translated on the client the same way.
 
+### Translating what family members write
+
+Request explanations, comments and photo captions can be translated into the reader's language with Claude. When a message is in a different language than the interface (detected from its script), it is translated automatically and shows "Translated · Show original". Anyone can turn this off with **Translate family messages** in the profile menu, and a **Translate** link stays available. Each message is translated once per language and cached for the whole family in the private `translation` table, exposed only to members through `my_translation`. Visitors can translate public captions. Each family can request up to 200 new translations a day.
+
+The `translate_content` procedure calls the Messages API over HTTPS. The module runtime has no async or global `fetch`, so it uses raw HTTP instead of the SDK. It uses Claude Opus 5.5 (`claude-opus-5-5`) at low effort, with server-side refusal fallback (`fallbacks: "default"`). The message is sent to Anthropic, so mention that in your privacy notice if you deploy this.
+
+Translation is off until you give the module an API key. The key lives only in the module environment, not in tables, files or the browser. From a terminal where `ANTHROPIC_API_KEY` is set:
+
+```sh
+spacetime publish bridgehome-hinson --env-only --server local --yes
+```
+
+To use a different model, also set `TRANSLATION_MODEL` (for example `claude-haiku-5-5` for lower cost) before publishing. To turn translation off again: `spacetime publish bridgehome-hinson --env-only --unset-env ANTHROPIC_API_KEY --server local --yes`.
+
 After adding or changing interface text, run `npm run i18n:check`. It lists every string the app can show that is missing from either language, and any translation that dropped a placeholder.
 
 ## Data and authorization

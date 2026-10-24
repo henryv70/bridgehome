@@ -224,9 +224,27 @@ export const signInResult = table({ name: 'sign_in_result' }, {
 // Retained solely for a non-destructive migration; no application writes or reads.
 export const person = table({ public: true }, { name: t.string() });
 
+// Machine translations of what family members write, shared by the whole family.
+// `source` is "request:<id>", "comment:<id>" or "post:<id>"; `original` detects later edits.
+export const translation = table({
+  name: 'translation',
+  indexes: [{ accessor: 'by_source_lang', algorithm: 'btree', columns: ['source', 'lang'] }],
+}, {
+  id: t.u64().primaryKey().autoInc(),
+  groupId: t.u64().index('btree'),
+  source: t.string(),
+  lang: t.string(),
+  original: t.string(),
+  text: t.string(),
+  createdAt: t.timestamp(),
+});
+
 const db = schema({
   person, profile, family, membership, invitation, budget, budgetTarget, request, comment,
   commitment, recordedTransfer, transferRevision, receipt, post, reaction, contribution, paymentMethod, audit,
-  credential, signInResult,
+  credential, signInResult, translation,
+}, {
+  // Set at publish time from shell variables of the same name; never stored in tables or sent to clients.
+  env: { ANTHROPIC_API_KEY: t.option(t.string()), TRANSLATION_MODEL: t.option(t.string()) },
 });
 export default db;
