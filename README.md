@@ -13,7 +13,7 @@ On a fresh checkout run `npm install`, `npm --prefix spacetimedb install` and `n
 ```sh
 spacetime start
 # In a second terminal, from this directory:
-spacetime publish bridgehome-3386g --module-path spacetimedb --server local --yes
+spacetime publish bridgehome-3386g-v2 --module-path spacetimedb --server local --yes
 npm run spacetime:generate
 npm run dev
 ```
@@ -29,7 +29,7 @@ npm install
 npm run spacetime:publish:local -- --yes
 ```
 
-`spacetime.json` names the database (`bridgehome-3386g`), so a plain `spacetime publish` uses it too. If the app can't connect, the loading screen says why (server not running, database not published, or an older module) and shows the command to fix it.
+`spacetime.json` names the database (`bridgehome-3386g-v2`), so a plain `spacetime publish` uses it too. If the app can't connect, the loading screen says why (server not running, database not published, or an older module) and shows the command to fix it.
 
 ## Test on your phone with Expo
 
@@ -79,10 +79,10 @@ The `translate_content` procedure calls the Messages API over HTTPS. The module 
 Translation is off until you give the module an API key. The key lives only in the module environment, not in tables, files or the browser. From a terminal where `ANTHROPIC_API_KEY` is set:
 
 ```sh
-spacetime publish bridgehome-3386g --env-only --server local --yes
+spacetime publish bridgehome-3386g-v2 --env-only --server local --yes
 ```
 
-To use a different model, also set `TRANSLATION_MODEL` (for example `claude-haiku-5-5` for lower cost) before publishing. To turn translation off again: `spacetime publish bridgehome-3386g --env-only --unset-env ANTHROPIC_API_KEY --server local --yes`.
+To use a different model, also set `TRANSLATION_MODEL` (for example `claude-haiku-5-5` for lower cost) before publishing. To turn translation off again: `spacetime publish bridgehome-3386g-v2 --env-only --unset-env ANTHROPIC_API_KEY --server local --yes`.
 
 After adding or changing interface text, run `npm run i18n:check`. It lists every string the app can show that is missing from either language, and any translation that dropped a placeholder.
 
