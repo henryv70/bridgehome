@@ -267,6 +267,7 @@ export default function Landing() {
             <a href="#how" className="hidden rounded-lg px-3 py-2 text-muted-foreground hover:text-foreground md:block">How it works</a>
             <Link to="/give" className="hidden rounded-lg px-3 py-2 text-muted-foreground hover:text-foreground sm:block">Give</Link>
             <Link to="/explore" className="hidden rounded-lg px-3 py-2 text-muted-foreground hover:text-foreground sm:block">Explore</Link>
+            {!signedIn && <Link to="/login" className="rounded-lg px-3 py-2 text-muted-foreground hover:text-foreground">Log in</Link>}
             <Link to={primary.to} className={cn(buttonVariants({ size: 'lg' }), 'ml-2 rounded-full px-4')}>{primary.label}</Link>
           </nav>
         </div>

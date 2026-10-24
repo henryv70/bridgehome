@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { ArrowLeft, Check, Landmark, Loader2, Lock, Search, ShieldCheck, Smartphone, Trash2 } from 'lucide-react';
+import { useMemo, useState, type ReactNode } from 'react';
+import { ArrowLeft, Check, Landmark, Loader2, Lock, Search, ShieldCheck, Smartphone, Trash2, TriangleAlert } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAction, useApp, type Account } from '@/lib/data';
 import { COUNTRIES, INSTITUTIONS, institution, type Institution } from '@/lib/banks';
@@ -30,6 +30,17 @@ export function AccountLine({ a, right, className }: { a: Account; right?: React
         <p className="truncate text-xs text-muted-foreground capitalize">{a.kind} · {a.currency} · {a.holderName}</p>
       </div>
       {right}
+    </div>
+  );
+}
+
+// Shown when a bank account BridgeHome Pay needs is missing, with what to do about it.
+export function MissingAccountNotice({ title, children, action, className }: { title: string; children: ReactNode; action?: ReactNode; className?: string }) {
+  return (
+    <div role="alert" className={cn('space-y-2 rounded-xl border border-amber-500/40 bg-amber-500/10 p-3 text-sm', className)}>
+      <p className="flex items-center gap-2 font-medium text-amber-800 dark:text-amber-300"><TriangleAlert className="size-4 shrink-0" />{title}</p>
+      <p className="leading-relaxed text-muted-foreground">{children}</p>
+      {action}
     </div>
   );
 }

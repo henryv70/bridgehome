@@ -1,16 +1,17 @@
 import { Suspense, useState } from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router';
 import { useTheme } from '@/lib/theme';
-import { BookOpen, Check, HandHeart, ChevronsUpDown, Compass, Home, Images, Landmark, Moon, Plus, ReceiptText, Sparkles, Sun, Users, Wallet } from 'lucide-react';
+import { BookOpen, Check, HandHeart, ChevronsUpDown, Compass, Home, Images, KeyRound, Landmark, LogOut, Moon, Plus, ReceiptText, Sparkles, Sun, Users, Wallet } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useApp } from '@/lib/data';
 import { taskFor } from '@/lib/status';
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Initials } from './kit';
+import { Drawer, Initials } from './kit';
 import { Logo, Wordmark } from './brand';
 import { DemoPicker } from './demo-picker';
+import { CredentialForm, SignOutPanel } from './sign-in';
 
 const NAV = [
   { to: '/', label: 'Home', icon: Home, end: true },
@@ -61,18 +62,25 @@ function FamilySwitcher({ compact }: { compact?: boolean }) {
 }
 
 function AccountMenu() {
-  const { profile } = useApp();
+  const { profile, username } = useApp();
   const { resolvedTheme, setTheme } = useTheme();
   const navigate = useNavigate();
   const [demo, setDemo] = useState(false);
+  const [sheet, setSheet] = useState<'credential' | 'logout' | null>(null);
+  const close = () => setSheet(null);
   return (
+    <>
     <DropdownMenu>
       <DropdownMenuTrigger className="rounded-full outline-none focus-visible:ring-3 focus-visible:ring-ring/50" aria-label="Account">
         <Initials name={profile?.name ?? '?'} />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-60">
         <DropdownMenuGroup>
-          <DropdownMenuLabel>{profile?.name}</DropdownMenuLabel>
+          <DropdownMenuLabel>
+            <span className="block truncate">{profile?.name}</span>
+            <span className="block truncate text-xs font-normal">{username ? `Logged in as ${username}` : 'No sign-in set up'}</span>
+          </DropdownMenuLabel>
+          <DropdownMenuItem onClick={() => setSheet('credential')}><KeyRound className="size-4" />{username ? 'Change username or password' : 'Set up sign-in'}</DropdownMenuItem>
           <DropdownMenuItem onClick={() => navigate('/welcome?step=name')}>Edit display name</DropdownMenuItem>
           <DropdownMenuItem onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}>
             {resolvedTheme === 'dark' ? <Sun className="size-4" /> : <Moon className="size-4" />}{resolvedTheme === 'dark' ? 'Light mode' : 'Dark mode'}
@@ -85,9 +93,19 @@ function AccountMenu() {
         <DropdownMenuItem onClick={() => navigate('/give')}><HandHeart className="size-4" />Give to families</DropdownMenuItem>
         <DropdownMenuItem onClick={() => navigate('/accounts')}><Landmark className="size-4" />Bank accounts</DropdownMenuItem>
         <DropdownMenuItem onClick={() => setDemo(true)}><Sparkles className="size-4" />Add a demo family</DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => setSheet('logout')}><LogOut className="size-4" />Log out</DropdownMenuItem>
       </DropdownMenuContent>
       <DemoPicker open={demo} onOpenChange={setDemo} />
     </DropdownMenu>
+    <Drawer open={sheet === 'credential'} onOpenChange={o => !o && close()} title={username ? 'Change sign-in' : 'Set up sign-in'}
+      description="Use this username and password to log back in on any device.">
+      <CredentialForm submitLabel={username ? 'Save changes' : 'Save sign-in'} onDone={close} />
+    </Drawer>
+    <Drawer open={sheet === 'logout'} onOpenChange={o => !o && close()} title="Log out">
+      <SignOutPanel />
+    </Drawer>
+    </>
   );
 }
 

@@ -1,7 +1,7 @@
 import { t, type AnonymousViewCtx, type InferSchema, type ViewCtx } from 'spacetimedb/server';
 import db, {
   audit, budget, budgetTarget, comment, commitment, contribution, family, invitation, membership, post, profile, reaction,
-  receipt, recordedTransfer, request, transferRevision, paymentMethod,
+  receipt, recordedTransfer, request, transferRevision, paymentMethod, signInResult,
 } from './schema';
 import { OPEN_FOR_FUNDING } from './lib';
 
@@ -47,6 +47,17 @@ export const visiblePaymentMethod = db.view({ name: 'my_payment_method', public:
   const ids = myGroups(ctx);
   const relatives = new Set([...ctx.db.membership.iter()].filter(m => ids.has(m.groupId)).map(m => m.identity.toHexString()));
   return [...ctx.db.paymentMethod.iter()].filter(m => m.owner.isEqual(ctx.sender) || (m.purpose === 'receive' && relatives.has(m.owner.toHexString())));
+});
+
+// Your sign-in username only; the auth key and sealed token never leave the database this way.
+const CredentialSummary = t.row('CredentialSummary', { username: t.string().primaryKey(), createdAt: t.timestamp() });
+export const visibleCredential = db.view({ name: 'my_credential', public: true }, t.array(CredentialSummary), ctx => {
+  const c = ctx.db.credential.identity.find(ctx.sender);
+  return c ? [{ username: c.username, createdAt: c.createdAt }] : [];
+});
+export const visibleSignInResult = db.view({ name: 'my_sign_in_result', public: true }, t.array(signInResult.rowType), ctx => {
+  const r = ctx.db.signInResult.identity.find(ctx.sender);
+  return r ? [r] : [];
 });
 
 // Public views: only data a family explicitly published, and never identities.

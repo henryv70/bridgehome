@@ -20,7 +20,10 @@ export function PublicLayout({ children }: { children: ReactNode }) {
           <Link to="/explore" aria-label="BridgeHome explore" className="flex min-h-16 min-w-0 items-center rounded-lg focus-visible:outline-2 focus-visible:outline-ring">
             <Wordmark className="whitespace-nowrap" />
           </Link>
-          <Link to={profile && families.length ? '/' : '/welcome'} className={cn(buttonVariants({ size: 'sm' }), 'h-11 px-4 md:order-last')}>{profile && families.length ? 'My family' : 'Get started'}</Link>
+          <div className="flex items-center gap-1 md:order-last">
+            {!(profile && families.length) && <Link to="/login" className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }), 'h-11 px-3')}>Log in</Link>}
+            <Link to={profile && families.length ? '/' : '/welcome'} className={cn(buttonVariants({ size: 'sm' }), 'h-11 px-4')}>{profile && families.length ? 'My family' : 'Get started'}</Link>
+          </div>
           <nav aria-label="Main navigation" className="col-span-2 grid min-w-0 grid-cols-3 gap-1 pb-2 md:ml-auto md:flex md:pb-0">
             {publicLinks.map(({ to, label }) => (
               <NavLink key={to} to={to} className={({ isActive }) => cn(

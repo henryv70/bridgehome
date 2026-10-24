@@ -1,17 +1,20 @@
 import { useEffect, useState } from 'react';
-import { ArrowDown, Check, Clock, Loader2, Plus } from 'lucide-react';
+import { ArrowDown, Check, Clock, Loader2, Plus, Send } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAction, useApp, type Request, type Transfer } from '@/lib/data';
 import { DEPOSIT_SECONDS } from '@/lib/banks';
 import { formatMoney, formatRate, toDecimal, toMinor } from '@/lib/money';
 import { convertMinor, demoFee, quoteRate } from '@/lib/rates';
 import { Button } from '@/components/ui/button';
-import { AccountLine, BankMark, DemoBadge, LinkBankFlow } from './accounts';
+import { AccountLine, BankMark, DemoBadge, LinkBankFlow, MissingAccountNotice } from './accounts';
 import { MoneyField, NativeSelect } from './kit';
+
+const ASK_FOR_ACCOUNT = 'Could you add a bank account or mobile wallet under Bank accounts (in your profile menu)? Then I can send this straight to you with BridgeHome Pay.';
 
 export function SendMoneyFlow({ r, remaining, onDone, onManual }: { r: Request; remaining: bigint; onDone: () => void; onManual: () => void }) {
   const app = useApp();
-  const { run } = useAction();
+  const { run, busy } = useAction();
+  const [asked, setAsked] = useState(false);
   const funding = app.myAccounts.filter(a => a.purpose === 'send');
   const payouts = app.payoutsOf(r.author);
   const [fromId, setFrom] = useState<string>();
@@ -57,9 +60,10 @@ export function SendMoneyFlow({ r, remaining, onDone, onManual }: { r: Request; 
             ? <NativeSelect value={String(from?.id)} onChange={e => setFrom(e.target.value)}>{funding.map(a => <option key={String(a.id)} value={String(a.id)}>{a.institution} ••{a.last4} ({a.kind})</option>)}</NativeSelect>
             : <div className="rounded-xl border p-3"><AccountLine a={funding[0]} /></div>
         ) : (
-          <button type="button" onClick={() => setStep('link')} className="flex w-full items-center gap-3 rounded-xl border border-dashed p-3 text-left text-sm hover:bg-muted">
-            <span className="flex size-9 items-center justify-center rounded-xl bg-muted"><Plus className="size-4" /></span>Link your bank to send
-          </button>
+          <MissingAccountNotice title="You don't have a bank account linked"
+            action={<Button size="sm" onClick={() => setStep('link')}><Plus />Link a bank account</Button>}>
+            To send with BridgeHome Pay, first link the bank account you send from. It takes about a minute, and only the bank name and last four digits are saved. Already sent this money another way? Record it manually below.
+          </MissingAccountNotice>
         )}
       </div>
 
@@ -72,7 +76,12 @@ export function SendMoneyFlow({ r, remaining, onDone, onManual }: { r: Request; 
             ? <NativeSelect value={String(to?.id)} onChange={e => setTo(e.target.value)}>{payouts.map(a => <option key={String(a.id)} value={String(a.id)}>{a.institution} ••{a.last4} ({a.currency})</option>)}</NativeSelect>
             : <div className="rounded-xl border p-3"><AccountLine a={payouts[0]} /></div>
         ) : (
-          <p className="rounded-xl border border-dashed p-3 text-sm text-muted-foreground">{who} hasn't added a receiving account yet. Ask them to add one under Bank accounts, or record a transfer you sent another way.</p>
+          <MissingAccountNotice title={`${who} hasn't added a receiving account`}
+            action={<Button size="sm" variant="outline" disabled={busy || asked} onClick={async () => {
+              if (await run(() => app.reducers?.addComment({ requestId: r.id, text: ASK_FOR_ACCOUNT }), 'Reminder posted to the conversation')) setAsked(true);
+            }}><Send />{asked ? 'Reminder sent' : `Ask ${who} to add one`}</Button>}>
+            BridgeHome Pay needs a bank account or mobile wallet to deposit into. Ask {who} to open <b className="font-medium text-foreground">Bank accounts</b> from their profile menu and tap <b className="font-medium text-foreground">Add bank or wallet</b>. Until then, send the money another way and record it manually.
+          </MissingAccountNotice>
         )}
       </div>
 

@@ -38,6 +38,7 @@ import AddBudgetReducer from "./add_budget_reducer";
 import AddCommentReducer from "./add_comment_reducer";
 import AddCommitmentReducer from "./add_commitment_reducer";
 import AddPaymentMethodReducer from "./add_payment_method_reducer";
+import ClearSignInResultReducer from "./clear_sign_in_result_reducer";
 import CompleteRequestReducer from "./complete_request_reducer";
 import ConfirmReceiptReducer from "./confirm_receipt_reducer";
 import ContributeReducer from "./contribute_reducer";
@@ -51,6 +52,7 @@ import InviteMemberReducer from "./invite_member_reducer";
 import JoinGroupReducer from "./join_group_reducer";
 import ManageMemberReducer from "./manage_member_reducer";
 import RecordTransferReducer from "./record_transfer_reducer";
+import RemoveCredentialReducer from "./remove_credential_reducer";
 import RemovePaymentMethodReducer from "./remove_payment_method_reducer";
 import ReviewRequestReducer from "./review_request_reducer";
 import ReviseRequestReducer from "./revise_request_reducer";
@@ -58,9 +60,11 @@ import RevokeInviteReducer from "./revoke_invite_reducer";
 import SaveProfileReducer from "./save_profile_reducer";
 import SeedDemoReducer from "./seed_demo_reducer";
 import SendMoneyReducer from "./send_money_reducer";
+import SetCredentialReducer from "./set_credential_reducer";
 import SetBudgetTargetReducer from "./set_budget_target_reducer";
 import SetPostVisibilityReducer from "./set_post_visibility_reducer";
 import SetRequestPublicReducer from "./set_request_public_reducer";
+import SignInReducer from "./sign_in_reducer";
 import ToggleReactionReducer from "./toggle_reaction_reducer";
 import UpdatePublicPageReducer from "./update_public_page_reducer";
 
@@ -80,6 +84,7 @@ import VisibleBudgetTargetRow from "./visible_budget_target_table";
 import VisibleCommentRow from "./visible_comment_table";
 import VisibleCommitmentRow from "./visible_commitment_table";
 import VisibleContributionRow from "./visible_contribution_table";
+import VisibleCredentialRow from "./visible_credential_table";
 import VisibleFamilyRow from "./visible_family_table";
 import VisibleInvitationRow from "./visible_invitation_table";
 import VisibleMembershipRow from "./visible_membership_table";
@@ -90,6 +95,7 @@ import VisibleReactionRow from "./visible_reaction_table";
 import VisibleReceiptRow from "./visible_receipt_table";
 import VisibleRecordedTransferRow from "./visible_recorded_transfer_table";
 import VisibleRequestRow from "./visible_request_table";
+import VisibleSignInResultRow from "./visible_sign_in_result_table";
 import VisibleTransferRevisionRow from "./visible_transfer_revision_table";
 
 /** Type-only namespace exports for generated type groups. */
@@ -187,6 +193,20 @@ const tablesSchema = __schema({
     constraints: [
     ],
   }, VisibleProfileRow),
+  visibleCredential: __table({
+    name: 'my_credential',
+    indexes: [
+    ],
+    constraints: [
+    ],
+  }, VisibleCredentialRow),
+  visibleSignInResult: __table({
+    name: 'my_sign_in_result',
+    indexes: [
+    ],
+    constraints: [
+    ],
+  }, VisibleSignInResultRow),
   myReactionOnPublic: __table({
     name: 'my_public_reaction',
     indexes: [
@@ -272,6 +292,7 @@ const reducersSchema = __reducers(
   __reducerSchema("add_comment", AddCommentReducer),
   __reducerSchema("add_commitment", AddCommitmentReducer),
   __reducerSchema("add_payment_method", AddPaymentMethodReducer),
+  __reducerSchema("clear_sign_in_result", ClearSignInResultReducer),
   __reducerSchema("complete_request", CompleteRequestReducer),
   __reducerSchema("confirm_receipt", ConfirmReceiptReducer),
   __reducerSchema("contribute", ContributeReducer),
@@ -285,6 +306,7 @@ const reducersSchema = __reducers(
   __reducerSchema("join_group", JoinGroupReducer),
   __reducerSchema("manage_member", ManageMemberReducer),
   __reducerSchema("record_transfer", RecordTransferReducer),
+  __reducerSchema("remove_credential", RemoveCredentialReducer),
   __reducerSchema("remove_payment_method", RemovePaymentMethodReducer),
   __reducerSchema("review_request", ReviewRequestReducer),
   __reducerSchema("revise_request", ReviseRequestReducer),
@@ -292,9 +314,11 @@ const reducersSchema = __reducers(
   __reducerSchema("save_profile", SaveProfileReducer),
   __reducerSchema("seed_demo", SeedDemoReducer),
   __reducerSchema("send_money", SendMoneyReducer),
+  __reducerSchema("set_credential", SetCredentialReducer),
   __reducerSchema("set_budget_target", SetBudgetTargetReducer),
   __reducerSchema("set_post_visibility", SetPostVisibilityReducer),
   __reducerSchema("set_request_public", SetRequestPublicReducer),
+  __reducerSchema("sign_in", SignInReducer),
   __reducerSchema("toggle_reaction", ToggleReactionReducer),
   __reducerSchema("update_public_page", UpdatePublicPageReducer),
 );

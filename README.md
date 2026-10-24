@@ -50,6 +50,8 @@ Each browser profile, device and the Expo app has its own identity, which makes 
 - **Moments**: an Instagram-style photo feed. Demo families use real public-domain/CC0 photos from Wikimedia Commons (`public/demo`, credits in `public/demo/CREDITS.md`). Photos are compressed in the browser (≤ 400 KB JPEG) and stored in SpacetimeDB. Each post is family-only or public, can link to a request, and has reactions.
 - **Public page** (`/p/:slug`): an opt-in page with the family story, a goal, chosen requests, public photos and supporters. Visitors can pledge toward the goal or a specific need. Pledges are a demo: no payment is collected.
 - **Explore** (`/explore`): public families and recent public moments.
+- **Log in and log out**: set a username and password from the profile menu (Home also nudges you), then log out and log back in at `/login`, on the same device or another one. Logging out without a username warns first, because the device's anonymous identity can't be recovered. Five wrong passwords lock the username for five minutes.
+- **Missing bank accounts**: when a sender has no linked bank, or the recipient has no receiving account, the send flow explains what to do and offers to link one or to remind the recipient in the conversation. Recipients see the same guidance on their open requests.
 - **Onboarding and guidance**: role explanations, invitation links (`/welcome?code=…`), status explanations, a How it works page (`/how`), and a one-tap demo family.
 
 ## Data and authorization
@@ -59,6 +61,8 @@ Private tables: profiles, payment methods (masked), families, memberships, invit
 Public anonymous views (`public_family`, `public_post`, `public_request`, `public_contribution`, `public_reaction`) expose only what a family explicitly published: families with the public page turned on, posts marked public, and requests shared with a public title. They never include identities, budgets, transfers, explanations or conversations. Unpublishing removes everything from visitors immediately.
 
 Every sensitive reducer authorizes with `ctx.sender`. Owners manage members, invitations and the public page; senders review requests and record or edit their own transfers; recipients create requests, and only the requesting recipient confirms receipt or closes a request. The requester or owner can share a request publicly. Anyone can react to public posts or pledge on a public page.
+
+Sign-in never sends the password to the database. The browser derives two keys from it with PBKDF2-SHA256 (100,000 iterations, salted with the database name and username). The first, the auth key, is checked by the `sign_in` reducer. The second seals this device's SpacetimeDB token (HMAC-SHA256 counter-mode encryption with an HMAC tag) and never leaves the browser. A successful sign-in returns the sealed token through `my_sign_in_result`, which only the requesting connection can read. The browser unseals it and reconnects as that identity. WebCrypto is used where available, with an identical pure-TypeScript fallback for plain-http LAN addresses and the Expo app. The `credential` table is private, and `my_credential` exposes only your own username.
 
 Audit events use database timestamps and have no update/delete reducers. Transfer edits and request revisions keep earlier values. This is application-level immutability, not cryptographic tamper-proofing against the database owner.
 

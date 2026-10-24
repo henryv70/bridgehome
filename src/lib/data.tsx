@@ -3,8 +3,7 @@ import { useSpacetimeDB, useTable } from 'spacetimedb/react';
 import type { Identity } from 'spacetimedb';
 import { toast } from 'sonner';
 import { DbConnection, tables } from '@/module_bindings';
-
-const GROUP_KEY = 'bridgehome.group';
+import { GROUP_KEY } from './session';
 
 function useFamilyTables() {
   const [profiles, r1] = useTable(tables.visibleProfile);
@@ -24,10 +23,11 @@ function useFamilyTables() {
   const [contributions, r15] = useTable(tables.visibleContribution);
   const [audit, r16] = useTable(tables.visibleAudit);
   const [accounts, r17] = useTable(tables.visiblePaymentMethod);
-  const ready = r1 && r2 && r3 && r4 && r5 && r6 && r7 && r8 && r9 && r10 && r11 && r12 && r13 && r14 && r15 && r16 && r17;
+  const [credentials, r18] = useTable(tables.visibleCredential);
+  const ready = r1 && r2 && r3 && r4 && r5 && r6 && r7 && r8 && r9 && r10 && r11 && r12 && r13 && r14 && r15 && r16 && r17 && r18;
   return {
     ready, profiles, families, memberships, invitations, requests, budgets, targets, comments, commitments,
-    transfers, revisions, receipts, posts, reactions, contributions, audit, accounts,
+    transfers, revisions, receipts, posts, reactions, contributions, audit, accounts, credentials,
   };
 }
 
@@ -76,7 +76,7 @@ function useAppValue() {
     const nameOf = (id: Identity) => s.members.find(m => m.identity.isEqual(id))?.name ?? 'Former member';
     return {
       isActive, identity, reducers: conn?.reducers, ready: t.ready,
-      profile: t.profiles[0], families, group, selectGroup, ...s,
+      profile: t.profiles[0], username: t.credentials[0]?.username, families, group, selectGroup, ...s,
       accounts: t.accounts,
       myAccounts: t.accounts.filter(a => isMe(a.owner)),
       payoutsOf: (id: Identity) => t.accounts.filter(a => a.purpose === 'receive' && a.owner.isEqual(id)),

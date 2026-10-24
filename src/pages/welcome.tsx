@@ -85,6 +85,7 @@ export default function Welcome() {
               <TextField name="name" label="Display name" placeholder="e.g. Marco" defaultValue={profile?.name} required maxLength={80} autoFocus
                 hint="Shown to people in your family groups. You can change it later." />
               <Button size="lg" className="h-11 w-full" disabled={busy}>Continue<ArrowRight /></Button>
+              {!profile && <p className="text-center text-sm text-muted-foreground">Already have an account? <Link to="/login" className="font-medium text-foreground underline-offset-4 hover:underline">Log in</Link></p>}
               <p className="text-center text-sm text-muted-foreground">Just looking? <Link to="/explore" className="font-medium text-foreground underline-offset-4 hover:underline">Explore public families</Link></p>
             </form>
           )}

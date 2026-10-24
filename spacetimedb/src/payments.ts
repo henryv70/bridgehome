@@ -33,8 +33,12 @@ export const sendMoney = db.reducer({
   const r = req(ctx, a.requestId);
   const funding = ctx.db.paymentMethod.id.find(a.fundingId);
   const payout = ctx.db.paymentMethod.id.find(a.payoutId);
-  if (!funding || !funding.owner.isEqual(ctx.sender) || funding.purpose !== 'send') fail('Choose one of your linked accounts to pay from.');
-  if (!payout || !payout.owner.isEqual(r.author) || payout.purpose !== 'receive') fail("Choose the requester's receiving account.");
+  if (!funding || !funding.owner.isEqual(ctx.sender) || funding.purpose !== 'send') {
+    fail('You have no linked bank account to send from. Link one under Bank accounts, or record a transfer you sent another way.');
+  }
+  if (!payout || !payout.owner.isEqual(r.author) || payout.purpose !== 'receive') {
+    fail("The requester hasn't added a bank account or mobile wallet to receive money. Ask them to add one under Bank accounts, or record a transfer you sent another way.");
+  }
   const note = `BridgeHome Pay (demo): ${funding.institution} ••${funding.last4} → ${payout.institution} ••${payout.last4}`;
   insertTransfer(ctx, r.id, {
     amount: a.amount, fee: a.fee, expected: a.expected, receiveCurrency: payout.currency, rate: a.rate, note,

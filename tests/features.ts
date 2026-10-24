@@ -9,7 +9,7 @@ const ready = (c: DbConnection) => new Promise<void>((resolve, reject) => {
   c.subscriptionBuilder().onApplied(() => resolve()).onError(e => reject(e)).subscribe([
     tables.visibleFamily, tables.visibleMembership, tables.visibleRequest, tables.visibleRecordedTransfer,
     tables.visibleTransferRevision, tables.visiblePost, tables.visibleBudgetTarget, tables.visibleContribution,
-    tables.visibleInvitation, tables.visiblePaymentMethod, tables.publicFamily, tables.publicPost, tables.publicRequest, tables.publicContribution,
+    tables.visibleInvitation, tables.visiblePaymentMethod, tables.visibleCredential, tables.visibleSignInResult, tables.publicFamily, tables.publicPost, tables.publicRequest, tables.publicContribution,
   ]);
 });
 const wait = async (p: () => boolean) => {
@@ -105,7 +105,32 @@ try {
   await wait(() => !rows(visitor.db.publicFamily.iter()).some(f => f.id === g.id) && !rows(visitor.db.publicPost.iter()).some(p => p.groupId === g.id));
   await assert.rejects(visitor.reducers.contribute({ groupId: g.id, requestId: 0n, name: 'Late', amount: 100n, currency: 'USD', message: '' }));
 
-  console.log('PASS: demo seeds (PH + VN), demo payments, public-view isolation, pledge rules, photo posts and visibility, transfer edits with revisions, edit locks, budget target upsert, public page ownership.');
+  // Username sign-in: only the right auth key releases the sealed token; repeated failures lock.
+  const username = `test-${Date.now()}`, authKey = 'a'.repeat(64), sealedToken = 'b'.repeat(200);
+  await assert.rejects(visitor.reducers.setCredential({ username: 'visitor-' + Date.now(), authKey, sealedToken }), 'a profile is required');
+  await owner.reducers.setCredential({ username, authKey, sealedToken });
+  await wait(() => rows(owner.db.visibleCredential.iter()).some(c => c.username === username));
+  await assert.rejects(recipient.reducers.setCredential({ username, authKey, sealedToken }), 'usernames are unique');
+  const result = (attempt: string) => rows(visitor.db.visibleSignInResult.iter()).find(r => r.attempt === attempt);
+  await visitor.reducers.signIn({ username, authKey: 'c'.repeat(64), attempt: 'deadbeef01' });
+  await wait(() => !!result('deadbeef01'));
+  assert.equal(result('deadbeef01')!.ok, false);
+  assert.equal(result('deadbeef01')!.sealedToken, '');
+  await visitor.reducers.signIn({ username: username.toUpperCase(), authKey, attempt: 'deadbeef02' });
+  await wait(() => !!result('deadbeef02'));
+  assert.equal(result('deadbeef02')!.ok, true);
+  assert.equal(result('deadbeef02')!.sealedToken, sealedToken);
+  for (let i = 3; i < 8; i++) await visitor.reducers.signIn({ username, authKey: 'c'.repeat(64), attempt: `deadbeef0${i}` });
+  await visitor.reducers.signIn({ username, authKey, attempt: 'deadbeef09' });
+  await wait(() => !!result('deadbeef09'));
+  assert.equal(result('deadbeef09')!.ok, false, 'locked after five failures');
+  assert.match(result('deadbeef09')!.message, /Too many attempts/);
+  await visitor.reducers.clearSignInResult({});
+  await wait(() => rows(visitor.db.visibleSignInResult.iter()).length === 0);
+  await owner.reducers.removeCredential({});
+  await wait(() => rows(owner.db.visibleCredential.iter()).length === 0);
+
+  console.log('PASS: demo seeds (PH + VN), demo payments, public-view isolation, pledge rules, photo posts and visibility, transfer edits with revisions, edit locks, budget target upsert, public page ownership, username sign-in and lockout.');
 } finally {
   owner.disconnect();
   visitor.disconnect();

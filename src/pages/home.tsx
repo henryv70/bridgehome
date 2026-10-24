@@ -1,12 +1,14 @@
+import { useState } from 'react';
 import { Link } from 'react-router';
-import { ArrowRight, CheckCircle2, Globe, ImagePlus, Landmark, Plus, Sparkles, Wallet } from 'lucide-react';
+import { ArrowRight, CheckCircle2, Globe, ImagePlus, KeyRound, Landmark, Plus, Sparkles, Wallet } from 'lucide-react';
 import { useApp } from '@/lib/data';
 import { formatMoney, sum } from '@/lib/money';
 import { auditActor, taskFor } from '@/lib/status';
 import { ago, byNewest, thisMonth } from '@/lib/time';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Initials, PageHeader, Panel, Photo, Section, Stat } from '@/components/app/kit';
+import { Drawer, Initials, PageHeader, Panel, Photo, Section, Stat } from '@/components/app/kit';
+import { CredentialForm } from '@/components/app/sign-in';
 
 function greeting() {
   const h = new Date().getHours();
@@ -24,6 +26,7 @@ export default function Home() {
   const open = requests.filter(r => !['completed', 'rejected', 'draft'].includes(r.status));
   const onTheWay = requests.filter(r => r.status === 'sent').length;
   const recentPosts = [...posts].sort(byNewest).slice(0, 4);
+  const [signIn, setSignIn] = useState(false);
 
   return (
     <div className="space-y-8">
@@ -46,6 +49,20 @@ export default function Home() {
           <ArrowRight className="size-4 text-muted-foreground" />
         </Link>
       )}
+
+      {!app.username && (
+        <button type="button" onClick={() => setSignIn(true)} className="flex w-full items-center gap-3 rounded-2xl border bg-card p-4 text-left transition hover:border-foreground/20">
+          <span className="flex size-10 items-center justify-center rounded-xl bg-muted"><KeyRound className="size-5" /></span>
+          <div className="min-w-0 flex-1">
+            <p className="font-medium">Save a username and password</p>
+            <p className="text-sm text-muted-foreground">So you can log back in to your family on any phone or computer.</p>
+          </div>
+          <ArrowRight className="size-4 text-muted-foreground" />
+        </button>
+      )}
+      <Drawer open={signIn} onOpenChange={setSignIn} title="Set up sign-in" description="Use this username and password to log back in on any device.">
+        <CredentialForm submitLabel="Save sign-in" onDone={() => setSignIn(false)} />
+      </Drawer>
 
       <Section title={tasks.length ? `Needs your attention · ${tasks.length}` : undefined}>
         {tasks.length ? (

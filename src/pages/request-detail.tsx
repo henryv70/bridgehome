@@ -1,17 +1,21 @@
 import { useState, type ReactNode } from 'react';
 import { Link, useParams } from 'react-router';
-import { ArrowLeft, Globe, History, Pencil, Send } from 'lucide-react';
+import { ArrowLeft, Globe, History, Pencil, Plus, Send } from 'lucide-react';
 import { useAction, useApp, type Transfer } from '@/lib/data';
 import { formatMoney, formatRate, sum } from '@/lib/money';
 import { taskFor, waitingOn } from '@/lib/status';
 import { ago, byNewest, dueLabel } from '@/lib/time';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Drawer, Empty, Initials, Panel, Photo, Section, StatusBadge, TextField, formValue } from '@/components/app/kit';
 import { DepositTracker, SendMoneyFlow } from '@/components/app/send-money';
+import { MissingAccountNotice } from '@/components/app/accounts';
 import { EditTransferForm, ReceiptForm, ReviewForm, ReviseForm, Steps, TransferForm, sentFor } from '@/components/app/request-parts';
+
+// Statuses where a sender may still deposit money for the request.
+const OPEN_FOR_DEPOSIT = ['submitted', 'approved', 'sent'];
 
 type Sheet = { title: string; description?: string; body: ReactNode } | null;
 
@@ -79,6 +83,13 @@ export default function RequestDetail() {
           {nextAction && <Button size="lg" className="h-10" onClick={nextAction.open} disabled={busy}>{nextAction.label}</Button>}
         </div>
       </Panel>
+
+      {mine && OPEN_FOR_DEPOSIT.includes(r.status) && !app.payoutsOf(r.author).length && (
+        <MissingAccountNotice title="You haven't added a receiving account"
+          action={<Link to="/accounts" className={buttonVariants({ size: 'sm' })}><Plus />Add bank or wallet</Link>}>
+          Your family can't deposit this money directly until you add the bank account or mobile wallet where it should arrive. Add one under Bank accounts. Until then, they'll have to send it another way.
+        </MissingAccountNotice>
+      )}
 
       <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
         <div className="space-y-6">

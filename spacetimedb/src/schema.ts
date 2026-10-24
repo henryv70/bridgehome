@@ -199,11 +199,34 @@ export const audit = table({ name: 'audit' }, {
   createdAt: t.timestamp().index('btree'),
 });
 
+// Username sign-in. The password never reaches the database: the browser derives an auth key
+// (checked here) and an encryption key (kept in the browser) from it, and stores its connection
+// token sealed with the encryption key. Signing in on another device unseals that token.
+export const credential = table({ name: 'credential' }, {
+  identity: t.identity().primaryKey(),
+  username: t.string().unique(),
+  authKey: t.string(),
+  sealedToken: t.string(),
+  failures: t.u32(),
+  lockedUntil: t.timestamp(),
+  createdAt: t.timestamp(),
+});
+
+// Outcome of a sign-in attempt, readable only by the connection that made it.
+export const signInResult = table({ name: 'sign_in_result' }, {
+  identity: t.identity().primaryKey(),
+  attempt: t.string(),
+  ok: t.bool(),
+  message: t.string(),
+  sealedToken: t.string(),
+});
+
 // Retained solely for a non-destructive migration; no application writes or reads.
 export const person = table({ public: true }, { name: t.string() });
 
 const db = schema({
   person, profile, family, membership, invitation, budget, budgetTarget, request, comment,
   commitment, recordedTransfer, transferRevision, receipt, post, reaction, contribution, paymentMethod, audit,
+  credential, signInResult,
 });
 export default db;

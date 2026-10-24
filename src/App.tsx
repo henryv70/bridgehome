@@ -16,6 +16,7 @@ const HowItWorks = lazy(() => import('@/pages/how'));
 const Accounts = lazy(() => import('@/pages/accounts'));
 const Give = lazy(() => import('@/pages/give'));
 const Landing = lazy(() => import('@/pages/landing'));
+const Login = lazy(() => import('@/pages/login'));
 
 // Families get their dashboard; everyone else sees the landing page at "/".
 function RequireFamily({ children }: { children: React.ReactNode }) {
@@ -31,6 +32,7 @@ export default function App() {
     <Suspense fallback={<Splash />}>
     <Routes>
       <Route path="/welcome" element={<Welcome />} />
+      <Route path="/login" element={<Login />} />
       <Route path="/explore" element={<Explore />} />
       <Route path="/give" element={<Give />} />
       <Route path="/about" element={<Landing />} />
