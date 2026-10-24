@@ -37,34 +37,60 @@ import {
 import AddBudgetReducer from "./add_budget_reducer";
 import AddCommentReducer from "./add_comment_reducer";
 import AddCommitmentReducer from "./add_commitment_reducer";
+import AddPaymentMethodReducer from "./add_payment_method_reducer";
 import CompleteRequestReducer from "./complete_request_reducer";
 import ConfirmReceiptReducer from "./confirm_receipt_reducer";
+import ContributeReducer from "./contribute_reducer";
 import CreateGroupReducer from "./create_group_reducer";
+import CreatePostReducer from "./create_post_reducer";
 import CreateRequestReducer from "./create_request_reducer";
+import DeleteBudgetReducer from "./delete_budget_reducer";
+import DeletePostReducer from "./delete_post_reducer";
+import EditTransferReducer from "./edit_transfer_reducer";
 import InviteMemberReducer from "./invite_member_reducer";
 import JoinGroupReducer from "./join_group_reducer";
 import ManageMemberReducer from "./manage_member_reducer";
 import RecordTransferReducer from "./record_transfer_reducer";
+import RemovePaymentMethodReducer from "./remove_payment_method_reducer";
 import ReviewRequestReducer from "./review_request_reducer";
 import ReviseRequestReducer from "./revise_request_reducer";
 import RevokeInviteReducer from "./revoke_invite_reducer";
 import SaveProfileReducer from "./save_profile_reducer";
+import SeedDemoReducer from "./seed_demo_reducer";
+import SendMoneyReducer from "./send_money_reducer";
+import SetBudgetTargetReducer from "./set_budget_target_reducer";
+import SetPostVisibilityReducer from "./set_post_visibility_reducer";
+import SetRequestPublicReducer from "./set_request_public_reducer";
+import ToggleReactionReducer from "./toggle_reaction_reducer";
+import UpdatePublicPageReducer from "./update_public_page_reducer";
 
 // Import all procedure arg schemas
 
 // Import all table schema definitions
+import MyReactionOnPublicRow from "./my_reaction_on_public_table";
 import PersonRow from "./person_table";
+import PublicContributionRow from "./public_contribution_table";
+import PublicFamilyRow from "./public_family_table";
+import PublicPostRow from "./public_post_table";
+import PublicReactionRow from "./public_reaction_table";
+import PublicRequestRow from "./public_request_table";
 import VisibleAuditRow from "./visible_audit_table";
 import VisibleBudgetRow from "./visible_budget_table";
+import VisibleBudgetTargetRow from "./visible_budget_target_table";
 import VisibleCommentRow from "./visible_comment_table";
 import VisibleCommitmentRow from "./visible_commitment_table";
+import VisibleContributionRow from "./visible_contribution_table";
 import VisibleFamilyRow from "./visible_family_table";
 import VisibleInvitationRow from "./visible_invitation_table";
 import VisibleMembershipRow from "./visible_membership_table";
+import VisiblePaymentMethodRow from "./visible_payment_method_table";
+import VisiblePostRow from "./visible_post_table";
 import VisibleProfileRow from "./visible_profile_table";
+import VisibleReactionRow from "./visible_reaction_table";
 import VisibleReceiptRow from "./visible_receipt_table";
 import VisibleRecordedTransferRow from "./visible_recorded_transfer_table";
 import VisibleRequestRow from "./visible_request_table";
+import VisibleTransferRevisionRow from "./visible_transfer_revision_table";
 
 /** Type-only namespace exports for generated type groups. */
 
@@ -91,6 +117,13 @@ const tablesSchema = __schema({
     constraints: [
     ],
   }, VisibleBudgetRow),
+  visibleBudgetTarget: __table({
+    name: 'my_budget_target',
+    indexes: [
+    ],
+    constraints: [
+    ],
+  }, VisibleBudgetTargetRow),
   visibleComment: __table({
     name: 'my_comment',
     indexes: [
@@ -105,6 +138,13 @@ const tablesSchema = __schema({
     constraints: [
     ],
   }, VisibleCommitmentRow),
+  visibleContribution: __table({
+    name: 'my_contribution',
+    indexes: [
+    ],
+    constraints: [
+    ],
+  }, VisibleContributionRow),
   visibleFamily: __table({
     name: 'my_family',
     indexes: [
@@ -126,6 +166,20 @@ const tablesSchema = __schema({
     constraints: [
     ],
   }, VisibleMembershipRow),
+  visiblePaymentMethod: __table({
+    name: 'my_payment_method',
+    indexes: [
+    ],
+    constraints: [
+    ],
+  }, VisiblePaymentMethodRow),
+  visiblePost: __table({
+    name: 'my_post',
+    indexes: [
+    ],
+    constraints: [
+    ],
+  }, VisiblePostRow),
   visibleProfile: __table({
     name: 'my_profile',
     indexes: [
@@ -133,6 +187,20 @@ const tablesSchema = __schema({
     constraints: [
     ],
   }, VisibleProfileRow),
+  myReactionOnPublic: __table({
+    name: 'my_public_reaction',
+    indexes: [
+    ],
+    constraints: [
+    ],
+  }, MyReactionOnPublicRow),
+  visibleReaction: __table({
+    name: 'my_reaction',
+    indexes: [
+    ],
+    constraints: [
+    ],
+  }, VisibleReactionRow),
   visibleReceipt: __table({
     name: 'my_receipt',
     indexes: [
@@ -154,6 +222,48 @@ const tablesSchema = __schema({
     constraints: [
     ],
   }, VisibleRequestRow),
+  visibleTransferRevision: __table({
+    name: 'my_transfer_revision',
+    indexes: [
+    ],
+    constraints: [
+    ],
+  }, VisibleTransferRevisionRow),
+  publicContribution: __table({
+    name: 'public_contribution',
+    indexes: [
+    ],
+    constraints: [
+    ],
+  }, PublicContributionRow),
+  publicFamily: __table({
+    name: 'public_family',
+    indexes: [
+    ],
+    constraints: [
+    ],
+  }, PublicFamilyRow),
+  publicPost: __table({
+    name: 'public_post',
+    indexes: [
+    ],
+    constraints: [
+    ],
+  }, PublicPostRow),
+  publicReaction: __table({
+    name: 'public_reaction',
+    indexes: [
+    ],
+    constraints: [
+    ],
+  }, PublicReactionRow),
+  publicRequest: __table({
+    name: 'public_request',
+    indexes: [
+    ],
+    constraints: [
+    ],
+  }, PublicRequestRow),
 });
 
 /** The schema information for all reducers in this module. This is defined the same way as the reducers would have been defined in the server, except the body of the reducer is omitted in code generation. */
@@ -161,18 +271,32 @@ const reducersSchema = __reducers(
   __reducerSchema("add_budget", AddBudgetReducer),
   __reducerSchema("add_comment", AddCommentReducer),
   __reducerSchema("add_commitment", AddCommitmentReducer),
+  __reducerSchema("add_payment_method", AddPaymentMethodReducer),
   __reducerSchema("complete_request", CompleteRequestReducer),
   __reducerSchema("confirm_receipt", ConfirmReceiptReducer),
+  __reducerSchema("contribute", ContributeReducer),
   __reducerSchema("create_group", CreateGroupReducer),
+  __reducerSchema("create_post", CreatePostReducer),
   __reducerSchema("create_request", CreateRequestReducer),
+  __reducerSchema("delete_budget", DeleteBudgetReducer),
+  __reducerSchema("delete_post", DeletePostReducer),
+  __reducerSchema("edit_transfer", EditTransferReducer),
   __reducerSchema("invite_member", InviteMemberReducer),
   __reducerSchema("join_group", JoinGroupReducer),
   __reducerSchema("manage_member", ManageMemberReducer),
   __reducerSchema("record_transfer", RecordTransferReducer),
+  __reducerSchema("remove_payment_method", RemovePaymentMethodReducer),
   __reducerSchema("review_request", ReviewRequestReducer),
   __reducerSchema("revise_request", ReviseRequestReducer),
   __reducerSchema("revoke_invite", RevokeInviteReducer),
   __reducerSchema("save_profile", SaveProfileReducer),
+  __reducerSchema("seed_demo", SeedDemoReducer),
+  __reducerSchema("send_money", SendMoneyReducer),
+  __reducerSchema("set_budget_target", SetBudgetTargetReducer),
+  __reducerSchema("set_post_visibility", SetPostVisibilityReducer),
+  __reducerSchema("set_request_public", SetRequestPublicReducer),
+  __reducerSchema("toggle_reaction", ToggleReactionReducer),
+  __reducerSchema("update_public_page", UpdatePublicPageReducer),
 );
 
 /** The schema information for all procedures in this module. This is defined the same way as the procedures would have been defined in the server. */

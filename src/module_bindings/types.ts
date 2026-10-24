@@ -34,6 +34,18 @@ export const Budget = __t.object("Budget", {
 });
 export type Budget = __Infer<typeof Budget>;
 
+export const BudgetTarget = __t.object("BudgetTarget", {
+  id: __t.u64(),
+  groupId: __t.u64(),
+  month: __t.string(),
+  category: __t.string(),
+  currency: __t.string(),
+  amount: __t.u64(),
+  author: __t.identity(),
+  updatedAt: __t.timestamp(),
+});
+export type BudgetTarget = __Infer<typeof BudgetTarget>;
+
 export const Comment = __t.object("Comment", {
   id: __t.u64(),
   groupId: __t.u64(),
@@ -57,11 +69,30 @@ export const Commitment = __t.object("Commitment", {
 });
 export type Commitment = __Infer<typeof Commitment>;
 
+export const Contribution = __t.object("Contribution", {
+  id: __t.u64(),
+  groupId: __t.u64(),
+  requestId: __t.u64(),
+  contributor: __t.identity(),
+  name: __t.string(),
+  amount: __t.u64(),
+  currency: __t.string(),
+  message: __t.string(),
+  createdAt: __t.timestamp(),
+});
+export type Contribution = __Infer<typeof Contribution>;
+
 export const Family = __t.object("Family", {
   id: __t.u64(),
   name: __t.string(),
   owner: __t.identity(),
   createdAt: __t.timestamp(),
+  isPublic: __t.bool(),
+  slug: __t.string(),
+  story: __t.string(),
+  goalAmount: __t.u64(),
+  goalCurrency: __t.string(),
+  isDemo: __t.bool(),
 });
 export type Family = __Infer<typeof Family>;
 
@@ -83,16 +114,132 @@ export const Membership = __t.object("Membership", {
 });
 export type Membership = __Infer<typeof Membership>;
 
+export const MyReactionOnPublic = __t.object("MyReactionOnPublic", {});
+export type MyReactionOnPublic = __Infer<typeof MyReactionOnPublic>;
+
+export const PaymentMethod = __t.object("PaymentMethod", {
+  id: __t.u64(),
+  owner: __t.identity(),
+  purpose: __t.string(),
+  institution: __t.string(),
+  kind: __t.string(),
+  holderName: __t.string(),
+  last4: __t.string(),
+  currency: __t.string(),
+  country: __t.string(),
+  createdAt: __t.timestamp(),
+});
+export type PaymentMethod = __Infer<typeof PaymentMethod>;
+
 export const Person = __t.object("Person", {
   name: __t.string(),
 });
 export type Person = __Infer<typeof Person>;
+
+export const Post = __t.object("Post", {
+  id: __t.u64(),
+  groupId: __t.u64(),
+  author: __t.identity(),
+  requestId: __t.u64(),
+  caption: __t.string(),
+  visibility: __t.string(),
+  photo: __t.byteArray(),
+  photoType: __t.string(),
+  createdAt: __t.timestamp(),
+  photoUrl: __t.string(),
+});
+export type Post = __Infer<typeof Post>;
 
 export const Profile = __t.object("Profile", {
   identity: __t.identity(),
   name: __t.string(),
 });
 export type Profile = __Infer<typeof Profile>;
+
+export const PublicContribution = __t.object("PublicContribution", {});
+export type PublicContribution = __Infer<typeof PublicContribution>;
+
+export const PublicContributionRow = __t.object("PublicContributionRow", {
+  id: __t.u64(),
+  groupId: __t.u64(),
+  requestId: __t.u64(),
+  name: __t.string(),
+  amount: __t.u64(),
+  currency: __t.string(),
+  message: __t.string(),
+  createdAt: __t.timestamp(),
+});
+export type PublicContributionRow = __Infer<typeof PublicContributionRow>;
+
+export const PublicFamily = __t.object("PublicFamily", {});
+export type PublicFamily = __Infer<typeof PublicFamily>;
+
+export const PublicFamilyRow = __t.object("PublicFamilyRow", {
+  id: __t.u64(),
+  name: __t.string(),
+  slug: __t.string(),
+  story: __t.string(),
+  goalAmount: __t.u64(),
+  goalCurrency: __t.string(),
+  memberCount: __t.u32(),
+  createdAt: __t.timestamp(),
+  isDemo: __t.bool(),
+});
+export type PublicFamilyRow = __Infer<typeof PublicFamilyRow>;
+
+export const PublicPost = __t.object("PublicPost", {});
+export type PublicPost = __Infer<typeof PublicPost>;
+
+export const PublicPostRow = __t.object("PublicPostRow", {
+  id: __t.u64(),
+  groupId: __t.u64(),
+  familyName: __t.string(),
+  slug: __t.string(),
+  authorName: __t.string(),
+  caption: __t.string(),
+  photo: __t.byteArray(),
+  photoType: __t.string(),
+  requestTitle: __t.string(),
+  createdAt: __t.timestamp(),
+  photoUrl: __t.string(),
+});
+export type PublicPostRow = __Infer<typeof PublicPostRow>;
+
+export const PublicReaction = __t.object("PublicReaction", {});
+export type PublicReaction = __Infer<typeof PublicReaction>;
+
+export const PublicReactionRow = __t.object("PublicReactionRow", {
+  id: __t.u64(),
+  postId: __t.u64(),
+  emoji: __t.string(),
+});
+export type PublicReactionRow = __Infer<typeof PublicReactionRow>;
+
+export const PublicRequest = __t.object("PublicRequest", {});
+export type PublicRequest = __Infer<typeof PublicRequest>;
+
+export const PublicRequestRow = __t.object("PublicRequestRow", {
+  id: __t.u64(),
+  groupId: __t.u64(),
+  title: __t.string(),
+  category: __t.string(),
+  amount: __t.u64(),
+  currency: __t.string(),
+  status: __t.string(),
+  dueDate: __t.string(),
+  priority: __t.string(),
+});
+export type PublicRequestRow = __Infer<typeof PublicRequestRow>;
+
+export const Reaction = __t.object("Reaction", {
+  id: __t.u64(),
+  groupId: __t.u64(),
+  postId: __t.u64(),
+  identity: __t.identity(),
+  emoji: __t.string(),
+  createdAt: __t.timestamp(),
+});
+export type Reaction = __Infer<typeof Reaction>;
 
 export const Receipt = __t.object("Receipt", {
   id: __t.u64(),
@@ -119,6 +266,8 @@ export const RecordedTransfer = __t.object("RecordedTransfer", {
   rate: __t.string(),
   note: __t.string(),
   createdAt: __t.timestamp(),
+  fundingMethodId: __t.u64(),
+  payoutMethodId: __t.u64(),
 });
 export type RecordedTransfer = __Infer<typeof RecordedTransfer>;
 
@@ -135,8 +284,25 @@ export const Request = __t.object("Request", {
   status: __t.string(),
   approved: __t.u64(),
   createdAt: __t.timestamp(),
+  isPublic: __t.bool(),
+  publicTitle: __t.string(),
 });
 export type Request = __Infer<typeof Request>;
+
+export const TransferRevision = __t.object("TransferRevision", {
+  id: __t.u64(),
+  groupId: __t.u64(),
+  transferId: __t.u64(),
+  author: __t.identity(),
+  prevAmount: __t.u64(),
+  prevFee: __t.u64(),
+  prevExpected: __t.u64(),
+  prevRate: __t.string(),
+  prevNote: __t.string(),
+  reason: __t.string(),
+  createdAt: __t.timestamp(),
+});
+export type TransferRevision = __Infer<typeof TransferRevision>;
 
 export const VisibleAudit = __t.object("VisibleAudit", {});
 export type VisibleAudit = __Infer<typeof VisibleAudit>;
@@ -144,11 +310,17 @@ export type VisibleAudit = __Infer<typeof VisibleAudit>;
 export const VisibleBudget = __t.object("VisibleBudget", {});
 export type VisibleBudget = __Infer<typeof VisibleBudget>;
 
+export const VisibleBudgetTarget = __t.object("VisibleBudgetTarget", {});
+export type VisibleBudgetTarget = __Infer<typeof VisibleBudgetTarget>;
+
 export const VisibleComment = __t.object("VisibleComment", {});
 export type VisibleComment = __Infer<typeof VisibleComment>;
 
 export const VisibleCommitment = __t.object("VisibleCommitment", {});
 export type VisibleCommitment = __Infer<typeof VisibleCommitment>;
+
+export const VisibleContribution = __t.object("VisibleContribution", {});
+export type VisibleContribution = __Infer<typeof VisibleContribution>;
 
 export const VisibleFamily = __t.object("VisibleFamily", {});
 export type VisibleFamily = __Infer<typeof VisibleFamily>;
@@ -159,8 +331,17 @@ export type VisibleInvitation = __Infer<typeof VisibleInvitation>;
 export const VisibleMembership = __t.object("VisibleMembership", {});
 export type VisibleMembership = __Infer<typeof VisibleMembership>;
 
+export const VisiblePaymentMethod = __t.object("VisiblePaymentMethod", {});
+export type VisiblePaymentMethod = __Infer<typeof VisiblePaymentMethod>;
+
+export const VisiblePost = __t.object("VisiblePost", {});
+export type VisiblePost = __Infer<typeof VisiblePost>;
+
 export const VisibleProfile = __t.object("VisibleProfile", {});
 export type VisibleProfile = __Infer<typeof VisibleProfile>;
+
+export const VisibleReaction = __t.object("VisibleReaction", {});
+export type VisibleReaction = __Infer<typeof VisibleReaction>;
 
 export const VisibleReceipt = __t.object("VisibleReceipt", {});
 export type VisibleReceipt = __Infer<typeof VisibleReceipt>;
@@ -170,4 +351,7 @@ export type VisibleRecordedTransfer = __Infer<typeof VisibleRecordedTransfer>;
 
 export const VisibleRequest = __t.object("VisibleRequest", {});
 export type VisibleRequest = __Infer<typeof VisibleRequest>;
+
+export const VisibleTransferRevision = __t.object("VisibleTransferRevision", {});
+export type VisibleTransferRevision = __Infer<typeof VisibleTransferRevision>;
 

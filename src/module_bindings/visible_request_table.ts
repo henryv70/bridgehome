@@ -23,4 +23,6 @@ export default __t.row({
   status: __t.string(),
   approved: __t.u64(),
   createdAt: __t.timestamp().name("created_at"),
+  isPublic: __t.bool().name("is_public"),
+  publicTitle: __t.string().name("public_title"),
 });

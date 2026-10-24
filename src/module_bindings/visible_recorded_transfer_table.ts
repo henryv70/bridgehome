@@ -23,4 +23,6 @@ export default __t.row({
   rate: __t.string(),
   note: __t.string(),
   createdAt: __t.timestamp().name("created_at"),
+  fundingMethodId: __t.u64().name("funding_method_id"),
+  payoutMethodId: __t.u64().name("payout_method_id"),
 });

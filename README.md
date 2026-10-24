@@ -1,65 +1,72 @@
 # BridgeHome
 
-A family remittance coordination MVP using React 18, TypeScript, Vite and SpacetimeDB 2.13.0. It records plans and self-reported activity; it does not transfer money or verify financial information.
+A family remittance coordination app built with React 19, TypeScript, Vite, Tailwind, shadcn/ui and SpacetimeDB 2.13. Family abroad and family back home share one live record of requests, transfers, budgets and the moments support makes possible. BridgeHome records plans and self-reported activity; it never transfers money or verifies financial information.
+
+Runs as a responsive web app (installable to the home screen) and inside an Expo app for iOS and Android.
 
 ## Run locally
 
 Requirements: Node.js **^20.19.0 or >=22.12.0**, SpacetimeDB CLI **2.13.0**.
 
-Existing dependencies need no reinstall. On a fresh checkout only, run `npm install` and `npm --prefix spacetimedb install`. Copy `.env.example` to `.env.local` only when no local configuration exists.
+On a fresh checkout run `npm install`, `npm --prefix spacetimedb install` and `npm --prefix mobile install`.
 
 ```sh
 spacetime start
 # In a second terminal, from this directory:
-spacetime publish bridgehome-3386g --server local --yes
+spacetime publish bridgehome-3386g --module-path spacetimedb --server local --yes
 npm run spacetime:generate
-npm run dev -- --host 127.0.0.1
+npm run dev
 ```
 
-Open http://localhost:5173. Save a display name and create a group as sender or recipient. The creator owns membership administration. Under Members, create a single-use seven-day invitation and share it privately. An invited member saves their own name and joins with the code. Different browser profiles have independent identities; two tabs on the same origin share an identity.
+Open http://localhost:5173. Choose **Try a demo family** and pick the Vietnamese Nguyễn family (USD → VND) or the Filipino Santos family (USD → PHP). Each comes with sample members, requests in every state, demo bank accounts, a household budget, real photos and a public page. The Vite dev server proxies SpacetimeDB (`/v1` → `localhost:3000`), so other devices only need port 5173.
 
-Recipients create drafts or submit requests. Senders approve all or part of the amount, or reject with an explanation. After sending money outside BridgeHome, senders record principal, additional fee, receiving currency, estimated arrival, decimal exchange rate and assumptions. The requesting recipient confirms the actual receipt and records use or discrepancies, then closes the request. Updates appear through live subscriptions.
+## Test on your phone with Expo
+
+1. Install **Expo Go** from the App Store or Play Store.
+2. Keep `spacetime start` and `npm run dev` running, with your phone on the same Wi-Fi as your computer.
+3. In another terminal: `npm run mobile`, then scan the QR code (Camera app on iPhone, Expo Go on Android).
+
+The Expo app (`mobile/`) loads the web app from your computer's address (detected from Expo's host, port 5173) in a full-screen WebView with native share sheets, Android back-button support, pull to refresh and camera/photo access. To point it elsewhere, set `EXPO_PUBLIC_WEB_URL`, for example `EXPO_PUBLIC_WEB_URL=https://your-deploy.example npm run mobile`.
+
+Without Expo, open `http://<your-computer-ip>:5173` in the phone browser and use **Add to Home Screen**.
+
+Each browser profile, device and the Expo app has its own identity, which makes it easy to demo two roles: be the sender on your laptop, create an invitation under **Family**, and join as a recipient on your phone.
+
+## Features
+
+- **Home**: what needs your attention right now, monthly totals, recent activity and photos.
+- **Requests**: five-step timeline (asked → approved → sent → received → done) with a "your next step" panel, partial approvals, transfer recording with an exchange-rate estimate, receipt confirmation, and a conversation per request.
+- **BridgeHome Pay (demo)**: senders link a bank through a simulated sign-in (or routing/account numbers), recipients add a local bank or mobile wallet (Vietcombank, MoMo, BDO, GCash, M-Pesa, bKash and more), and senders deposit directly with a fee and exchange-rate quote and a live deposit tracker. No bank is contacted and no money moves. Only the institution name and last four digits are stored; sign-in details never leave the browser. Rates are indicative demo values.
+- **Editable transfers**: the sender who recorded a transfer can correct it until the recipient confirms receipt. Every edit requires a reason and keeps the previous values (`transfer_revision`), shown in an "Edited" history.
+- **Budget**: month-by-month income and spending, per-category plans with over-plan warnings, a six-month income vs. spending chart, support sent per month, and monthly support plans from senders.
+- **Moments**: an Instagram-style photo feed. Demo families use real public-domain/CC0 photos from Wikimedia Commons (`public/demo`, credits in `public/demo/CREDITS.md`). Photos are compressed in the browser (≤ 400 KB JPEG) and stored in SpacetimeDB. Each post is family-only or public, can link to a request, and has reactions.
+- **Public page** (`/p/:slug`): an opt-in page with the family story, a goal, chosen requests, public photos and supporters. Visitors can pledge toward the goal or a specific need. Pledges are a demo: no payment is collected.
+- **Explore** (`/explore`): public families and recent public moments.
+- **Onboarding and guidance**: role explanations, invitation links (`/welcome?code=…`), status explanations, a How it works page (`/how`), and a one-tap demo family.
 
 ## Data and authorization
 
-Private tables: profiles, families, memberships, invitations, budgets, requests, comments, commitments, recorded transfers, receipts and audit events. Authenticated views expose only rows for the caller's memberships; invitation codes are owner-only. The old public `person` table remains untouched solely to preserve existing data. Its example reducers and UI are removed.
+Private tables: profiles, payment methods (masked), families, memberships, invitations, budgets, budget targets, requests, comments, commitments, recorded transfers, transfer revisions, receipts, posts, reactions, contributions and audit events. Per-user views (`my_*`) expose only rows for the caller's memberships; invitation codes are owner-only.
 
-Every sensitive reducer authorizes with `ctx.sender`. No reducer accepts a caller identity. Owners administer roles and removal; senders review and record transfers; recipients create requests, and only the requesting recipient confirms receipts or completion. Every family member can see group drafts, discuss needs and add budget entries. These are group-wide permissions, not per-field permissions. Membership removal also retracts subscribed financial rows. Database administrators remain trusted and can access underlying data.
+Public anonymous views (`public_family`, `public_post`, `public_request`, `public_contribution`, `public_reaction`) expose only what a family explicitly published: families with the public page turned on, posts marked public, and requests shared with a public title. They never include identities, budgets, transfers, explanations or conversations. Unpublishing removes everything from visitors immediately.
 
-Audit events use database timestamps and have no update/delete reducers. Financial records are append-only except request revisions/status transitions; revisions preserve earlier explanations and amounts in history. Display-name updates synchronize membership labels and record the old/new names. This is application-level immutability, not cryptographic tamper-proof storage against the database owner.
+Every sensitive reducer authorizes with `ctx.sender`. Owners manage members, invitations and the public page; senders review requests and record or edit their own transfers; recipients create requests, and only the requesting recipient confirms receipt or closes a request. The requester or owner can share a request publicly. Anyone can react to public posts or pledge on a public page.
 
-Indexes cover memberships by group/identity, records by group, transfers/comments by request, request status/due date, budget month and audit date. Views currently scan relevant source tables and filter membership; optimize for scale before production.
+Audit events use database timestamps and have no update/delete reducers. Transfer edits and request revisions keep earlier values. This is application-level immutability, not cryptographic tamper-proofing against the database owner.
 
-## Money and product assumptions
+New columns are appended with defaults, so publishing over existing data migrates in place.
 
-All amounts are unsigned 64-bit integer minor units, exposed as JavaScript `bigint`; decimal input is parsed as strings without floating-point arithmetic. Supported ISO currencies: USD, PHP, MXN, EUR, GBP, INR, CAD (2 decimals), JPY (0). Amounts are capped at 1,000,000,000,000 minor units. Zero is allowed for fees, rejection and receipt confirmation. Totals stay separated by currency.
+## Money
 
-Approval and sent principal use the request currency. Fees are extra and use that same currency. Each transfer preserves its receiving currency, exact decimal exchange-rate string, expected arrival and assumptions. Arrival is a manually supplied estimate, not automatically derived from the rate. A receipt can differ from the estimate; the UI neutrally labels this and requires context. Completion means the recipient closes the request, not legal settlement; it can close with unused approval or a receipt discrepancy.
-
-Monthly commitments are plans and do not schedule payments or automatically create requests. Request summaries filter by due month, category and status. Budget summaries use the reported month and currency.
+All amounts are unsigned 64-bit integer minor units, exposed as JavaScript `bigint`; decimal input is parsed as strings without floating-point arithmetic. 45 currencies are supported, including VND, PHP, MXN, INR, NGN, KES, BDT, PKR, GTQ, DOP and BRL. JPY, KRW and VND have no minor unit; the rest use 2 decimals. Totals stay separated by currency. Exchange rates are stored as exact decimal strings; the "they should get" estimate is a suggestion the sender can edit. Chart axes are the only place amounts become floating-point numbers.
 
 ## Verification
 
 ```sh
 spacetime build --module-path spacetimedb
+./node_modules/.bin/tsc --project spacetimedb/tsconfig.json --noEmit
 npm run spacetime:generate
 npm run build
-./node_modules/.bin/tsc --project spacetimedb/tsconfig.json --noEmit
-node tests/run.mjs
-git diff --check
-git status --short
+npm test            # integration tests against the local database (creates labeled test data)
+cd mobile && npx tsc --noEmit && npx expo-doctor
 ```
-
-Integration tests require the published local database. They create clearly labeled test families and preserve them instead of deleting data. They use three independent identities to test private-table denial, family isolation, one-use invitations, role enforcement, over-approval/oversending rejection, cross-currency receipt confirmation, duplicate receipt rejection, completion, real-time subscriptions and access revocation.
-
-Browser verification completed with independent sender and recipient sessions: create group → invite/join → request USD 100 → approve USD 80 → record USD 80 plus USD 2 fee, expected PHP 4,500 → confirm PHP 4,490 with explanation → complete. Both sessions displayed the final state without a reload. A separate unaffiliated identity could not read or mutate the family's records.
-
-## Current limits and next steps
-
-- Development identity is a token in browser local storage. No account recovery, cross-device login, MFA or production identity provider is integrated; losing browser storage loses that identity.
-- Invitations are bearer codes: privately share only with intended members. They expire after seven days and can be revoked.
-- Evidence/file uploads are deferred. No receipts, bank credentials, IDs or payment secrets are collected.
-- Corrections to immutable transfer/receipt records are documented in comments; structured reversal/correction entries and budget/commitment revision workflows remain future work.
-- No payment provider, bank verification, FX quote service, notifications or background recurring execution.
-- Add production authentication/recovery, structured correction workflows, attachment storage/access policies and scale testing before real household use.
-- No commits, pushes, dependency upgrades or destructive migrations were performed.

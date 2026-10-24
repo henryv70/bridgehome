@@ -15,4 +15,10 @@ export default __t.row({
   name: __t.string(),
   owner: __t.identity(),
   createdAt: __t.timestamp().name("created_at"),
+  isPublic: __t.bool().name("is_public"),
+  slug: __t.string(),
+  story: __t.string(),
+  goalAmount: __t.u64().name("goal_amount"),
+  goalCurrency: __t.string().name("goal_currency"),
+  isDemo: __t.bool().name("is_demo"),
 });
