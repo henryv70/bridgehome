@@ -25,13 +25,13 @@ export function LanguageSync() {
 }
 
 // Compact language picker for headers and sign-in screens.
-export function LanguageSelect({ className }: { className?: string }) {
+export function LanguageSelect({ className, compact = false }: { className?: string; compact?: boolean }) {
   const { lang, setLang } = useLanguage();
   return (
-    <label className={cn('relative inline-flex h-9 items-center gap-1.5 rounded-lg px-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground', className)}>
+    <label className={cn('relative inline-flex h-11 shrink-0 items-center justify-center gap-1.5 rounded-xl px-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground', compact && 'w-11 sm:w-auto', className)}>
       <Globe className="size-4 shrink-0" aria-hidden />
       <span className="sr-only">{t('Language')}</span>
-      <select value={lang} onChange={e => setLang(e.target.value as Lang)} className="cursor-pointer appearance-none bg-transparent pr-1 outline-none">
+      <select value={lang} onChange={e => setLang(e.target.value as Lang)} className={cn("min-w-0 cursor-pointer appearance-none bg-transparent pr-1 outline-none", compact && "absolute inset-0 h-full w-full opacity-0 sm:static sm:h-auto sm:w-auto sm:opacity-100")}>
         {LANGUAGES.map(l => <option key={l.code} value={l.code}>{l.label}</option>)}
       </select>
     </label>

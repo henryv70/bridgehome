@@ -27,7 +27,7 @@ export default function FamilyPage() {
     <>
       <PageHeader title={t('Family')} subtitle={t("Who's here, what's public, and everything that happened.")} />
       <Tabs value={tab} onValueChange={v => setParams({ tab: String(v) })}>
-        <TabsList className="mb-6">
+        <TabsList className="mb-6 grid h-auto min-h-11 w-full grid-cols-3 sm:inline-flex sm:w-auto">
           <TabsTrigger value="members">{t('Members')}</TabsTrigger>
           <TabsTrigger value="public">{t('Public page')}</TabsTrigger>
           <TabsTrigger value="history">{t('History')}</TabsTrigger>
@@ -53,7 +53,7 @@ function Members({ autoInvite }: { autoInvite: boolean }) {
   const share = (code: string) => shareLink(t('Join {family} on BridgeHome', { family: app.group?.name ?? '' }), inviteLink(code), t('Invitation link copied'));
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
+    <div className="grid min-w-0 grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_360px]">
       <Section title={tn('{n} member', '{n} members', app.members.length)}>
         <div className="divide-y rounded-2xl border bg-card">
           {app.members.map(m => {
@@ -80,7 +80,7 @@ function Members({ autoInvite }: { autoInvite: boolean }) {
             );
           })}
         </div>
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2">
           {(['sender', 'recipient'] as const).map(r => (
             <div key={r} className="rounded-xl bg-muted/60 p-3 text-sm"><p className="font-medium">{t(r === 'sender' ? 'Senders' : 'Recipients')}</p><p className="text-muted-foreground">{t(ROLE_ABOUT[r])}</p></div>
           ))}
@@ -136,7 +136,7 @@ function PublicSettings() {
   const suggested = g.slug || g.name.toLowerCase().replace(/^the\s+/, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 30) || 'my-family';
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
+    <div className="grid min-w-0 grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_340px]">
       <Section title={<span className="inline-flex items-center gap-1">{t('Public page')} <Help>{t('A page anyone with the link can visit. It shows your story, the requests you choose to share, public photos and pledges. It never shows member identities, budgets, transfers or private conversations.')}</Help></span>}>
         {app.isOwner ? (
           <form className="space-y-4" onSubmit={async e => {

@@ -63,7 +63,7 @@ export default function Welcome() {
       <main className="pt-safe flex flex-col px-5 py-8 sm:px-10">
         <div className="flex items-center justify-between gap-3">
           <Wordmark className="lg:invisible" />
-          <LanguageSelect />
+          <LanguageSelect compact />
         </div>
         <div className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center py-10">
           {step === 'name' && (

@@ -86,7 +86,7 @@ function FamilySwitcher({ compact }: { compact?: boolean }) {
   const navigate = useNavigate();
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className={cn('flex min-w-0 items-center gap-2 rounded-xl text-left outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50', compact ? 'px-2 py-1.5' : 'w-full p-2')}>
+      <DropdownMenuTrigger className={cn('flex min-w-0 items-center gap-2 rounded-xl text-left outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50', compact ? 'min-h-11 flex-1 px-2 py-1.5' : 'w-full p-2')}>
         <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-secondary text-sm font-semibold text-primary">{group?.name.replace(/^the\s+/i, '')[0]}</span>
         <span className="min-w-0 flex-1">
           <span className="block truncate text-sm font-medium">{group?.name}</span>
@@ -123,7 +123,7 @@ function AccountMenu() {
   return (
     <>
     <DropdownMenu>
-      <DropdownMenuTrigger className="rounded-full outline-none focus-visible:ring-3 focus-visible:ring-ring/50" aria-label={t('Account')}>
+      <DropdownMenuTrigger className="flex size-11 shrink-0 items-center justify-center rounded-full outline-none focus-visible:ring-3 focus-visible:ring-ring/50" aria-label={t('Account')}>
         <Initials name={profile?.name ?? '?'} />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-60">

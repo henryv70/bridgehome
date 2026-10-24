@@ -69,11 +69,11 @@ export default function Give() {
       {!families.length ? (
         <Empty title={ready ? t('No public families yet') : t('Loading…')}>{t('When a family turns on its public page, it will appear here.')}</Empty>
       ) : (
-        <div className="grid gap-10 lg:grid-cols-[1fr_340px]">
-          <div className="space-y-10">
+        <div className="grid min-w-0 grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_340px]">
+          <div className="min-w-0 space-y-10">
             <Section title={t('Open needs')}>
               {needs.length ? (
-                <div className="grid gap-3 sm:grid-cols-2">
+                <div className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2">
                   {needs.map(({ r, pledged, supporters }) => (
                     <Panel key={String(r.id)} className="flex flex-col gap-3">
                       <div>
@@ -94,14 +94,14 @@ export default function Give() {
             </Section>
 
             <Section title={t('Families')} action={
-              <div className="flex gap-1 rounded-lg bg-muted p-0.5">
+              <div className="grid w-full min-w-0 grid-cols-3 gap-1 rounded-xl bg-muted p-1 sm:w-auto">
                 {SORTS.map(s => (
                   <button key={s.key} type="button" onClick={() => setSort(s.key)}
-                    className={cn('rounded-md px-2.5 py-1 text-xs text-muted-foreground', sort === s.key && 'bg-background font-medium text-foreground shadow-sm')}>{t(s.label)}</button>
+                    className={cn('min-h-11 min-w-0 rounded-lg px-2 py-2 text-center text-xs leading-snug text-muted-foreground', sort === s.key && 'bg-background font-medium text-foreground shadow-sm')}>{t(s.label)}</button>
                 ))}
               </div>
             }>
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2">
                 {familyRows.map(({ f, ps, raised, cover }) => (
                   <div key={String(f.id)} className="overflow-hidden rounded-2xl border bg-card">
                     <Link to={`/p/${f.slug}`}>

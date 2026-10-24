@@ -88,7 +88,7 @@ export function NewRequestForm({ onDone }: { onDone: (id?: bigint) => void }) {
       <SelectField name="category" label={t('What is it for?')} options={CATEGORIES.map(c => [c, t(c)])} />
       <MoneyField label={t('How much do you need?')} />
       <AreaField name="explanation" label={t('Tell your family more')} placeholder={t("What it's for, and anything that helps them understand.")} required maxLength={1000} />
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 gap-3 min-[400px]:grid-cols-2">
         <SelectField name="priority" label={t('Priority')} options={['routine', 'important', 'urgent'].map(p => [p, priorityLabel(p)])} defaultValue="important" />
         <TextField name="dueDate" label={t('Needed by')} type="date" min={today()} required defaultValue={new Date(Date.now() + 7 * 864e5).toISOString().slice(0, 10)} />
       </div>
@@ -151,11 +151,11 @@ function TransferFields({ currency, transfer, initialAmount }: { currency: strin
   const suggestion = Number.isFinite(estimate) && estimate > 0 ? estimate.toFixed(receive === 'JPY' ? 0 : 2) : '';
   return (
     <>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 gap-3 min-[400px]:grid-cols-2">
         <MoneyField label={t('Amount sent')} currency={currency} lockCurrency value={amount} onValueChange={setAmount} />
         <MoneyField label={t('Transfer fee')} name="fee" currency={currency} lockCurrency defaultValue={transfer ? toDecimal(transfer.fee, currency) : '0'} />
       </div>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 gap-3 min-[400px]:grid-cols-2">
         <TextField name="rate" label={t('Exchange rate')} inputMode="decimal" placeholder={t('e.g. 56.10')} required value={rate} onChange={e => setRate(e.target.value.trim())} />
         <MoneyField key={suggestion || 'none'} label={t('They should get')} name="expected" currencyName="receiveCurrency" currency={receive} lockCurrency={!!transfer}
           defaultValue={transfer && rate === transfer.rate && amount === toDecimal(transfer.amount, currency) ? toDecimal(transfer.expected, transfer.receiveCurrency) : suggestion}

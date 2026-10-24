@@ -55,7 +55,7 @@ export default function Requests() {
       </div>
 
       {list.length ? (
-        <div className="grid gap-3 lg:grid-cols-2">{list.map(r => <RequestCard key={String(r.id)} r={r} />)}</div>
+        <div className="grid min-w-0 grid-cols-1 gap-3 lg:grid-cols-2">{list.map(r => <RequestCard key={String(r.id)} r={r} />)}</div>
       ) : (
         <Empty icon={<Inbox />} title={view === 'mine' ? t("You're all caught up") : t('No requests here yet')}
           action={recipient && <Button onClick={() => setOpen(true)}><Plus />{t('New request')}</Button>}>

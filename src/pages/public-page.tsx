@@ -46,7 +46,7 @@ export default function PublicPage() {
 
   return (
     <PublicLayout>
-      <div className="grid gap-10 lg:grid-cols-[1fr_340px]">
+      <div className="grid min-w-0 grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_340px]">
         <div className="space-y-10">
           <header className="space-y-4">
             <p className="text-sm text-muted-foreground">{tn('{n} family member', '{n} family members', f.memberCount)} · {t('on BridgeHome since {year}', { year: f.createdAt.toDate().getFullYear() })}</p>
@@ -61,7 +61,7 @@ export default function PublicPage() {
 
           <Section title={t('Current needs')}>
             {openNeeds.length ? (
-              <div className="grid gap-3 sm:grid-cols-2">
+              <div className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2">
                 {openNeeds.map(r => (
                   <Panel key={String(r.id)} className="flex flex-col gap-3">
                     <div>
@@ -79,7 +79,7 @@ export default function PublicPage() {
 
           <Section title={t('Moments')}>
             {famPosts.length ? (
-              <div className="grid gap-6 sm:grid-cols-2">
+              <div className="grid min-w-0 grid-cols-1 gap-6 sm:grid-cols-2">
                 {famPosts.map(p => {
                   const need = needs.find(r => r.id === p.requestId);
                   const ps = need ? forNeed(need.id) : [];

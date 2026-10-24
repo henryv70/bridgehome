@@ -40,7 +40,7 @@ export default function Home() {
         <SupportIllustration className="w-44 shrink-0 md:w-52" />
         <div className="min-w-0">
           <p className="text-sm font-medium text-muted-foreground">{role === 'recipient' ? t('Received this month') : t('Sent this month')}</p>
-          <p className="tabular mt-1 text-4xl font-bold tracking-tight md:text-5xl">{formatMoney(sum(monthTransfers.filter(x => x.currency === mainCurrency), x => x.amount), mainCurrency)}</p>
+          <p className="tabular mt-1 break-words text-[clamp(1.75rem,8vw,2.25rem)] font-bold tracking-tight md:text-5xl">{formatMoney(sum(monthTransfers.filter(x => x.currency === mainCurrency), x => x.amount), mainCurrency)}</p>
           <p className="mt-2 text-xs text-muted-foreground">{tn('{n} transfer', '{n} transfers', monthTransfers.filter(x => x.currency === mainCurrency).length)}</p>
         </div>
       </section>
@@ -119,7 +119,7 @@ export default function Home() {
 
       {group?.isPublic && <Link to={`/p/${group.slug}`} className={buttonVariants({ variant: 'outline', size: 'lg' })}><Globe />{t('Public page')}</Link>}
 
-      <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
+      <div className="grid min-w-0 grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_340px]">
         <Section title={t('Recent activity')} action={<Link to="/family?tab=history" className="text-xs text-muted-foreground hover:text-foreground">{t('History')}</Link>}>
           <ol className="activity-list surface-card rounded-2xl bg-card px-4">
             {[...audit].sort(byNewest).slice(0, 7).map(a => (

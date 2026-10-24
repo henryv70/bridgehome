@@ -47,12 +47,12 @@ export default function Login() {
   }, [results, reducers]);
 
   return (
-    <div className="pt-safe flex min-h-dvh flex-col px-5 py-8 sm:px-10">
+    <div className="pt-safe flex min-h-dvh flex-col px-4 py-5 sm:px-10 sm:py-8">
       <div className="flex items-center justify-between gap-3">
         <Link to="/"><Wordmark /></Link>
-        <LanguageSelect />
+        <LanguageSelect compact />
       </div>
-      <main className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center py-10">
+      <main className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center py-6 sm:py-10">
         <form className="space-y-6" onSubmit={async e => {
           e.preventDefault();
           const f = new FormData(e.currentTarget);

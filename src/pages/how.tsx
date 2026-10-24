@@ -21,7 +21,7 @@ export default function HowItWorks() {
           <p className="mt-3 text-muted-foreground">{t('A shared, honest record of family support, so nobody has to keep track in group chats.')}</p>
         </header>
 
-        <section className="grid gap-4 sm:grid-cols-2">
+        <section className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2">
           <Panel><Send className="mb-3 size-5" /><p className="font-medium">{t('Senders')}</p><p className="mt-1 text-sm text-muted-foreground">{t('Usually family working abroad. They review requests, send money outside the app, and record what they sent.')}</p></Panel>
           <Panel><HandHeart className="mb-3 size-5" /><p className="font-medium">{t('Recipients')}</p><p className="mt-1 text-sm text-muted-foreground">{t('Family back home. They ask for support, confirm what arrives, and share how it helped.')}</p></Panel>
         </section>
@@ -39,7 +39,7 @@ export default function HowItWorks() {
           <p className="mt-4 text-sm text-muted-foreground">{t("Your home screen always shows what's waiting on you, so you never have to guess.")}</p>
         </section>
 
-        <section className="grid gap-4 sm:grid-cols-2">
+        <section className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2">
           <Panel><Lock className="mb-3 size-5" /><p className="font-medium">{t('Private by default')}</p><p className="mt-1 text-sm text-muted-foreground">{t('Only members of your family group can see requests, budgets, transfers and conversations.')}</p></Panel>
           <Panel><Globe className="mb-3 size-5" /><p className="font-medium">{t('Public when you choose')}</p><p className="mt-1 text-sm text-muted-foreground">{t('Owners can publish a family page. You pick which requests and photos appear. Visitors can pledge support.')}</p></Panel>
           <Panel><Eye className="mb-3 size-5" /><p className="font-medium">{t('Nothing disappears')}</p><p className="mt-1 text-sm text-muted-foreground">{t("Edits keep the original values. History can't be changed, so everyone sees the same story.")}</p></Panel>

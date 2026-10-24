@@ -30,12 +30,12 @@ export default function SignUp() {
   if (profile && username) return <Navigate to={'/welcome' + search} replace />;
 
   return (
-    <div className="pt-safe flex min-h-dvh flex-col px-5 py-8 sm:px-10">
+    <div className="pt-safe flex min-h-dvh flex-col px-4 py-5 sm:px-10 sm:py-8">
       <div className="flex items-center justify-between gap-3">
         <Link to="/"><Wordmark /></Link>
       </div>
-      <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center py-10">
-        <form className="space-y-6 rounded-3xl bg-card/70 p-5 sm:p-8" onSubmit={async e => {
+      <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center py-6 sm:py-10">
+        <form className="space-y-5 sm:space-y-6 sm:rounded-3xl sm:bg-card/70 sm:p-8" onSubmit={async e => {
           e.preventDefault();
           const f = new FormData(e.currentTarget);
           const name = normalizeUsername(formValue(f, 'username'));

@@ -73,7 +73,7 @@ export function LinkBankFlow({ onDone }: { onDone: () => void }) {
   if (step === 'pick') return (
     <div className="space-y-4">
       <div className="flex gap-2">
-        <div className="relative flex-1">
+        <div className="relative min-w-0 flex-1">
           <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input autoFocus value={q} onChange={e => setQ(e.target.value)} placeholder={t('Search your bank')} className="h-10 pl-9" />
         </div>
@@ -81,10 +81,10 @@ export function LinkBankFlow({ onDone }: { onDone: () => void }) {
           {['US', 'CA', 'GB', 'AU'].map(c => <option key={c} value={c}>{c}</option>)}
         </NativeSelect>
       </div>
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-1 gap-2 min-[380px]:grid-cols-2">
         {banks.map(b => (
-          <button key={b.name} type="button" onClick={() => { setBank(b); setStep('login'); }} className="flex items-center gap-3 rounded-xl border p-3 text-left text-sm hover:bg-muted">
-            <BankMark name={b.name} className="size-8" /><span className="font-medium">{b.name}</span>
+          <button key={b.name} type="button" onClick={() => { setBank(b); setStep('login'); }} className="flex items-center gap-3 min-w-0 rounded-xl border bg-card p-3 text-left text-sm hover:bg-muted">
+            <BankMark name={b.name} className="size-8" /><span className="min-w-0 break-words font-medium">{b.name}</span>
           </button>
         ))}
       </div>
@@ -177,9 +177,9 @@ export function AddPayoutFlow({ onDone, defaultCountry = 'VN' }: { onDone: () =>
     <div className="space-y-4">
       <SelectField label={t('Country where money should arrive')} value={country} onChange={e => setCountry(e.target.value)}
         options={Object.entries(COUNTRIES).map(([code, c]) => [code, `${countryName(code, c.name)} (${c.currency})`])} />
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-1 gap-2 min-[380px]:grid-cols-2">
         {list.map(b => (
-          <button key={b.name} type="button" onClick={() => setInst(b)} className="flex items-center gap-3 rounded-xl border p-3 text-left text-sm hover:bg-muted">
+          <button key={b.name} type="button" onClick={() => setInst(b)} className="flex items-center gap-3 min-w-0 rounded-xl border bg-card p-3 text-left text-sm hover:bg-muted">
             <BankMark name={b.name} className="size-8" />
             <span><span className="block font-medium">{b.name}</span><span className="text-xs text-muted-foreground">{b.kind === 'wallet' ? t('Mobile wallet') : t('Bank')}</span></span>
           </button>

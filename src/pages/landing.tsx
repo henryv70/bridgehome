@@ -13,7 +13,7 @@ import { monthName } from '@/lib/time';
 import { useCountUp, useReveal } from '@/hooks/use-reveal';
 import { buttonVariants } from '@/components/ui/button';
 import { Wordmark } from '@/components/app/brand';
-import { LanguageSelect } from '@/components/app/language';
+import { PublicHeader } from '@/components/app/public-header';
 import { BankMark } from '@/components/app/bank-mark';
 
 // Fades and lifts its children into place the first time they scroll into view.
@@ -38,13 +38,13 @@ function HeroVisual() {
   useEffect(() => { const id = requestAnimationFrame(() => setReady(true)); return () => cancelAnimationFrame(id); }, []);
   const shown = ready || undefined;
   return (
-    <div className="relative mx-auto h-[440px] w-full max-w-[460px] sm:h-[500px]">
+    <div className="relative mx-auto grid w-full max-w-[460px] gap-3 sm:block sm:h-[500px]">
       <div aria-hidden className="absolute inset-6 rounded-[2.5rem] bg-gradient-to-br from-brand/15 via-transparent to-chart-2/15 blur-2xl" />
 
       {/* Photo card */}
-      <div className="reveal absolute top-0 left-0 w-[54%] animate-float-slow" data-shown={shown} style={{ '--delay': '150ms' } as CSSProperties}>
+      <div className="reveal relative w-full sm:absolute sm:top-0 sm:left-0 sm:w-[54%] sm:animate-float-slow" data-shown={shown} style={{ '--delay': '150ms' } as CSSProperties}>
         <div className="overflow-hidden rounded-3xl border bg-card shadow-xl shadow-black/5">
-          <img src="/demo/banhchung.jpg" alt={t('Bánh chưng for Tết')} className="aspect-square w-full object-cover" />
+          <img src="/demo/banhchung.jpg" alt={t('Bánh chưng for Tết')} className="aspect-[2/1] w-full object-cover sm:aspect-square" />
           <div className="space-y-1.5 p-3">
             <p className="text-xs"><b>Bà Ngoại Lan</b> {t('Bánh chưng for the Tết table')} 🧧</p>
             <div className="h-1 overflow-hidden rounded-full bg-muted"><div className="h-full w-[72%] rounded-full bg-foreground" /></div>
@@ -54,7 +54,7 @@ function HeroVisual() {
       </div>
 
       {/* Deposit card */}
-      <div className="reveal absolute top-[18%] right-0 w-[56%] animate-float" data-shown={shown} style={{ '--delay': '350ms', animationDelay: '-2s' } as CSSProperties}>
+      <div className="reveal relative w-full sm:absolute sm:top-[18%] sm:right-0 sm:w-[56%] sm:animate-float" data-shown={shown} style={{ '--delay': '350ms', animationDelay: '-2s' } as CSSProperties}>
         <div className="space-y-3 rounded-3xl border bg-card p-4 shadow-xl shadow-black/5">
           <div className="flex items-center gap-2">
             <BankMark name="MoMo" className="size-8" />
@@ -76,7 +76,7 @@ function HeroVisual() {
       </div>
 
       {/* Request card */}
-      <div className="reveal absolute bottom-0 left-[2%] w-[58%] animate-float" data-shown={shown} style={{ '--delay': '550ms', animationDelay: '-4s' } as CSSProperties}>
+      <div className="reveal relative w-full sm:absolute sm:bottom-0 sm:left-[2%] sm:w-[58%] sm:animate-float" data-shown={shown} style={{ '--delay': '550ms', animationDelay: '-4s' } as CSSProperties}>
         <div className="rounded-3xl border bg-card p-4 shadow-xl shadow-black/5">
           <div className="flex items-start justify-between gap-2">
             <div>
@@ -91,7 +91,7 @@ function HeroVisual() {
       </div>
 
       {/* Budget chip */}
-      <div className="reveal absolute right-0 bottom-[3%] w-[38%] animate-float-slow sm:bottom-[16%]" data-shown={shown} style={{ '--delay': '750ms', animationDelay: '-1s' } as CSSProperties}>
+      <div className="reveal relative w-full sm:absolute sm:right-0 sm:bottom-[16%] sm:w-[38%] sm:animate-float-slow" data-shown={shown} style={{ '--delay': '750ms', animationDelay: '-1s' } as CSSProperties}>
         <div className="rounded-3xl border bg-card p-3.5 shadow-xl shadow-black/5">
           <p className="text-[11px] text-muted-foreground">{t('{month} budget', { month: monthName('2026-10', 'short') })}</p>
           <div className="mt-2 flex h-16 items-end gap-1.5">
@@ -205,8 +205,8 @@ function Pillar({ eyebrow, title, body, points, visual, flip, icon }: {
       <Reveal className={cn(flip && 'lg:order-2')}>
         <span className="mb-4 inline-flex size-11 items-center justify-center rounded-2xl bg-muted [&_svg]:size-5">{icon}</span>
         <Eyebrow>{t(eyebrow)}</Eyebrow>
-        <h3 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">{t(title)}</h3>
-        <p className="mt-4 text-lg leading-relaxed text-muted-foreground">{t(body)}</p>
+        <h3 className="mt-2 text-2xl font-semibold tracking-tight sm:text-4xl">{t(title)}</h3>
+        <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg">{t(body)}</p>
         <ul className="mt-6 space-y-3">
           {points.map(p => <li key={p} className="flex gap-3 text-[15px]"><Check className="mt-0.5 size-4 shrink-0 text-brand" />{t(p)}</li>)}
         </ul>
@@ -234,8 +234,8 @@ function LiveStats() {
   return (
     <div ref={ref} className="grid grid-cols-2 gap-px overflow-hidden rounded-3xl border bg-border lg:grid-cols-4">
       {stats.map(s => (
-        <div key={s.label} className="bg-card p-6 sm:p-8">
-          <p className="tabular text-3xl font-semibold tracking-tight sm:text-4xl">{s.value}</p>
+        <div key={s.label} className="bg-card p-4 sm:p-8">
+          <p className="tabular text-2xl font-semibold tracking-tight sm:text-4xl">{s.value}</p>
           <p className="mt-1 text-sm text-muted-foreground">{t(s.label)}</p>
         </div>
       ))}
@@ -269,46 +269,33 @@ export default function Landing() {
   const primary = signedIn ? { to: '/', label: t('Open my family') } : { to: '/signup', label: t('Get started') };
 
   return (
-    <div className="min-h-dvh overflow-x-hidden">
-      {/* Nav */}
-      <header className="pt-safe sticky top-0 z-40 border-b border-transparent bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/70">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-5 md:px-8">
-          <Link to={signedIn ? '/about' : '/'}><Wordmark /></Link>
-          <nav className="flex items-center gap-1 text-sm">
-            <a href="#how" className="hidden rounded-lg px-3 py-2 text-muted-foreground hover:text-foreground md:block">{t('How it works')}</a>
-            <Link to="/give" className="hidden rounded-lg px-3 py-2 text-muted-foreground hover:text-foreground sm:block">{t('Give')}</Link>
-            <Link to="/explore" className="hidden rounded-lg px-3 py-2 text-muted-foreground hover:text-foreground sm:block">{t('Explore')}</Link>
-            <LanguageSelect />
-            {!signedIn && <Link to="/login" className="rounded-lg px-3 py-2 text-muted-foreground hover:text-foreground">{t('Log in')}</Link>}
-            <Link to={primary.to} className={cn(buttonVariants({ size: 'lg' }), 'ml-2 rounded-full px-4')}>{primary.label}</Link>
-          </nav>
-        </div>
-      </header>
+    <div className="landing-page min-h-dvh">
+      <PublicHeader />
 
       {/* Hero */}
-      <section className="relative">
+      <section className="relative isolate overflow-clip">
         <div aria-hidden className="pointer-events-none absolute -top-40 left-1/2 h-[560px] w-[900px] -translate-x-1/2 animate-drift rounded-full bg-[radial-gradient(closest-side,color-mix(in_oklab,var(--brand)_18%,transparent),transparent)]" />
-        <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-5 pt-12 pb-20 md:px-8 lg:grid-cols-[1.05fr_1fr] lg:pt-20 lg:pb-28">
+        <div className="relative mx-auto grid max-w-6xl items-center gap-8 px-4 pt-6 pb-12 sm:gap-12 sm:px-6 sm:pt-12 sm:pb-20 md:px-8 lg:grid-cols-[1.05fr_1fr] lg:pt-20 lg:pb-28">
           <div>
             <Reveal><span className="inline-flex items-center gap-2 rounded-full border bg-card px-3 py-1 text-xs text-muted-foreground"><Sparkles className="size-3.5 text-brand" />{t('Built for families across borders')}</span></Reveal>
             <Reveal delay={100}>
-              <h1 className="mt-6 text-[2.6rem] leading-[1.05] font-semibold tracking-tight text-balance sm:text-6xl">
+              <h1 className="mt-4 text-[clamp(2rem,8.5vw,2.75rem)] leading-[1.08] sm:mt-6 font-semibold tracking-tight text-balance sm:text-6xl">
                 {t('Family support,')} <span className="text-muted-foreground">{t('across any distance.')}</span>
               </h1>
             </Reveal>
             <Reveal delay={200}>
-              <p className="mt-6 max-w-xl text-lg leading-relaxed text-pretty text-muted-foreground">
+              <p className="mt-4 max-w-xl text-base leading-relaxed sm:mt-6 sm:text-lg text-pretty text-muted-foreground">
                 {t('BridgeHome brings the whole family into one place to plan the household budget, send money home, and rally the community when it matters. No more lost messages, guessing, or awkward follow-ups.')}
               </p>
             </Reveal>
-            <Reveal delay={300} className="mt-8 flex flex-wrap gap-3">
-              <Link to={primary.to} className={cn(buttonVariants({ size: 'lg' }), 'h-12 rounded-full px-6 text-base')}>{primary.label}<ArrowRight /></Link>
-              <Link to={signedIn ? '/give' : '/welcome?demo=1'} className={cn(buttonVariants({ size: 'lg', variant: 'outline' }), 'h-12 rounded-full border-foreground/20 bg-transparent px-6 text-base')}>
+            <Reveal delay={300} className="mt-6 grid grid-cols-1 gap-2 min-[360px]:grid-cols-2 sm:mt-8 sm:flex sm:flex-wrap sm:gap-3">
+              <Link to={primary.to} className={cn(buttonVariants({ size: 'lg' }), 'h-auto min-h-12 rounded-full px-3 py-3 text-sm whitespace-normal sm:px-6 sm:text-base')}>{primary.label}<ArrowRight /></Link>
+              <Link to={signedIn ? '/give' : '/welcome?demo=1'} className={cn(buttonVariants({ size: 'lg', variant: 'outline' }), 'h-auto min-h-12 rounded-full border-foreground/20 bg-transparent px-3 py-3 text-sm whitespace-normal sm:px-6 sm:text-base')}>
                 {signedIn ? t('Give to a family') : t('Try a demo family')}
               </Link>
             </Reveal>
             <Reveal delay={400}>
-              <p className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
+              <p className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs sm:mt-8 sm:gap-x-5 sm:text-sm text-muted-foreground">
                 <span className="flex items-center gap-1.5"><Lock className="size-4" />{t('Private by default')}</span>
                 <span className="flex items-center gap-1.5"><Eye className="size-4" />{t('Every change visible to family')}</span>
                 <span className="flex items-center gap-1.5"><Globe className="size-4" />{t('Web, iOS and Android')}</span>
@@ -321,7 +308,7 @@ export default function Landing() {
 
       {/* Problem */}
       <section className="border-y bg-muted/30">
-        <div className="mx-auto max-w-4xl px-5 py-20 text-center md:px-8 md:py-28">
+        <div className="mx-auto max-w-4xl px-4 py-12 text-center sm:px-6 sm:py-20 md:px-8 md:py-28">
           <Reveal><Eyebrow>{t('Why BridgeHome')}</Eyebrow></Reveal>
           <Reveal delay={100}>
             <p className="mt-4 text-2xl leading-snug font-medium tracking-tight text-balance sm:text-4xl">
@@ -335,7 +322,7 @@ export default function Landing() {
       </section>
 
       {/* Pillars */}
-      <section id="features" className="mx-auto max-w-6xl space-y-28 px-5 py-24 md:px-8 md:py-32">
+      <section id="features" className="mx-auto max-w-6xl space-y-14 px-4 py-12 sm:space-y-28 sm:px-6 sm:py-24 md:px-8 md:py-32">
         <Pillar icon={<Wallet />} eyebrow="Budget together" title="See the whole household, month by month."
           body="Everyone adds income and spending as it happens. Set a plan per category and see at a glance what's on track, what's over, and what's left."
           points={['Plans per category with gentle over-budget warnings', 'Six-month trends for income, spending and support sent', 'Every currency kept separate, down to the đồng']}
@@ -351,18 +338,18 @@ export default function Landing() {
       </section>
 
       {/* Live numbers */}
-      <section className="mx-auto max-w-6xl px-5 pb-24 md:px-8">
+      <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6 sm:pb-24 md:px-8">
         <Reveal><LiveStats /></Reveal>
       </section>
 
       {/* How it works */}
       <section id="how" className="border-y bg-muted/30">
-        <div className="mx-auto max-w-6xl px-5 py-24 md:px-8 md:py-28">
+        <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-24 md:px-8 md:py-28">
           <Reveal className="max-w-2xl">
             <Eyebrow>{t('How it works')}</Eyebrow>
-            <h2 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">{t("Five steps, and everyone always knows what's next.")}</h2>
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-4xl">{t("Five steps, and everyone always knows what's next.")}</h2>
           </Reveal>
-          <ol className="relative mt-14 grid gap-8 md:grid-cols-5 md:gap-6">
+          <ol className="relative mt-8 grid gap-6 sm:mt-14 sm:gap-8 md:grid-cols-5 md:gap-6">
             <div aria-hidden className="absolute top-5 right-[10%] left-[10%] hidden h-px bg-border md:block" />
             {STEPS.map((s, i) => (
               <Reveal as="li" key={s.title} delay={i * 120} className="relative flex gap-4 md:flex-col md:gap-0">
@@ -379,10 +366,10 @@ export default function Landing() {
       </section>
 
       {/* Moments gallery */}
-      <section className="py-24 md:py-28">
+      <section className="overflow-clip py-12 sm:py-24 md:py-28">
         <Reveal className="mx-auto max-w-6xl px-5 md:px-8">
           <Eyebrow>{t('Bring people together')}</Eyebrow>
-          <h2 className="mt-2 max-w-2xl text-3xl font-semibold tracking-tight sm:text-4xl">{t('Support you can see, moments you can share.')}</h2>
+          <h2 className="mt-2 max-w-2xl text-2xl font-semibold tracking-tight sm:text-4xl">{t('Support you can see, moments you can share.')}</h2>
           <p className="mt-4 max-w-2xl text-lg text-muted-foreground">{t('A sack of rice, a semester of textbooks, bánh chưng for the ancestors. Photos turn transfers into stories the whole family is part of.')}</p>
         </Reveal>
         <div className="group relative mt-12 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
@@ -398,8 +385,8 @@ export default function Landing() {
       </section>
 
       {/* Trust */}
-      <section className="mx-auto max-w-6xl px-5 pb-24 md:px-8">
-        <div className="grid gap-4 md:grid-cols-3">
+      <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6 sm:pb-24 md:px-8">
+        <div className="grid min-w-0 grid-cols-1 gap-4 md:grid-cols-3">
           {TRUST.map((c, i) => (
             <Reveal key={c.title} delay={i * 120} className="rounded-3xl border bg-card p-6">
               <c.icon className="size-5" />
@@ -411,14 +398,14 @@ export default function Landing() {
       </section>
 
       {/* Final CTA */}
-      <section className="px-5 pb-24 md:px-8">
-        <Reveal className="relative mx-auto max-w-6xl overflow-hidden rounded-[2.5rem] bg-[#141413] px-6 py-16 text-center text-[#fcfcfb] sm:px-12 sm:py-20">
-          <div aria-hidden className="absolute -top-32 left-1/2 h-80 w-[720px] -translate-x-1/2 animate-drift rounded-full bg-[radial-gradient(closest-side,rgba(57,135,229,0.35),transparent)]" />
+      <section className="px-4 pb-12 sm:px-6 sm:pb-24 md:px-8">
+        <Reveal className="relative mx-auto max-w-6xl overflow-hidden rounded-[2.5rem] bg-[#10272b] px-5 py-10 sm:px-6 text-center text-[#fcfcfb] sm:px-12 sm:py-20">
+          <div aria-hidden className="absolute -top-32 left-1/2 h-80 w-[720px] -translate-x-1/2 animate-drift rounded-full bg-[radial-gradient(closest-side,rgba(0,139,158,0.35),transparent)]" />
           <h2 className="relative text-3xl font-semibold tracking-tight text-balance sm:text-5xl">{t('Bring your family closer, wherever they are.')}</h2>
           <p className="relative mx-auto mt-4 max-w-xl text-white/65">{t('Start your family in a minute, or explore a Vietnamese or Filipino demo family with real requests, budgets and photos.')}</p>
-          <div className="relative mt-8 flex flex-wrap justify-center gap-3">
-            <Link to={primary.to} className="inline-flex h-12 items-center gap-2 rounded-full bg-white px-6 font-medium text-[#141413] transition hover:bg-white/90">{primary.label}<ArrowRight className="size-4" /></Link>
-            <Link to="/give" className="inline-flex h-12 items-center gap-2 rounded-full border border-white/20 px-6 font-medium transition hover:bg-white/10"><HandHeart className="size-4" />{t('Support a family')}</Link>
+          <div className="relative mt-6 flex flex-col items-stretch justify-center gap-3 sm:mt-8 sm:flex-row sm:flex-wrap">
+            <Link to={primary.to} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full py-3 bg-white px-6 font-medium text-[#141413] transition hover:bg-white/90">{primary.label}<ArrowRight className="size-4" /></Link>
+            <Link to="/give" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full py-3 border border-white/20 px-6 font-medium transition hover:bg-white/10"><HandHeart className="size-4" />{t('Support a family')}</Link>
           </div>
         </Reveal>
       </section>

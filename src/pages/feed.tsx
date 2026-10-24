@@ -101,7 +101,7 @@ function Composer({ onDone }: { onDone: () => void }) {
       <SelectField name="requestId" label={t('Related request (optional)')} options={[['0', t('None')], ...requests.map(r => [String(r.id), `${t(r.category)} · ${app.nameOf(r.author)}`] as [string, string])]} />
       <div className="space-y-1.5">
         <p className="text-[13px] font-medium">{t('Who can see it')}</p>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 gap-2 min-[400px]:grid-cols-2">
           {([['family', 'Family only', Lock], ['public', 'Public', Globe]] as const).map(([v, label, Icon]) => (
             <button key={v} type="button" onClick={() => setVisibility(v)}
               className={cn('flex items-center justify-center gap-2 rounded-xl border p-3 text-sm', visibility === v && 'border-foreground ring-1 ring-foreground')}>

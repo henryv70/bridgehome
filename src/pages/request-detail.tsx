@@ -93,7 +93,7 @@ export default function RequestDetail() {
         </MissingAccountNotice>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
+      <div className="grid min-w-0 grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div className="space-y-6">
           <Section title={t('Transfers')}>
             {transfers.length ? transfers.map(x => <TransferRow key={String(x.id)} transfer={x} onEdit={() => setSheet({ title: t('Edit transfer'), description: t('Fix a mistake before the recipient confirms it.'), body: <EditTransferForm t={x} onDone={close} /> })} onConfirm={() => setSheet({ title: t('Confirm what arrived'), body: <ReceiptForm t={x} onDone={close} /> })} />)

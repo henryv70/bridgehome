@@ -29,21 +29,21 @@ export function Choice({ icon, title, children, onClick, selected }: { icon: Rea
 
 export function PageHeader({ title, subtitle, actions, className }: { title: ReactNode; subtitle?: ReactNode; actions?: ReactNode; className?: string }) {
   return (
-    <header className={cn('mb-6 flex flex-wrap items-center justify-between gap-3', className)}>
-      <div className="min-w-0">
-        <h1 className="text-[26px] leading-tight font-bold tracking-tight md:text-3xl">{title}</h1>
+    <header className={cn('mb-5 flex flex-wrap items-center justify-between gap-3 sm:mb-6', className)}>
+      <div className="min-w-0 max-w-full">
+        <h1 className="break-words text-[26px] leading-tight font-bold tracking-tight md:text-3xl">{title}</h1>
         {subtitle && <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>}
       </div>
-      {actions && <div className="flex items-center gap-2">{actions}</div>}
+      {actions && <div className="flex max-w-full flex-wrap items-center gap-2 [&_button]:h-auto [&_button]:min-h-11 [&_button]:whitespace-normal [&_button]:py-2">{actions}</div>}
     </header>
   );
 }
 
 export function Section({ title, action, children, className }: { title?: ReactNode; action?: ReactNode; children: ReactNode; className?: string }) {
   return (
-    <section className={cn('space-y-3', className)}>
+    <section className={cn('min-w-0 space-y-3', className)}>
       {(title || action) && (
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           {title && <h2 className="text-sm font-semibold text-foreground">{title}</h2>}
           {action}
         </div>
@@ -54,7 +54,7 @@ export function Section({ title, action, children, className }: { title?: ReactN
 }
 
 export function Panel({ className, ...props }: ComponentProps<'div'>) {
-  return <div className={cn('surface-card rounded-2xl border bg-card p-4 md:p-5', className)} {...props} />;
+  return <div className={cn('surface-card min-w-0 rounded-2xl border bg-card p-4 md:p-5', className)} {...props} />;
 }
 
 export function StatusBadge({ status, className }: { status: string; className?: string }) {
@@ -84,7 +84,7 @@ export function Help({ children }: { children: ReactNode }) {
 export function Field({ label, hint, children, className }: { label: ReactNode; hint?: ReactNode; children: (id: string) => ReactNode; className?: string }) {
   const id = useId();
   return (
-    <div className={cn('space-y-1.5', className)}>
+    <div className={cn('min-w-0 space-y-1.5', className)}>
       <Label htmlFor={id} className="text-[13px]">{label}</Label>
       {children(id)}
       {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
@@ -176,12 +176,12 @@ export function Drawer({ open, onOpenChange, title, description, children }: {
   const mobile = useIsMobile();
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side={mobile ? 'bottom' : 'right'} className={cn('gap-0 bg-background', mobile ? 'max-h-[92dvh] rounded-t-3xl' : 'w-full sm:max-w-md')}>
-        <SheetHeader className="border-b px-5 py-5">
+      <SheetContent side={mobile ? 'bottom' : 'right'} className={cn('gap-0 overflow-hidden bg-background', mobile ? 'max-h-[92dvh] rounded-t-3xl' : 'w-full sm:max-w-md')}>
+        <SheetHeader className="shrink-0 border-b px-5 py-5 pr-14">
           <SheetTitle>{title}</SheetTitle>
           {description && <SheetDescription>{description}</SheetDescription>}
         </SheetHeader>
-        <div className="flex-1 overflow-y-auto px-5 py-5 pb-safe">{children}</div>
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-5 py-5 pb-safe">{children}</div>
       </SheetContent>
     </Sheet>
   );
@@ -189,9 +189,9 @@ export function Drawer({ open, onOpenChange, title, description, children }: {
 
 export function Stat({ label, value, sub, className }: { label: ReactNode; value: ReactNode; sub?: ReactNode; className?: string }) {
   return (
-    <div className={cn('surface-card rounded-2xl border bg-card p-4', className)}>
+    <div className={cn('surface-card min-w-0 rounded-2xl border bg-card p-4', className)}>
       <p className="text-xs text-muted-foreground">{label}</p>
-      <p className="tabular mt-1 text-xl font-semibold tracking-tight md:text-2xl">{value}</p>
+      <p className="tabular mt-1 break-words text-xl font-semibold tracking-tight md:text-2xl">{value}</p>
       {sub && <p className="mt-0.5 text-xs text-muted-foreground">{sub}</p>}
     </div>
   );
