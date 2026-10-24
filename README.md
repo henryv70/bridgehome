@@ -20,6 +20,17 @@ npm run dev
 
 Open http://localhost:5173. Choose **Try a demo family** and pick the Vietnamese Nguyễn family (USD → VND) or the Filipino Santos family (USD → PHP). Each comes with sample members, requests in every state, demo bank accounts, a household budget, real photos and a public page. The Vite dev server proxies SpacetimeDB (`/v1` → `localhost:3000`), so other devices only need port 5173.
 
+### After pulling new code
+
+The browser app and the server module must match. After every pull, publish the module again (existing data is kept and migrated in place), then reload the page:
+
+```sh
+npm install
+npm run spacetime:publish:local -- --yes
+```
+
+`spacetime.json` names the database (`bridgehome-3386g`), so a plain `spacetime publish` uses it too. If the app can't connect, the loading screen says why (server not running, database not published, or an older module) and shows the command to fix it.
+
 ## Test on your phone with Expo
 
 1. Install **Expo Go** from the App Store or Play Store.

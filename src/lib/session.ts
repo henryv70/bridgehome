@@ -4,6 +4,10 @@
 // logging in (on this or another device) can unseal it and reconnect as the same person.
 // The password itself never leaves the browser.
 
+// In development the Vite server proxies SpacetimeDB, so phones on the same
+// Wi-Fi (and the Expo app) reach everything through one address.
+const sameOrigin = `${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}`;
+export const HOST = import.meta.env.DEV ? sameOrigin : (import.meta.env.VITE_SPACETIMEDB_HOST || sameOrigin);
 export const DB_NAME = import.meta.env.VITE_SPACETIMEDB_DB_NAME ?? 'bridgehome-3386g';
 export const TOKEN_KEY = `bridgehome/${DB_NAME}/auth_token`;
 // Keep identities created before the proxy was introduced.

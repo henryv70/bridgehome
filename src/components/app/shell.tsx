@@ -1,12 +1,14 @@
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router';
 import { useTheme } from '@/lib/theme';
-import { BookOpen, Check, HandHeart, ChevronsUpDown, Compass, Globe, Home, Images, KeyRound, Landmark, Languages, LogOut, Moon, Plus, ReceiptText, Sparkles, Sun, Users, Wallet } from 'lucide-react';
+import { BookOpen, Check, HandHeart, ChevronsUpDown, Compass, Globe, Home, Images, KeyRound, Landmark, Languages, LogOut, Moon, Plus, ReceiptText, RotateCw, Sparkles, Sun, Users, Wallet } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useApp } from '@/lib/data';
 import { taskFor } from '@/lib/status';
 import { LANGUAGES, t, useLanguage } from '@/lib/i18n';
 import { setAutoTranslate, useAutoTranslate } from '@/lib/translate';
+import { DB_NAME, HOST } from '@/lib/session';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
@@ -23,12 +25,58 @@ const NAV = [
   { to: '/family', label: 'Family', icon: Users },
 ];
 
+type Stall = 'server' | 'missing' | 'outdated';
+const PUBLISH = `spacetime publish ${DB_NAME} --module-path spacetimedb --server local --yes`;
+const STALLS: Record<Stall, { title: string; body: string; command: string }> = {
+  server: { title: "Can't reach the BridgeHome server", body: 'Make sure SpacetimeDB is running on this computer, then reload this page.', command: 'spacetime start' },
+  missing: { title: "The BridgeHome database isn't set up yet", body: 'Publish the server module to your local SpacetimeDB, then reload this page.', command: PUBLISH },
+  outdated: { title: 'The database is running an older version of BridgeHome', body: 'This usually happens after pulling new code. Publish the server module again, then reload this page.', command: PUBLISH },
+};
+
+// Works out why the app is stuck connecting or loading, so it never just spins.
+function useStall(isActive: boolean, ready: boolean) {
+  const [stall, setStall] = useState<Stall | null>(null);
+  useEffect(() => {
+    setStall(null);
+    if (ready) return;
+    const id = setTimeout(async () => {
+      // Connected, but the tables this version subscribes to never arrive: the module is older than the app.
+      if (isActive) return setStall('outdated');
+      try {
+        const res = await fetch(`${HOST.replace(/^ws/, 'http')}/v1/database/${DB_NAME}`);
+        setStall(res.status === 404 ? 'missing' : 'server');
+      } catch {
+        setStall('server');
+      }
+    }, isActive ? 8000 : 4000);
+    return () => clearTimeout(id);
+  }, [isActive, ready]);
+  return stall;
+}
+
 export function Splash() {
-  const { isActive } = useApp();
+  const { isActive, ready } = useApp();
+  const stall = useStall(isActive, ready);
+  const help = stall && STALLS[stall];
   return (
-    <div className="flex min-h-dvh flex-col items-center justify-center gap-3 text-muted-foreground">
-      <Logo className="size-10 animate-pulse" />
-      <p className="text-sm">{isActive ? t('Loading your family…') : t('Connecting to BridgeHome…')}</p>
+    <div className="flex min-h-dvh flex-col items-center justify-center gap-3 px-5 text-center text-muted-foreground">
+      <Logo className={cn('size-10', !help && 'animate-pulse')} />
+      {!help ? <p className="text-sm">{isActive ? t('Loading your family…') : t('Connecting to BridgeHome…')}</p>
+        : import.meta.env.DEV ? (
+          <div role="alert" className="max-w-md space-y-3">
+            <p className="font-medium text-foreground">{t(help.title)}</p>
+            <p className="text-sm">{t(help.body)}</p>
+            <code className="block rounded-lg bg-muted px-3 py-2 font-mono text-sm text-foreground">{help.command}</code>
+            <p className="text-xs">{t('Database: {name}', { name: DB_NAME })}</p>
+            <Button onClick={() => location.reload()}><RotateCw />{t('Reload')}</Button>
+          </div>
+        ) : (
+          <div role="alert" className="max-w-md space-y-3">
+            <p className="font-medium text-foreground">{t("We can't connect to BridgeHome right now")}</p>
+            <p className="text-sm">{t('Check your internet connection and try again in a moment.')}</p>
+            <Button onClick={() => location.reload()}><RotateCw />{t('Reload')}</Button>
+          </div>
+        )}
     </div>
   );
 }

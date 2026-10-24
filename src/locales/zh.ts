@@ -40,6 +40,17 @@ export default {
   "Translation is busy right now. Try again in a minute.": "翻译服务繁忙，请一分钟后再试。",
   "Translation failed. Try again later.": "翻译失败，请稍后再试。",
   "This message could not be translated.": "无法翻译这条留言。",
+  // Connection problems on the loading screen.
+  "Can't reach the BridgeHome server": "无法连接到 BridgeHome 服务器",
+  "Make sure SpacetimeDB is running on this computer, then reload this page.": "请确认这台电脑上的 SpacetimeDB 正在运行，然后刷新页面。",
+  "The BridgeHome database isn't set up yet": "BridgeHome 数据库尚未设置",
+  "Publish the server module to your local SpacetimeDB, then reload this page.": "请将服务器模块发布到本地 SpacetimeDB，然后刷新页面。",
+  "The database is running an older version of BridgeHome": "数据库运行的是旧版本的 BridgeHome",
+  "This usually happens after pulling new code. Publish the server module again, then reload this page.": "这通常发生在拉取新代码之后。请重新发布服务器模块，然后刷新页面。",
+  "Database: {name}": "数据库：{name}",
+  "Reload": "刷新",
+  "We can't connect to BridgeHome right now": "暂时无法连接到 BridgeHome",
+  "Check your internet connection and try again in a moment.": "请检查网络连接，稍后再试。",
   // Single words used inside sentences.
   "owner": "群主",
   "pledged": "已认捐",

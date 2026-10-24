@@ -40,6 +40,17 @@ export default {
   "Translation is busy right now. Try again in a minute.": "Dịch vụ dịch đang bận. Hãy thử lại sau một phút.",
   "Translation failed. Try again later.": "Dịch không thành công. Hãy thử lại sau.",
   "This message could not be translated.": "Không thể dịch tin nhắn này.",
+  // Connection problems on the loading screen.
+  "Can't reach the BridgeHome server": "Không kết nối được với máy chủ BridgeHome",
+  "Make sure SpacetimeDB is running on this computer, then reload this page.": "Hãy đảm bảo SpacetimeDB đang chạy trên máy này, rồi tải lại trang.",
+  "The BridgeHome database isn't set up yet": "Cơ sở dữ liệu BridgeHome chưa được thiết lập",
+  "Publish the server module to your local SpacetimeDB, then reload this page.": "Hãy đăng module máy chủ lên SpacetimeDB trên máy, rồi tải lại trang.",
+  "The database is running an older version of BridgeHome": "Cơ sở dữ liệu đang chạy phiên bản BridgeHome cũ hơn",
+  "This usually happens after pulling new code. Publish the server module again, then reload this page.": "Việc này thường xảy ra sau khi kéo mã mới về. Hãy đăng lại module máy chủ, rồi tải lại trang.",
+  "Database: {name}": "Cơ sở dữ liệu: {name}",
+  "Reload": "Tải lại",
+  "We can't connect to BridgeHome right now": "Hiện không thể kết nối với BridgeHome",
+  "Check your internet connection and try again in a moment.": "Hãy kiểm tra kết nối mạng và thử lại sau giây lát.",
   // Single words used inside sentences.
   "owner": "chủ nhóm",
   "pledged": "đã cam kết",

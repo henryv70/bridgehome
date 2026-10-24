@@ -8,14 +8,9 @@ import { Toaster } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { AppDataProvider } from '@/lib/data';
 import { LanguageProvider } from '@/lib/i18n';
-import { DB_NAME, TOKEN_KEY, storedToken } from '@/lib/session';
+import { DB_NAME, HOST, TOKEN_KEY, storedToken } from '@/lib/session';
 import App from './App';
 import './style.css';
-
-// In development the Vite server proxies SpacetimeDB, so phones on the same
-// Wi-Fi (and the Expo app) reach everything through one address.
-const sameOrigin = `${location.protocol === 'https:' ? 'wss' : 'ws'}://${location.host}`;
-const HOST = import.meta.env.DEV ? sameOrigin : (import.meta.env.VITE_SPACETIMEDB_HOST || sameOrigin);
 
 const connectionBuilder = DbConnection.builder()
   .withUri(HOST)
