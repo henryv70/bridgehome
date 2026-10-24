@@ -88,7 +88,7 @@ export function AreaField({ label, hint, className, ...props }: { label: ReactNo
 export function NativeSelect({ className, ...props }: ComponentProps<'select'>) {
   return (
     <select
-      className={cn('h-10 w-full rounded-lg border border-input bg-transparent px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30', className)}
+      className={cn('h-10 w-full min-w-0 rounded-lg border border-input bg-transparent px-3 text-base outline-none md:text-sm focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30', className)}
       {...props}
     />
   );

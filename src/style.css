@@ -139,6 +139,8 @@
 }
 @layer base {
   html, body, #root { min-height: 100dvh; }
+  /* WebKit can otherwise resize text as differently sized route content loads. */
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
   body { -webkit-tap-highlight-color: transparent; overscroll-behavior-y: none; }
   h1, h2, h3 { letter-spacing: -0.015em; }
 }

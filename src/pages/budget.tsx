@@ -3,12 +3,14 @@ import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import { AlertTriangle, ChevronLeft, ChevronRight, Plus, Target, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAction, useApp } from '@/lib/data';
-import { formatMoney, sum, toDecimal, toMinor, toNumber } from '@/lib/money';
+import { digits, formatMoney, sum, toDecimal, toMinor, toNumber } from '@/lib/money';
 import { monthName, shiftMonth, thisMonth, today } from '@/lib/time';
 import { Button } from '@/components/ui/button';
 import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart';
 import { AreaField, Drawer, Empty, Help, MoneyField, NativeSelect, PageHeader, Panel, Section, SelectField, Stat, TextField, formValue } from '@/components/app/kit';
 import { CATEGORIES } from '@/components/app/request-parts';
+import { INCOME_CATEGORIES, STARTER_BUDGET, suggestBudget } from '@/lib/budget';
+import { StarterBudget } from '@/components/app/starter-budget';
 
 const trendConfig = {
   income: { label: 'Income', color: 'var(--chart-1)' },
@@ -28,6 +30,13 @@ export default function Budget() {
   const currency = currencyPick ?? currencies[0] ?? 'USD';
   const [sheet, setSheet] = useState<Sheet>(null);
   const [targetCategory, setTargetCategory] = useState('');
+  const [entryKind, setEntryKind] = useState('expense');
+  const [starterOpen, setStarterOpen] = useState(false);
+  const expenseCategories = [...new Set([
+    ...CATEGORIES, ...STARTER_BUDGET.map(p => p.category), 'Debt repayment',
+    ...budgets.filter(b => b.kind === 'expense').map(b => b.category), ...targets.map(t => t.category),
+  ])];
+  const incomeCategories = [...new Set([...INCOME_CATEGORIES, ...budgets.filter(b => b.kind === 'income').map(b => b.category)])];
 
   const inCur = budgets.filter(b => b.currency === currency);
   const monthRows = inCur.filter(b => b.month === month);
@@ -59,7 +68,7 @@ export default function Budget() {
   }));
   const compact = new Intl.NumberFormat(undefined, { notation: 'compact', maximumFractionDigits: 1 });
   const axisMoney = (v: number) => compact.format(v);
-  const fmtTip = (cur: string) => (v: unknown) => formatMoney(BigInt(Math.round(Number(v) * 10 ** (cur === 'JPY' ? 0 : 2))), cur);
+  const fmtTip = (cur: string) => (v: unknown) => formatMoney(BigInt(Math.round(Number(v) * 10 ** digits(cur))), cur);
 
   const close = () => setSheet(null);
   const openTarget = (c = '') => { setTargetCategory(c); setSheet('target'); };
@@ -67,7 +76,7 @@ export default function Budget() {
   return (
     <div className="space-y-8">
       <PageHeader title="Budget" subtitle="What the household brings in, spends and plans for. Everything is self-reported."
-        actions={<Button size="lg" onClick={() => setSheet('entry')}><Plus />Add entry</Button>} />
+        actions={<Button size="lg" onClick={() => { setEntryKind('expense'); setSheet('entry'); }}><Plus />Add entry</Button>} />
 
       <div className="flex flex-wrap items-center gap-2">
         <div className="flex items-center rounded-xl border bg-card">
@@ -90,6 +99,24 @@ export default function Budget() {
         <Stat label="Monthly support plans" value={commitments.filter(c => c.cadence === 'monthly').length} sub="Commitments from senders" />
       </div>
 
+      {(!monthTargets.length || starterOpen) && (
+        <StarterBudget key={`${group?.id}/${month}/${currency}`} income={income} currency={currency} month={month} busy={busy}
+          onApply={async (amount, chosenCurrency) => {
+            // Keep the suggestion visible after a partial failure so retry can finish missing categories.
+            setStarterOpen(true);
+            const ok = await run(async () => {
+              if (!reducers || !group) throw Error('Reconnect to your family and try again.');
+              const suggestions = suggestBudget(amount);
+              for (const p of suggestions) {
+                const exists = targets.some(t => t.month === month && t.currency === chosenCurrency && t.category.toLowerCase() === p.category.toLowerCase());
+                if (!exists && p.amount > 0n) await reducers.setBudgetTarget({ groupId: group.id, month, currency: chosenCurrency, category: p.category, amount: p.amount });
+              }
+            }, 'Starter budget saved. Tap any category to adjust it.');
+            if (ok) { setCurrency(chosenCurrency); setStarterOpen(false); }
+            return ok;
+          }} />
+      )}
+
       <Section title="Spending vs. plan" action={<Button variant="ghost" size="sm" onClick={() => openTarget()}><Target />Set a plan</Button>}>
         {rows.length ? (
           <Panel className="space-y-4">
@@ -97,7 +124,7 @@ export default function Budget() {
               const over = r.target > 0n && r.actual > r.target;
               return (
                 <button key={r.category} type="button" className="block w-full text-left" onClick={() => openTarget(r.category)} title="Set plan">
-                  <div className="mb-1.5 flex items-baseline justify-between gap-2 text-sm">
+                  <div className="mb-1.5 flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1 text-sm">
                     <span className="font-medium">{r.category}</span>
                     <span className="tabular text-muted-foreground">
                       <span className="text-foreground">{formatMoney(r.actual, currency)}</span>{r.target > 0n && ` / ${formatMoney(r.target, currency)}`}
@@ -115,13 +142,13 @@ export default function Budget() {
             <p className="flex items-center gap-2 pt-1 text-xs text-muted-foreground"><span className="inline-block h-3 w-0.5 bg-foreground" />Plan for the month</p>
           </Panel>
         ) : (
-          <Empty title={`Nothing recorded for ${monthName(month)}`} action={<Button variant="outline" onClick={() => setSheet('entry')}><Plus />Add the first entry</Button>}>
+          <Empty title={`Nothing recorded for ${monthName(month)}`} action={<Button variant="outline" onClick={() => { setEntryKind('expense'); setSheet('entry'); }}><Plus />Add the first entry</Button>}>
             Add income and spending as it happens. Set a plan per category to see how the month is going.
           </Empty>
         )}
       </Section>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Section title={`Income and spending · last 6 months · ${currency}`}>
           <Panel>
             <ChartContainer config={trendConfig} className="aspect-auto h-56 w-full">
@@ -152,14 +179,14 @@ export default function Budget() {
         </Section>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <Section title={`Entries · ${monthName(month)}`}>
           {monthRows.length ? (
             <div className="divide-y rounded-2xl border bg-card">
               {monthRows.map(b => (
                 <div key={String(b.id)} className="flex items-center gap-3 px-4 py-3">
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium">{b.category}</p>
+                    <p className="truncate text-sm font-medium">{b.category}</p>
                     <p className="truncate text-xs text-muted-foreground">{b.explanation} · {app.nameOf(b.author)}</p>
                   </div>
                   <p className={cn('tabular text-sm font-medium', b.kind === 'income' && 'text-good')}>{b.kind === 'income' ? '+' : '−'}{formatMoney(b.amount, b.currency)}</p>
@@ -194,9 +221,8 @@ export default function Budget() {
           const c = formValue(f, 'currency');
           if (await run(() => reducers?.addBudget({ groupId: group!.id, kind: formValue(f, 'kind'), category: formValue(f, 'category'), amount: toMinor(formValue(f, 'amount'), c), currency: c, month: formValue(f, 'month'), explanation: formValue(f, 'explanation') }), 'Entry added')) close();
         }}>
-          <SelectField name="kind" label="Type" options={[['expense', 'Spending'], ['income', 'Income']]} />
-          <TextField name="category" label="Category" list="budget-categories" placeholder="e.g. Groceries" required maxLength={80} />
-          <datalist id="budget-categories">{CATEGORIES.map(c => <option key={c} value={c} />)}</datalist>
+          <SelectField name="kind" label="Type" options={[['expense', 'Spending'], ['income', 'Income']]} value={entryKind} onChange={e => setEntryKind(e.target.value)} />
+          <SelectField key={entryKind} name="category" label="Category" options={[["", "Choose a category"], ...(entryKind === 'income' ? incomeCategories : expenseCategories)]} defaultValue="" required />
           <MoneyField label="Amount" currency={currency} />
           <TextField name="month" label="Month" type="month" defaultValue={month} required />
           <AreaField name="explanation" label="Note" placeholder="e.g. Weekly market run" required maxLength={1000} />
@@ -210,8 +236,7 @@ export default function Budget() {
           const f = new FormData(e.currentTarget);
           if (await run(() => reducers?.setBudgetTarget({ groupId: group!.id, month, category: formValue(f, 'category'), currency, amount: toMinor(formValue(f, 'amount'), currency) }), 'Plan saved')) close();
         }}>
-          <TextField name="category" label="Category" list="target-categories" defaultValue={targetCategory} required maxLength={80} />
-          <datalist id="target-categories">{CATEGORIES.map(c => <option key={c} value={c} />)}</datalist>
+          <SelectField name="category" label="Category" options={[["", "Choose a category"], ...expenseCategories]} defaultValue={targetCategory} required />
           <MoneyField label="Planned amount" currency={currency} lockCurrency
             defaultValue={(() => { const t = monthTargets.find(x => x.category.toLowerCase() === targetCategory.toLowerCase()); return t ? toDecimal(t.amount, currency) : undefined; })()} />
           <Button size="lg" className="h-11 w-full" disabled={busy}>Save plan</Button>

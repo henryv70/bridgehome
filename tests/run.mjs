@@ -6,7 +6,7 @@ import {join} from 'node:path';
 import {spawnSync} from 'node:child_process';
 const dir=await mkdtemp(join(tmpdir(),'bridgehome-test-'));
 try {
- for (const name of ['integration','features']) {
+ for (const name of ['budget','integration','features']) {
   const outfile=join(dir,name+'.mjs');
   await build({entryPoints:['tests/'+name+'.ts'],bundle:true,platform:'node',format:'esm',outfile});
   const result=spawnSync(process.execPath,[outfile],{stdio:'inherit',timeout:60000});

@@ -132,12 +132,12 @@ export function AppShell() {
         </main>
 
         {/* Mobile tab bar */}
-        <nav className="pb-safe fixed inset-x-0 bottom-0 z-30 border-t bg-background/90 backdrop-blur-md md:hidden">
-          <div className="grid grid-cols-5">
+        <nav aria-label="Family navigation" className="pb-safe fixed inset-x-0 bottom-0 z-30 border-t bg-background/95 backdrop-blur-md md:hidden">
+          <div className="grid h-16 grid-cols-5">
             {NAV.map(n => (
-              <NavLink key={n.to} to={n.to} end={n.end} className={({ isActive }) => cn('relative flex flex-col items-center gap-1 pt-2 pb-1 text-[11px] text-muted-foreground', isActive && 'text-foreground')}>
-                <n.icon className="size-5" strokeWidth={1.75} />
-                {n.label}
+              <NavLink key={n.to} to={n.to} end={n.end} className={({ isActive }) => cn('relative flex h-16 min-w-0 touch-manipulation flex-col items-center justify-center gap-1 text-[11px] leading-4 font-medium whitespace-nowrap text-muted-foreground select-none', isActive && 'text-foreground')}>
+                <n.icon className="size-5 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+                <span className="block h-4">{n.label}</span>
                 {n.to === '/' && tasks > 0 && <span className="absolute top-1 left-1/2 ml-2 size-2 rounded-full bg-brand" />}
               </NavLink>
             ))}
