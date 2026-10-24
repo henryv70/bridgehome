@@ -61,8 +61,8 @@ function BridgeHome() {
         <View style={styles.center}>
           <Text style={[styles.title, { color: c.text }]}>Can't reach BridgeHome</Text>
           <Text style={[styles.body, { color: c.muted }]}>
-            Make sure the web app is running on your computer and that your phone is on the same Wi-Fi.{'\n\n'}
-            In the bridgehome folder run:{'\n'}npm run dev{'\n\n'}Trying: {url}
+            Make sure the web app is running on your computer (npm run dev) and your phone is on the same Wi-Fi.{'\n\n'}
+            On event or campus Wi-Fi, devices usually can't reach each other. Use npm run mobile:tunnel instead.{'\n\n'}Trying: {url}
           </Text>
           <Pressable style={[styles.button, { backgroundColor: c.button }]} onPress={() => { setError(null); web.current?.reload(); }}>
             <Text style={[styles.buttonText, { color: c.buttonText }]}>Try again</Text>

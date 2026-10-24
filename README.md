@@ -28,6 +28,14 @@ Open http://localhost:5173. Choose **Try a demo family** and pick the Vietnamese
 
 The Expo app (`mobile/`) loads the web app from your computer's address (detected from Expo's host, port 5173) in a full-screen WebView with native share sheets, Android back-button support, pull to refresh and camera/photo access. To point it elsewhere, set `EXPO_PUBLIC_WEB_URL`, for example `EXPO_PUBLIC_WEB_URL=https://your-deploy.example npm run mobile`.
 
+**On event, campus or office Wi-Fi** (for example the Cal Hacks network), devices usually can't reach each other, so Expo Go can't load the app. Use the tunnel instead (requires `brew install cloudflared`, no accounts needed):
+
+```sh
+npm run mobile:tunnel            # or: npm run mobile:tunnel -- --port 8082
+```
+
+It opens two public HTTPS tunnels (web app and Metro), points the app at them, and prints the QR code. Anyone with the URLs can reach your local dev server while it runs, so stop it (Ctrl+C) when you're done.
+
 Without Expo, open `http://<your-computer-ip>:5173` in the phone browser and use **Add to Home Screen**.
 
 Each browser profile, device and the Expo app has its own identity, which makes it easy to demo two roles: be the sender on your laptop, create an invitation under **Family**, and join as a recipient on your phone.

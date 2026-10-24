@@ -12,7 +12,8 @@
     "spacetime:publish:local": "spacetime publish --module-path spacetimedb --server local",
     "spacetime:publish": "spacetime publish --module-path spacetimedb --server maincloud",
     "test": "node tests/run.mjs",
-    "mobile": "npm --prefix mobile start"
+    "mobile": "npm --prefix mobile start",
+    "mobile:tunnel": "node scripts/mobile-tunnel.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
