@@ -1,0 +1,12 @@
+node_modules
+dist
+*.tsbuildinfo
+*.log
+
+# Local environment files may contain developer-specific values or secrets.
+.env.local
+.env.*.local
+
+.DS_Store
+
+spacetime.local.json
