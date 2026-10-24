@@ -2,6 +2,7 @@ import { t } from 'spacetimedb/server';
 import { Timestamp } from 'spacetimedb';
 import db from './schema';
 import { insertTransfer } from './transfers';
+import { flag, screenRequest } from './fraud';
 import { LANGUAGES, ROLES, date, fail, log, member, money, owner, randomHex, rate, req, text } from './lib';
 
 export const saveProfile = db.reducer({ name: t.string() }, (ctx, { name }) => {
@@ -93,6 +94,7 @@ export const createRequest = db.reducer(requestArgs, (ctx, a) => {
     isPublic: false, publicTitle: '',
   });
   log(ctx, a.groupId, 'Request ' + r.status, r.id + ': ' + a.amount + ' ' + a.currency + ' minor units');
+  if (!draft) screenRequest(ctx, r);
 });
 
 export const reviseRequest = db.reducer({ requestId: t.u64(), amount: t.u64(), explanation: t.string(), submit: t.bool() }, (ctx, a) => {
@@ -104,7 +106,11 @@ export const reviseRequest = db.reducer({ requestId: t.u64(), amount: t.u64(), e
   money(a.amount, r.currency);
   const explanation = text(a.explanation, 'Explanation');
   const status = a.submit ? 'submitted' : 'draft';
-  ctx.db.request.id.update({ ...r, amount: a.amount, explanation, status, approved: 0n });
+  const updated = ctx.db.request.id.update({ ...r, amount: a.amount, explanation, status, approved: 0n });
+  if (a.submit) screenRequest(ctx, updated);
+  if (r.status === 'rejected' && a.amount > r.amount) {
+    flag(ctx, updated, 'raised_after_rejection', 'medium', 'The amount went up after this request was declined.');
+  }
   log(ctx, r.groupId, 'Request revised', r.id + ': ' + r.amount + ' → ' + a.amount + ' ' + r.currency
     + ' minor units; previous explanation: ' + r.explanation + '; updated explanation: ' + explanation
     + '; ' + r.status + ' → ' + status);

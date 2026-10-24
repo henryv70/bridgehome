@@ -113,6 +113,18 @@ export const Family = __t.object("Family", {
 });
 export type Family = __Infer<typeof Family>;
 
+export const FraudFlag = __t.object("FraudFlag", {
+  id: __t.u64(),
+  groupId: __t.u64(),
+  requestId: __t.u64(),
+  kind: __t.string(),
+  severity: __t.string(),
+  detail: __t.string(),
+  status: __t.string(),
+  createdAt: __t.timestamp(),
+});
+export type FraudFlag = __Infer<typeof FraudFlag>;
+
 export const Invitation = __t.object("Invitation", {
   id: __t.u64(),
   groupId: __t.u64(),
@@ -367,6 +379,9 @@ export type VisibleCredential = __Infer<typeof VisibleCredential>;
 
 export const VisibleFamily = __t.object("VisibleFamily", {});
 export type VisibleFamily = __Infer<typeof VisibleFamily>;
+
+export const VisibleFraudFlag = __t.object("VisibleFraudFlag", {});
+export type VisibleFraudFlag = __Infer<typeof VisibleFraudFlag>;
 
 export const VisibleInvitation = __t.object("VisibleInvitation", {});
 export type VisibleInvitation = __Infer<typeof VisibleInvitation>;

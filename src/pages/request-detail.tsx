@@ -41,6 +41,7 @@ export default function RequestDetail() {
   const pledges = app.contributions.filter(c => c.requestId === r.id);
   const task = taskFor(app, r);
   const canShare = mine || app.isOwner;
+  const flags = sender ? app.fraudFlags.filter(f => f.requestId === r.id) : [];
 
   const nextAction = (() => {
     if (sender && r.status === 'submitted') return { label: t('Review request'), open: () => setSheet({ title: t('Review request'), description: t('{who} asked for {amount}.', { who: app.nameOf(r.author), amount: formatMoney(r.amount, r.currency) }), body: <ReviewForm r={r} onDone={close} /> }) };
@@ -75,6 +76,16 @@ export default function RequestDetail() {
         <div className="max-w-2xl"><TranslatedText kind="request" id={r.id} text={r.explanation} className="text-[15px] leading-relaxed" /></div>
         <Steps status={r.status} />
       </header>
+
+      {flags.length > 0 && (
+        <Panel className="space-y-3">
+          <div>
+            <p className="font-medium">{t('Worth a closer look')}</p>
+            <p className="mt-0.5 text-sm text-muted-foreground">{t('Automatic checks noticed something unusual. This is only a heads-up; nothing is blocked.')}</p>
+          </div>
+          <ul className="space-y-2">{flags.map(f => <FlagRow key={String(f.id)} id={f.id} severity={f.severity} detail={f.detail} />)}</ul>
+        </Panel>
+      )}
 
       <Panel className={task ? 'border-brand/40 bg-brand/[0.04]' : ''}>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -203,6 +214,25 @@ function TransferRow({ transfer: tr, onEdit, onConfirm }: { transfer: Transfer; 
         </div>
       )}
     </Panel>
+  );
+}
+
+const SEVERITY: Record<string, [string, () => string]> = {
+  high: ['bg-destructive', () => t('High')], medium: ['bg-amber-500', () => t('Medium')], low: ['bg-muted-foreground/50', () => t('Low')],
+};
+
+function FlagRow({ id, severity, detail }: { id: bigint; severity: string; detail: string }) {
+  const { reducers } = useApp();
+  const { run, busy } = useAction();
+  const [dot, label] = SEVERITY[severity] ?? SEVERITY.low;
+  return (
+    <li className="flex items-center justify-between gap-3 text-sm">
+      <span className="flex items-start gap-2">
+        <span className={'mt-1.5 size-2 shrink-0 rounded-full ' + dot} aria-hidden />
+        <span><span className="sr-only">{label()}: </span>{t(detail)}</span>
+      </span>
+      <Button variant="outline" size="sm" disabled={busy} onClick={() => { void run(() => reducers?.resolveFraudFlag({ flagId: id }), 'Marked as fine'); }}>{t('Looks fine')}</Button>
+    </li>
   );
 }
 

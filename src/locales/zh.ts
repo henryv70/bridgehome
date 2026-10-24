@@ -835,4 +835,14 @@ export default {
   "Choose whether you send or receive support.": "请选择您是汇款人还是收款人。",
   "This device already has an account. Log out to create another.": "此设备已有账户。请先退出登录再创建新账户。",
   "Unsupported language.": "不支持该语言。",
+  // Review flags (fraud.ts, request-detail.tsx).
+  "Worth a closer look": "值得仔细看看",
+  "Automatic checks noticed something unusual. This is only a heads-up; nothing is blocked.": "自动检查发现了异常情况。这只是提醒，不会阻止任何操作。",
+  "Looks fine": "没问题",
+  "Marked as fine": "已标记为没问题",
+  "Flag not found.": "找不到该提醒。",
+  "Review flag dismissed": "已忽略提醒",
+  "High": "高",
+  "Medium": "中",
+  "Low": "低",
 } satisfies Record<string, string>;

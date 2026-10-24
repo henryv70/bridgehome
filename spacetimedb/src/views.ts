@@ -1,7 +1,7 @@
 import { t, type AnonymousViewCtx, type InferSchema, type ViewCtx } from 'spacetimedb/server';
 import db, {
   audit, budget, budgetTarget, comment, commitment, contribution, family, invitation, membership, post, profile, reaction,
-  receipt, recordedTransfer, request, transferRevision, paymentMethod, signInResult, translation,
+  fraudFlag, receipt, recordedTransfer, request, transferRevision, paymentMethod, signInResult, translation,
 } from './schema';
 import { OPEN_FOR_FUNDING } from './lib';
 
@@ -21,6 +21,10 @@ export const visibleBudget = db.view({ name: 'my_budget', public: true }, t.arra
   ctx => { const ids = myGroups(ctx); return [...ctx.db.budget.iter()].filter(r => ids.has(r.groupId)); });
 export const visibleBudgetTarget = db.view({ name: 'my_budget_target', public: true }, t.array(budgetTarget.rowType),
   ctx => { const ids = myGroups(ctx); return [...ctx.db.budgetTarget.iter()].filter(r => ids.has(r.groupId)); });
+export const visibleFraudFlag = db.view({ name: 'my_fraud_flag', public: true }, t.array(fraudFlag.rowType), ctx => {
+  const ids = new Set([...ctx.db.membership.identity.filter(ctx.sender)].filter(m => m.role === 'sender').map(m => m.groupId));
+  return [...ctx.db.fraudFlag.iter()].filter(r => ids.has(r.groupId) && r.status === 'open');
+});
 export const visibleRequest = db.view({ name: 'my_request', public: true }, t.array(request.rowType),
   ctx => { const ids = myGroups(ctx); return [...ctx.db.request.iter()].filter(r => ids.has(r.groupId)); });
 export const visibleComment = db.view({ name: 'my_comment', public: true }, t.array(comment.rowType),

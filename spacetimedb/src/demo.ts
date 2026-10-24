@@ -2,6 +2,7 @@ import { t } from 'spacetimedb/server';
 import { Identity, Timestamp } from 'spacetimedb';
 import db from './schema';
 import { type Ctx, fail, randomHex } from './lib';
+import { screenRequest } from './fraud';
 
 const DAY = 86_400_000_000n;
 
@@ -14,7 +15,7 @@ type Spec = {
   accounts: { me: Account; a: Account; b: Account };
   requests: {
     key: string; by: Who; days: number; amount: bigint; category: string; priority: string; due: number; status: string; approved: bigint;
-    explanation: string; title?: string;
+    explanation: string; title?: string; screen?: boolean;
     comments?: [Who, number, string][];
     transfer?: { days: number; fee: bigint; rate: number; note: string; pay?: boolean; receipt?: [number, string] };
   }[];
@@ -106,6 +107,11 @@ const SPECS: Record<string, Spec> = {
       { key: 'rice', by: 'a', days: 16, amount: 6000n, category: 'Groceries', priority: 'routine', due: -6, status: 'received', approved: 6000n,
         explanation: 'A 50 kg sack of rice for the month and cooking oil.',
         transfer: { days: 15, fee: 199n, rate: 26340, note: 'Xoom, cash pickup', receipt: [13, 'Bought the rice at the market. Delivered by motorbike!'] } },
+      { key: 'checkup', by: 'a', days: 60, amount: 10500n, category: 'Health', priority: 'routine', due: -50, status: 'received', approved: 10500n,
+        explanation: 'Yearly checkup and blood tests at Bệnh viện Trung ương Huế.',
+        transfer: { days: 58, fee: 199n, rate: 26300, note: 'Remitly, bank deposit to Vietcombank', receipt: [56, 'Checkup done. The doctor says Bà is doing well.'] } },
+      { key: 'clinic', by: 'a', days: 1, amount: 50000n, category: 'Health', priority: 'urgent', due: 5, status: 'submitted', approved: 0n,
+        explanation: 'Treatment at a private clinic. The clinic asks for payment up front this week.', screen: true },
     ],
     commitment: [30000n, 'Monthly support for Bà Lan and Minh.'],
     budget: {
@@ -208,6 +214,8 @@ export const seedDemo = db.reducer({ family: t.string() }, (ctx, { family }) => 
     }
     if (q.status === 'completed') audit(q.by, Math.max(q.days - 12, 0), 'Request completed', String(r.id));
   }
+
+  for (const q of spec.requests) if (q.screen) screenRequest(ctx, ctx.db.request.id.find(requestIds[q.key])!);
 
   ctx.db.commitment.insert({ id: 0n, groupId: gid, author: ctx.sender, amount: spec.commitment[0], currency: 'USD', cadence: 'monthly', startDate: dayOffset(ctx, -70), note: spec.commitment[1], createdAt: ago(70) });
 
