@@ -6,9 +6,35 @@
 import { type Infer as __Infer } from "spacetimedb";
 
 // Import all reducer arg schemas
-import AddReducer from "../add_reducer";
-import SayHelloReducer from "../say_hello_reducer";
+import AddBudgetReducer from "../add_budget_reducer";
+import AddCommentReducer from "../add_comment_reducer";
+import AddCommitmentReducer from "../add_commitment_reducer";
+import CompleteRequestReducer from "../complete_request_reducer";
+import ConfirmReceiptReducer from "../confirm_receipt_reducer";
+import CreateGroupReducer from "../create_group_reducer";
+import CreateRequestReducer from "../create_request_reducer";
+import InviteMemberReducer from "../invite_member_reducer";
+import JoinGroupReducer from "../join_group_reducer";
+import ManageMemberReducer from "../manage_member_reducer";
+import RecordTransferReducer from "../record_transfer_reducer";
+import ReviewRequestReducer from "../review_request_reducer";
+import ReviseRequestReducer from "../revise_request_reducer";
+import RevokeInviteReducer from "../revoke_invite_reducer";
+import SaveProfileReducer from "../save_profile_reducer";
 
-export type AddParams = __Infer<typeof AddReducer>;
-export type SayHelloParams = __Infer<typeof SayHelloReducer>;
+export type AddBudgetParams = __Infer<typeof AddBudgetReducer>;
+export type AddCommentParams = __Infer<typeof AddCommentReducer>;
+export type AddCommitmentParams = __Infer<typeof AddCommitmentReducer>;
+export type CompleteRequestParams = __Infer<typeof CompleteRequestReducer>;
+export type ConfirmReceiptParams = __Infer<typeof ConfirmReceiptReducer>;
+export type CreateGroupParams = __Infer<typeof CreateGroupReducer>;
+export type CreateRequestParams = __Infer<typeof CreateRequestReducer>;
+export type InviteMemberParams = __Infer<typeof InviteMemberReducer>;
+export type JoinGroupParams = __Infer<typeof JoinGroupReducer>;
+export type ManageMemberParams = __Infer<typeof ManageMemberReducer>;
+export type RecordTransferParams = __Infer<typeof RecordTransferReducer>;
+export type ReviewRequestParams = __Infer<typeof ReviewRequestReducer>;
+export type ReviseRequestParams = __Infer<typeof ReviseRequestReducer>;
+export type RevokeInviteParams = __Infer<typeof RevokeInviteReducer>;
+export type SaveProfileParams = __Infer<typeof SaveProfileReducer>;
 

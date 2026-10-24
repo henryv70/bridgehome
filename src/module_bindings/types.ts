@@ -10,8 +10,164 @@ import {
   type Infer as __Infer,
 } from "spacetimedb";
 
+export const Audit = __t.object("Audit", {
+  id: __t.u64(),
+  groupId: __t.u64(),
+  actor: __t.identity(),
+  action: __t.string(),
+  detail: __t.string(),
+  createdAt: __t.timestamp(),
+});
+export type Audit = __Infer<typeof Audit>;
+
+export const Budget = __t.object("Budget", {
+  id: __t.u64(),
+  groupId: __t.u64(),
+  author: __t.identity(),
+  kind: __t.string(),
+  category: __t.string(),
+  amount: __t.u64(),
+  currency: __t.string(),
+  month: __t.string(),
+  explanation: __t.string(),
+  createdAt: __t.timestamp(),
+});
+export type Budget = __Infer<typeof Budget>;
+
+export const Comment = __t.object("Comment", {
+  id: __t.u64(),
+  groupId: __t.u64(),
+  requestId: __t.u64(),
+  author: __t.identity(),
+  text: __t.string(),
+  createdAt: __t.timestamp(),
+});
+export type Comment = __Infer<typeof Comment>;
+
+export const Commitment = __t.object("Commitment", {
+  id: __t.u64(),
+  groupId: __t.u64(),
+  author: __t.identity(),
+  amount: __t.u64(),
+  currency: __t.string(),
+  cadence: __t.string(),
+  startDate: __t.string(),
+  note: __t.string(),
+  createdAt: __t.timestamp(),
+});
+export type Commitment = __Infer<typeof Commitment>;
+
+export const Family = __t.object("Family", {
+  id: __t.u64(),
+  name: __t.string(),
+  owner: __t.identity(),
+  createdAt: __t.timestamp(),
+});
+export type Family = __Infer<typeof Family>;
+
+export const Invitation = __t.object("Invitation", {
+  id: __t.u64(),
+  groupId: __t.u64(),
+  code: __t.string(),
+  role: __t.string(),
+  expiresAt: __t.timestamp(),
+});
+export type Invitation = __Infer<typeof Invitation>;
+
+export const Membership = __t.object("Membership", {
+  id: __t.u64(),
+  groupId: __t.u64(),
+  identity: __t.identity(),
+  role: __t.string(),
+  name: __t.string(),
+});
+export type Membership = __Infer<typeof Membership>;
+
 export const Person = __t.object("Person", {
   name: __t.string(),
 });
 export type Person = __Infer<typeof Person>;
+
+export const Profile = __t.object("Profile", {
+  identity: __t.identity(),
+  name: __t.string(),
+});
+export type Profile = __Infer<typeof Profile>;
+
+export const Receipt = __t.object("Receipt", {
+  id: __t.u64(),
+  groupId: __t.u64(),
+  transferId: __t.u64(),
+  author: __t.identity(),
+  amount: __t.u64(),
+  currency: __t.string(),
+  useNote: __t.string(),
+  createdAt: __t.timestamp(),
+});
+export type Receipt = __Infer<typeof Receipt>;
+
+export const RecordedTransfer = __t.object("RecordedTransfer", {
+  id: __t.u64(),
+  groupId: __t.u64(),
+  requestId: __t.u64(),
+  author: __t.identity(),
+  amount: __t.u64(),
+  currency: __t.string(),
+  fee: __t.u64(),
+  expected: __t.u64(),
+  receiveCurrency: __t.string(),
+  rate: __t.string(),
+  note: __t.string(),
+  createdAt: __t.timestamp(),
+});
+export type RecordedTransfer = __Infer<typeof RecordedTransfer>;
+
+export const Request = __t.object("Request", {
+  id: __t.u64(),
+  groupId: __t.u64(),
+  author: __t.identity(),
+  amount: __t.u64(),
+  currency: __t.string(),
+  category: __t.string(),
+  explanation: __t.string(),
+  priority: __t.string(),
+  dueDate: __t.string(),
+  status: __t.string(),
+  approved: __t.u64(),
+  createdAt: __t.timestamp(),
+});
+export type Request = __Infer<typeof Request>;
+
+export const VisibleAudit = __t.object("VisibleAudit", {});
+export type VisibleAudit = __Infer<typeof VisibleAudit>;
+
+export const VisibleBudget = __t.object("VisibleBudget", {});
+export type VisibleBudget = __Infer<typeof VisibleBudget>;
+
+export const VisibleComment = __t.object("VisibleComment", {});
+export type VisibleComment = __Infer<typeof VisibleComment>;
+
+export const VisibleCommitment = __t.object("VisibleCommitment", {});
+export type VisibleCommitment = __Infer<typeof VisibleCommitment>;
+
+export const VisibleFamily = __t.object("VisibleFamily", {});
+export type VisibleFamily = __Infer<typeof VisibleFamily>;
+
+export const VisibleInvitation = __t.object("VisibleInvitation", {});
+export type VisibleInvitation = __Infer<typeof VisibleInvitation>;
+
+export const VisibleMembership = __t.object("VisibleMembership", {});
+export type VisibleMembership = __Infer<typeof VisibleMembership>;
+
+export const VisibleProfile = __t.object("VisibleProfile", {});
+export type VisibleProfile = __Infer<typeof VisibleProfile>;
+
+export const VisibleReceipt = __t.object("VisibleReceipt", {});
+export type VisibleReceipt = __Infer<typeof VisibleReceipt>;
+
+export const VisibleRecordedTransfer = __t.object("VisibleRecordedTransfer", {});
+export type VisibleRecordedTransfer = __Infer<typeof VisibleRecordedTransfer>;
+
+export const VisibleRequest = __t.object("VisibleRequest", {});
+export type VisibleRequest = __Infer<typeof VisibleRequest>;
 

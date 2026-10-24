@@ -34,13 +34,37 @@ import {
 } from "spacetimedb";
 
 // Import all reducer arg schemas
-import AddReducer from "./add_reducer";
-import SayHelloReducer from "./say_hello_reducer";
+import AddBudgetReducer from "./add_budget_reducer";
+import AddCommentReducer from "./add_comment_reducer";
+import AddCommitmentReducer from "./add_commitment_reducer";
+import CompleteRequestReducer from "./complete_request_reducer";
+import ConfirmReceiptReducer from "./confirm_receipt_reducer";
+import CreateGroupReducer from "./create_group_reducer";
+import CreateRequestReducer from "./create_request_reducer";
+import InviteMemberReducer from "./invite_member_reducer";
+import JoinGroupReducer from "./join_group_reducer";
+import ManageMemberReducer from "./manage_member_reducer";
+import RecordTransferReducer from "./record_transfer_reducer";
+import ReviewRequestReducer from "./review_request_reducer";
+import ReviseRequestReducer from "./revise_request_reducer";
+import RevokeInviteReducer from "./revoke_invite_reducer";
+import SaveProfileReducer from "./save_profile_reducer";
 
 // Import all procedure arg schemas
 
 // Import all table schema definitions
 import PersonRow from "./person_table";
+import VisibleAuditRow from "./visible_audit_table";
+import VisibleBudgetRow from "./visible_budget_table";
+import VisibleCommentRow from "./visible_comment_table";
+import VisibleCommitmentRow from "./visible_commitment_table";
+import VisibleFamilyRow from "./visible_family_table";
+import VisibleInvitationRow from "./visible_invitation_table";
+import VisibleMembershipRow from "./visible_membership_table";
+import VisibleProfileRow from "./visible_profile_table";
+import VisibleReceiptRow from "./visible_receipt_table";
+import VisibleRecordedTransferRow from "./visible_recorded_transfer_table";
+import VisibleRequestRow from "./visible_request_table";
 
 /** Type-only namespace exports for generated type groups. */
 
@@ -53,12 +77,102 @@ const tablesSchema = __schema({
     constraints: [
     ],
   }, PersonRow),
+  visibleAudit: __table({
+    name: 'my_audit',
+    indexes: [
+    ],
+    constraints: [
+    ],
+  }, VisibleAuditRow),
+  visibleBudget: __table({
+    name: 'my_budget',
+    indexes: [
+    ],
+    constraints: [
+    ],
+  }, VisibleBudgetRow),
+  visibleComment: __table({
+    name: 'my_comment',
+    indexes: [
+    ],
+    constraints: [
+    ],
+  }, VisibleCommentRow),
+  visibleCommitment: __table({
+    name: 'my_commitment',
+    indexes: [
+    ],
+    constraints: [
+    ],
+  }, VisibleCommitmentRow),
+  visibleFamily: __table({
+    name: 'my_family',
+    indexes: [
+    ],
+    constraints: [
+    ],
+  }, VisibleFamilyRow),
+  visibleInvitation: __table({
+    name: 'my_invitation',
+    indexes: [
+    ],
+    constraints: [
+    ],
+  }, VisibleInvitationRow),
+  visibleMembership: __table({
+    name: 'my_membership',
+    indexes: [
+    ],
+    constraints: [
+    ],
+  }, VisibleMembershipRow),
+  visibleProfile: __table({
+    name: 'my_profile',
+    indexes: [
+    ],
+    constraints: [
+    ],
+  }, VisibleProfileRow),
+  visibleReceipt: __table({
+    name: 'my_receipt',
+    indexes: [
+    ],
+    constraints: [
+    ],
+  }, VisibleReceiptRow),
+  visibleRecordedTransfer: __table({
+    name: 'my_recorded_transfer',
+    indexes: [
+    ],
+    constraints: [
+    ],
+  }, VisibleRecordedTransferRow),
+  visibleRequest: __table({
+    name: 'my_request',
+    indexes: [
+    ],
+    constraints: [
+    ],
+  }, VisibleRequestRow),
 });
 
 /** The schema information for all reducers in this module. This is defined the same way as the reducers would have been defined in the server, except the body of the reducer is omitted in code generation. */
 const reducersSchema = __reducers(
-  __reducerSchema("add", AddReducer),
-  __reducerSchema("say_hello", SayHelloReducer),
+  __reducerSchema("add_budget", AddBudgetReducer),
+  __reducerSchema("add_comment", AddCommentReducer),
+  __reducerSchema("add_commitment", AddCommitmentReducer),
+  __reducerSchema("complete_request", CompleteRequestReducer),
+  __reducerSchema("confirm_receipt", ConfirmReceiptReducer),
+  __reducerSchema("create_group", CreateGroupReducer),
+  __reducerSchema("create_request", CreateRequestReducer),
+  __reducerSchema("invite_member", InviteMemberReducer),
+  __reducerSchema("join_group", JoinGroupReducer),
+  __reducerSchema("manage_member", ManageMemberReducer),
+  __reducerSchema("record_transfer", RecordTransferReducer),
+  __reducerSchema("review_request", ReviewRequestReducer),
+  __reducerSchema("revise_request", ReviseRequestReducer),
+  __reducerSchema("revoke_invite", RevokeInviteReducer),
+  __reducerSchema("save_profile", SaveProfileReducer),
 );
 
 /** The schema information for all procedures in this module. This is defined the same way as the procedures would have been defined in the server. */

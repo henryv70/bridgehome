@@ -1,70 +1,53 @@
-import { useState } from 'react';
-import { tables, reducers } from './module_bindings';
-import { useSpacetimeDB, useTable, useReducer } from 'spacetimedb/react';
-
-function App() {
-  const [name, setName] = useState('');
-
-  const conn = useSpacetimeDB();
-  const { isActive: connected } = conn;
-
-  // Subscribe to all people in the database
-  const [people] = useTable(tables.person);
-
-  const addReducer = useReducer(reducers.add);
-
-  const addPerson = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name.trim() || !connected) return;
-
-    // Call the add reducer
-    addReducer({ name: name });
-    setName('');
-  };
-
-  return (
-    <div style={{ padding: '2rem' }}>
-      <h1>BridgeHome</h1>
-
-      <div style={{ marginBottom: '1rem' }}>
-        Status:{' '}
-        <strong style={{ color: connected ? 'green' : 'red' }}>
-          {connected ? 'Connected' : 'Disconnected'}
-        </strong>
-      </div>
-
-      <form onSubmit={addPerson} style={{ marginBottom: '2rem' }}>
-        <input
-          type="text"
-          placeholder="Enter name"
-          value={name}
-          onChange={e => setName(e.target.value)}
-          style={{ padding: '0.5rem', marginRight: '0.5rem' }}
-          disabled={!connected}
-        />
-        <button
-          type="submit"
-          style={{ padding: '0.5rem 1rem' }}
-          disabled={!connected}
-        >
-          Add Person
-        </button>
-      </form>
-
-      <div>
-        <h2>People ({people.length})</h2>
-        {people.length === 0 ? (
-          <p>No people yet. Add someone above!</p>
-        ) : (
-          <ul>
-            {people.map((person, index) => (
-              <li key={index}>{person.name}</li>
-            ))}
-          </ul>
-        )}
-      </div>
-    </div>
-  );
+import { useState, type FormEvent, type ReactNode } from 'react';
+import { useSpacetimeDB, useTable } from 'spacetimedb/react';
+import { DbConnection, tables } from './module_bindings';
+import './style.css';
+const currencies = ['USD', 'PHP', 'MXN', 'EUR', 'GBP', 'INR', 'CAD', 'JPY'];
+const digits = (c: string) => c === 'JPY' ? 0 : 2;
+function minor(v: string, c: string) { const d = digits(c); if (!(d ? /^\d+(\.\d{1,2})?$/ : /^\d+$/).test(v)) throw Error(`Enter a nonnegative ${c} amount with at most ${d} decimal places.`); const [a, b = ''] = v.split('.'); return BigInt(a) * 10n ** BigInt(d) + BigInt(b.padEnd(d, '0') || '0'); }
+function value(n: bigint, c: string) { const d = digits(c); return d ? `${n / 100n}.${String(n % 100n).padStart(2, '0')}` : String(n); }
+function money(n: bigint, c: string) { return `${c} ${value(n, c)}`; }
+function Input({ name, label, type = 'text', initial = '', optional = false }: { name: string, label: string, type?: string, initial?: string, optional?: boolean }) { return <label>{label}<input name={name} type={type} defaultValue={initial} required={!optional} maxLength={1000} /></label>; }
+function Select({ name, label, options }: { name: string, label: string, options: string[] }) { return <label>{label}<select name={name} aria-label={label}>{options.map(x => <option key={x}>{x}</option>)}</select></label>; }
+const Currency = ({ name = 'currency', label = 'Currency' }: { name?: string, label?: string }) => <Select name={name} label={label} options={currencies} />;
+function Form({ title, children, action, run, button = 'Save' }: { title: string, children: ReactNode, action: (f: FormData) => Promise<unknown>, run: (a: () => Promise<unknown>) => Promise<boolean>, button?: string }) { return <form onSubmit={async (e: FormEvent<HTMLFormElement>) => { e.preventDefault(); const el = e.currentTarget; const f = new FormData(el); if (await run(() => action(f))) el.reset(); }}><h3>{title}</h3>{children}<button>{button}</button></form>; }
+const str = (f: FormData, k: string) => String(f.get(k) ?? '');
+const amt = (f: FormData, k = 'amount', c = 'currency') => minor(str(f, k), str(f, c));
+export default function App() {
+  const { isActive, identity, getConnection } = useSpacetimeDB(); const conn = getConnection() as DbConnection | undefined;
+  const [profiles, pReady] = useTable(tables.visibleProfile); const [groups, gReady] = useTable(tables.visibleFamily); const [members, mReady] = useTable(tables.visibleMembership); const [invites, iReady] = useTable(tables.visibleInvitation); const [requests, rReady] = useTable(tables.visibleRequest); const [budgets, bReady] = useTable(tables.visibleBudget); const [comments, cReady] = useTable(tables.visibleComment); const [commitments, kReady] = useTable(tables.visibleCommitment); const [transfers, tReady] = useTable(tables.visibleRecordedTransfer); const [receipts, xReady] = useTable(tables.visibleReceipt); const [audit, aReady] = useTable(tables.visibleAudit);
+  const [selected, setSelected] = useState(''); const [tab, setTab] = useState('Requests'); const [error, setError] = useState(''); const [notice, setNotice] = useState(''); const [busy, setBusy] = useState(false); const [month, setMonth] = useState(''); const [category, setCategory] = useState(''); const [status, setStatus] = useState('');
+  const ready = [pReady, gReady, mReady, iReady, rReady, bReady, cReady, kReady, tReady, xReady, aReady].every(Boolean);
+  const group = groups.find(g => String(g.id) === selected) ?? groups[0]; const gid = group?.id; const mine = members.find(m => m.groupId === gid && m.identity.equals(identity!)); const isOwner = !!group?.owner.equals(identity!); const sender = mine?.role === 'sender'; const own = (id: { toHexString: () => string }) => id.toHexString() === identity?.toHexString();
+  const run = async (action: () => Promise<unknown>) => { setError(''); setNotice(''); if (!isActive || !ready) { setError('Wait for a live connection and current data.'); return false; } setBusy(true); try { await action(); setNotice('Saved successfully.'); return true; } catch (e) { setError(String(e)); return false; } finally { setBusy(false); } };
+  const r = conn?.reducers; const fprops = { run }; const familyRequests = requests.filter(q => q.groupId === gid); const filtered = familyRequests.filter(q => (!month || q.dueDate.startsWith(month)) && (!category || q.category.toLowerCase().includes(category.toLowerCase())) && (!status || q.status === status));
+  const selectedRequestIds = new Set(filtered.map(q => q.id));
+  const selectedTransfers = transfers.filter(t => selectedRequestIds.has(t.requestId));
+  const selectedTransferIds = new Set(selectedTransfers.map(t => t.id));
+  const selectedReceipts = receipts.filter(x => selectedTransferIds.has(x.transferId));
+  const budgetGroups = [...new Set(budgets.filter(b => b.groupId === gid).map(b => b.month + '|' + b.currency))];
+  const nameOf = (id: { toHexString: () => string }) => members.find(m => m.identity.toHexString() === id.toHexString())?.name ?? 'Former family member';
+  return <><header><a className="brand" href="/">⌂ <span>BridgeHome</span></a><span className={'connection ' + (isActive ? 'live' : '')}>{isActive ? '● Connected' : '○ Disconnected · reconnecting'}</span></header><main><section className="intro"><p className="eyebrow">A LITTLE CLOSER, EVEN FROM FAR AWAY</p><h1>Family support.<br /><em>Shared understanding.</em></h1><p>Plan together, make room for real life, and keep everyone in the loop.</p></section><aside className="trust">Coordination only — BridgeHome does not move money. Budgets, transfers, and receipts are self-reported, not independently verified.</aside>
+    {error && <p className="error" role="alert">{error}</p>}{notice && <p className="notice" role="status">{notice}</p>}{!ready && <p role="status">{isActive ? 'Loading your authorized family information…' : 'Waiting for the local database. Saved information may be out of date.'}</p>}
+    <fieldset disabled={!isActive || !ready || busy} className="workspace">
+      <details open={!profiles.length}><summary>Your profile & family groups</summary><div className="grid"><Form {...fprops} title="Your display name" action={f => r!.saveProfile({ name: str(f, 'name') })}><Input name="name" label="Name" initial={profiles[0]?.name} /><small>Your identity is stored in this browser. Display names are self-reported.</small></Form><Form {...fprops} title="Create a family group" button="Create group" action={f => r!.createGroup({ name: str(f, 'name'), role: str(f, 'role') })}><Input name="name" label="Family group name" /><Select name="role" label="Your role" options={['sender', 'recipient']} /></Form><Form {...fprops} title="Join your family" button="Join group" action={f => r!.joinGroup({ code: str(f, 'code') })}><Input name="code" label="Invitation code" /><small>Ask your group owner for a private invitation.</small></Form></div></details>
+      {!group ? <div className="empty"><h2>A shared plan starts with your family.</h2><p>Save your name, then create a group or use an invitation.</p></div> : <><section className="groupbar"><label>Family group<select value={String(gid)} onChange={e => setSelected(e.target.value)}>{groups.map(g => <option value={String(g.id)} key={String(g.id)}>{g.name}</option>)}</select></label><span>{mine?.name} · {mine?.role}{isOwner ? ' · group owner' : ''}</span></section><nav aria-label="Family workspace">{['Requests', 'Household budget', 'Commitments', 'Members', 'History'].map(t => <button type="button" key={t} aria-current={tab === t ? 'page' : undefined} onClick={() => setTab(t)}>{t}</button>)}</nav>
+        {tab === 'Requests' && <><div className="sectiontitle"><h2>What your family needs</h2><span>{familyRequests.length} requests</span></div><div className="filters"><label>Due month<input type="month" value={month} onChange={e => setMonth(e.target.value)} /></label><label>Category<input value={category} onChange={e => setCategory(e.target.value)} placeholder="All categories" /></label><label>Status<select value={status} onChange={e => setStatus(e.target.value)}>{['', 'draft', 'submitted', 'approved', 'rejected', 'sent', 'received', 'completed'].map(s => <option key={s} value={s}>{s || 'All statuses'}</option>)}</select></label></div><div className="totals">{currencies.filter(c => filtered.some(q => q.currency === c) || selectedReceipts.some(x => x.currency === c)).map(c => <div key={c}><strong>{c}</strong><p>Requested {money(filtered.filter(q => q.currency === c).reduce((s, q) => s + q.amount, 0n), c)}</p><p>Approved {money(filtered.filter(q => q.currency === c).reduce((s, q) => s + q.approved, 0n), c)}</p><p>Recorded sent {money(selectedTransfers.filter(t => t.currency === c).reduce((sum, t) => sum + t.amount, 0n), c)}</p><p>Confirmed received {money(selectedReceipts.filter(x => x.currency === c).reduce((sum, x) => sum + x.amount, 0n), c)}</p></div>)}</div>
+          {!sender && <details><summary>＋ New request</summary><Form {...fprops} title="Tell your family what would help" button="Save request" action={f => r!.createRequest({ groupId: gid!, amount: amt(f), currency: str(f, 'currency'), category: str(f, 'category'), explanation: str(f, 'explanation'), priority: str(f, 'priority'), dueDate: str(f, 'dueDate'), draft: str(f, 'state') === 'draft' })}><Input name="amount" label="Requested amount" /><Currency /><Input name="category" label="Category" /><Input name="explanation" label="What is needed and why?" /><Select name="priority" label="Priority" options={['routine', 'important', 'urgent']} /><Input name="dueDate" label="Due date" type="date" /><Select name="state" label="Save as" options={['submitted', 'draft']} /></Form></details>}
+          {!filtered.length && <p className="empty">No requests match this view. New needs will appear here in real time.</p>}
+          {filtered.map(q => {
+const qt = transfers.filter(t => t.requestId === q.id); const sent = qt.reduce((s, t) => s + t.amount, 0n); return <article key={String(q.id)}><div className="sectiontitle"><h3>{q.category} <span className="badge">{q.status}</span></h3><strong>{money(q.amount, q.currency)}</strong></div><p>{q.explanation}</p>{q.status === 'draft' && <small>Drafts are visible to your family group.</small>}<small>{nameOf(q.author)} · {q.priority} · due {q.dueDate} · #{String(q.id)}</small><div className="metrics"><span>Requested <b>{money(q.amount, q.currency)}</b></span><span>Approved <b>{money(q.approved, q.currency)}</b></span><span>Recorded sent <b>{money(sent, q.currency)}</b></span><span>Approval remaining <b>{money(q.approved - sent, q.currency)}</b></span></div>
+              {sender && q.status === 'submitted' && <Form {...fprops} title="Review request" button="Save review" action={f => r!.reviewRequest({ requestId: q.id, approved: minor(str(f, 'amount'), q.currency), note: str(f, 'note') })}><Input name="amount" label={`Approve amount (${q.currency}); use 0 to reject`} initial={value(q.amount, q.currency)} /><Input name="note" label="Explain your decision" /></Form>}
+              {own(q.author) && ['draft', 'submitted', 'rejected'].includes(q.status) && <details><summary>Revise request</summary><Form {...fprops} title="Update your request" button="Submit revision" action={f => r!.reviseRequest({ requestId: q.id, amount: minor(str(f, 'amount'), q.currency), explanation: str(f, 'explanation'), submit: true })}><Input name="amount" label={`Amount (${q.currency})`} initial={value(q.amount, q.currency)} /><Input name="explanation" label="Updated explanation" initial={q.explanation} /></Form></details>}
+              {sender && ['approved', 'sent', 'received'].includes(q.status) && sent < q.approved && <details><summary>Record money sent outside BridgeHome</summary><Form {...fprops} title="Record a transfer" button="Record sent amount" action={f => r!.recordTransfer({ requestId: q.id, amount: minor(str(f, 'amount'), q.currency), fee: minor(str(f, 'fee'), q.currency), expected: amt(f, 'expected', 'receiveCurrency'), receiveCurrency: str(f, 'receiveCurrency'), rate: str(f, 'rate'), note: str(f, 'note') })}><Input name="amount" label={`Principal sent (${q.currency})`} /><Input name="fee" label={`Additional fee (${q.currency})`} initial="0" /><Currency name="receiveCurrency" label="Receiving currency" /><Input name="expected" label="Estimated amount to arrive" /><Input name="rate" label="Exchange rate (receiving units per sending unit)" initial="1" /><Input name="note" label="Method, date, and estimate assumptions" /><small>The principal counts toward approval. Fees are additional. Expected arrival is your estimate and is not calculated or verified by a provider.</small></Form></details>}
+              {qt.map(t => { const receipt = receipts.find(x => x.transferId === t.id); return <section className="transfer" key={String(t.id)}><h4>Transfer record #{String(t.id)} · self-reported</h4><p>Sent {money(t.amount, t.currency)} + fee {money(t.fee, t.currency)} · estimated arrival {money(t.expected, t.receiveCurrency)} · rate {t.rate}</p><p>{t.note}</p>{receipt ? <p>Recipient confirmed {money(receipt.amount, receipt.currency)}. {receipt.amount !== t.expected ? 'This differs from the estimate. ' : ''}{receipt.useNote}</p> : <p>Awaiting recipient confirmation.</p>}{!receipt && own(q.author) && <Form {...fprops} title="Confirm what arrived" button="Confirm receipt" action={f => r!.confirmReceipt({ transferId: t.id, amount: minor(str(f, 'amount'), t.receiveCurrency), useNote: str(f, 'useNote') })}><Input name="amount" label={`Received amount (${t.receiveCurrency})`} initial={value(t.expected, t.receiveCurrency)} /><Input name="useNote" label="Intended or actual use; explain any difference" /></Form>}</section>; })}
+              {q.status === 'received' && own(q.author) && <button type="button" onClick={() => void run(() => r!.completeRequest({ requestId: q.id }))}>Mark request completed</button>}
+              <details><summary>Family discussion ({comments.filter(c => c.requestId === q.id).length})</summary>{comments.filter(c => c.requestId === q.id).map(c => <p key={String(c.id)}><b>{nameOf(c.author)}:</b> {c.text}</p>)}<Form {...fprops} title="Add context or explain a correction" button="Add comment" action={f => r!.addComment({ requestId: q.id, text: str(f, 'text') })}><Input name="text" label="Comment" /></Form></details></article>;
+})}</>}
+        {tab === 'Household budget' && <><h2>The household picture</h2><p>All entries are self-reported. Changing needs are normal; add context rather than assuming a discrepancy means dishonesty.</p><div className="totals">{budgetGroups.map(key => { const [month,currency]=key.split('|'); const entries=budgets.filter(b=>b.groupId===gid && b.month===month && b.currency===currency); const income=entries.filter(b=>b.kind==='income').reduce((sum,b)=>sum+b.amount,0n); const expense=entries.filter(b=>b.kind==='expense').reduce((sum,b)=>sum+b.amount,0n); return <div key={key}><b>{month} · {currency}</b><p>Income {money(income,currency)}</p><p>Expenses {money(expense,currency)}</p><p>{income>=expense?'Remaining':'Gap'} {money(income>=expense?income-expense:expense-income,currency)}</p></div>; })}</div><Form {...fprops} title="Add a monthly budget entry" action={f => r!.addBudget({ groupId: gid!, kind: str(f, 'kind'), category: str(f, 'category'), amount: amt(f), currency: str(f, 'currency'), month: str(f, 'month'), explanation: str(f, 'explanation') })}><Select name="kind" label="Entry type" options={['income', 'expense']} /><Input name="category" label="Category" /><Input name="amount" label="Amount" /><Currency /><Input name="month" label="Month" type="month" /><Input name="explanation" label="Context" /></Form>{budgets.filter(b => b.groupId === gid).map(b => <article key={String(b.id)}><b>{b.month} · {b.category} · {b.kind} · {money(b.amount, b.currency)}</b><p>{b.explanation}</p><small>Self-reported by {nameOf(b.author)}</small></article>)}</>}
+        {tab === 'Commitments' && <><h2>A plan you can count on</h2><p>Commitments are plans, not scheduled payments. Monthly commitments do not automatically create transfers.</p>{sender && <Form {...fprops} title="Make a commitment" action={f => r!.addCommitment({ groupId: gid!, amount: amt(f), currency: str(f, 'currency'), cadence: str(f, 'cadence'), startDate: str(f, 'startDate'), note: str(f, 'note') })}><Input name="amount" label="Amount" /><Currency /><Select name="cadence" label="Frequency" options={['once', 'monthly']} /><Input name="startDate" label="Start date" type="date" /><Input name="note" label="What you are committing to" /></Form>}{commitments.filter(c => c.groupId === gid).map(c => <article key={String(c.id)}><b>{money(c.amount, c.currency)} · {c.cadence} · from {c.startDate}</b><p>{c.note}</p><small>{nameOf(c.author)}</small></article>)}</>}
+        {tab === 'Members' && <><h2>Your family circle</h2><p>Senders review and record support. Recipients request and confirm their receipts. The group owner manages access.</p>{members.filter(m => m.groupId === gid).map(m => <article key={String(m.id)}><b>{m.name}</b> · {m.role}{isOwner && !own(m.identity) && <div className="actions">{['sender', 'recipient', 'remove'].filter(role => role !== m.role).map(role => <button type="button" key={role} onClick={() => void run(() => r!.manageMember({ memberId: m.id, role }))}>{role === 'remove' ? 'Remove access' : 'Set ' + role}</button>)}</div>}</article>)}{isOwner && <><Form {...fprops} title="Invite a family member" button="Create invitation" action={f => r!.inviteMember({ groupId: gid!, role: str(f, 'role') })}><Select name="role" label="Role to grant" options={['recipient', 'sender']} /><small>Share codes privately. Anyone with a code can claim its role once, within seven days.</small></Form>{invites.filter(i => i.groupId === gid).map(i => <article key={String(i.id)}><p>{i.role} invitation · expires {i.expiresAt.toDate().toLocaleDateString()}</p><code>{i.code}</code><button type="button" onClick={() => void run(() => r!.revokeInvite({ invitationId: i.id }))}>Revoke invitation</button></article>)}</>}</>}
+        {tab === 'History' && <><h2>A shared record</h2><p>Append-only history of family changes. Times use your browser’s timezone.</p>{[...audit].filter(a => a.groupId === gid).sort((a, b) => a.createdAt.microsSinceUnixEpoch > b.createdAt.microsSinceUnixEpoch ? -1 : 1).map(a => <article key={String(a.id)}><b>{a.action}</b><p>{a.detail}</p><small>{nameOf(a.actor)} · {a.createdAt.toDate().toLocaleString()}</small></article>)}</>}
+      </>}
+    </fieldset><footer>Built around trust, with room for conversation.</footer></main></>;
 }
-
-export default App;
