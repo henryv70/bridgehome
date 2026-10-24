@@ -201,6 +201,18 @@ export const audit = table({ name: 'audit' }, {
   createdAt: t.timestamp().index('btree'),
 });
 
+// Advisory review flags on requests and payouts, raised by rule checks in fraud.ts. Never block anything.
+export const fraudFlag = table({ name: 'fraud_flag' }, {
+  id: t.u64().primaryKey().autoInc(),
+  groupId: t.u64().index('btree'),
+  requestId: t.u64().index('btree'),
+  kind: t.string(),
+  severity: t.string(),
+  detail: t.string(),
+  status: t.string().default('open'),
+  createdAt: t.timestamp(),
+});
+
 // Username sign-in. The password never reaches the database: the browser derives an auth key
 // (checked here) and an encryption key (kept in the browser) from it, and stores its connection
 // token sealed with the encryption key. Signing in on another device unseals that token.
@@ -244,7 +256,7 @@ export const translation = table({
 const db = schema({
   person, profile, family, membership, invitation, budget, budgetTarget, request, comment,
   commitment, recordedTransfer, transferRevision, receipt, post, reaction, contribution, paymentMethod, audit,
-  credential, signInResult, translation,
+  credential, signInResult, translation, fraudFlag,
 }, {
   // Set at publish time from shell variables of the same name; never stored in tables or sent to clients.
   env: { ANTHROPIC_API_KEY: t.option(t.string()), TRANSLATION_MODEL: t.option(t.string()) },

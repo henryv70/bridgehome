@@ -2,6 +2,7 @@ import { t } from 'spacetimedb/server';
 import db from './schema';
 import { CURRENCIES, fail, log, req, text } from './lib';
 import { insertTransfer } from './transfers';
+import { screenPayout } from './fraud';
 
 // Demo payments. Nothing here contacts a bank; it records what a real integration would.
 const PURPOSES = ['send', 'receive'];
@@ -39,6 +40,7 @@ export const sendMoney = db.reducer({
   if (!payout || !payout.owner.isEqual(r.author) || payout.purpose !== 'receive') {
     fail("The requester hasn't added a bank account or mobile wallet to receive money. Ask them to add one under Bank accounts, or record a transfer you sent another way.");
   }
+  screenPayout(ctx, r, payout);
   const note = `BridgeHome Pay (demo): ${funding.institution} ••${funding.last4} → ${payout.institution} ••${payout.last4}`;
   insertTransfer(ctx, r.id, {
     amount: a.amount, fee: a.fee, expected: a.expected, receiveCurrency: payout.currency, rate: a.rate, note,

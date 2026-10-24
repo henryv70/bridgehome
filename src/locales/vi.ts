@@ -835,4 +835,14 @@ export default {
   "Choose whether you send or receive support.": "Hãy chọn bạn là người gửi hay người nhận hỗ trợ.",
   "This device already has an account. Log out to create another.": "Thiết bị này đã có tài khoản. Hãy đăng xuất để tạo tài khoản khác.",
   "Unsupported language.": "Ngôn ngữ không được hỗ trợ.",
+  // Review flags (fraud.ts, request-detail.tsx).
+  "Worth a closer look": "Nên xem kỹ hơn",
+  "Automatic checks noticed something unusual. This is only a heads-up; nothing is blocked.": "Kiểm tra tự động nhận thấy điều bất thường. Đây chỉ là lưu ý; không có gì bị chặn.",
+  "Looks fine": "Không sao",
+  "Marked as fine": "Đã đánh dấu là không sao",
+  "Flag not found.": "Không tìm thấy cảnh báo.",
+  "Review flag dismissed": "Đã bỏ qua cảnh báo",
+  "High": "Cao",
+  "Medium": "Trung bình",
+  "Low": "Thấp",
 } satisfies Record<string, string>;

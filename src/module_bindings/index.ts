@@ -54,6 +54,7 @@ import ManageMemberReducer from "./manage_member_reducer";
 import RecordTransferReducer from "./record_transfer_reducer";
 import RemoveCredentialReducer from "./remove_credential_reducer";
 import RemovePaymentMethodReducer from "./remove_payment_method_reducer";
+import ResolveFraudFlagReducer from "./resolve_fraud_flag_reducer";
 import ReviewRequestReducer from "./review_request_reducer";
 import ReviseRequestReducer from "./revise_request_reducer";
 import RevokeInviteReducer from "./revoke_invite_reducer";
@@ -90,6 +91,7 @@ import VisibleCommitmentRow from "./visible_commitment_table";
 import VisibleContributionRow from "./visible_contribution_table";
 import VisibleCredentialRow from "./visible_credential_table";
 import VisibleFamilyRow from "./visible_family_table";
+import VisibleFraudFlagRow from "./visible_fraud_flag_table";
 import VisibleInvitationRow from "./visible_invitation_table";
 import VisibleMembershipRow from "./visible_membership_table";
 import VisiblePaymentMethodRow from "./visible_payment_method_table";
@@ -170,6 +172,13 @@ const tablesSchema = __schema({
     constraints: [
     ],
   }, VisibleFamilyRow),
+  visibleFraudFlag: __table({
+    name: 'my_fraud_flag',
+    indexes: [
+    ],
+    constraints: [
+    ],
+  }, VisibleFraudFlagRow),
   visibleInvitation: __table({
     name: 'my_invitation',
     indexes: [
@@ -320,6 +329,7 @@ const reducersSchema = __reducers(
   __reducerSchema("record_transfer", RecordTransferReducer),
   __reducerSchema("remove_credential", RemoveCredentialReducer),
   __reducerSchema("remove_payment_method", RemovePaymentMethodReducer),
+  __reducerSchema("resolve_fraud_flag", ResolveFraudFlagReducer),
   __reducerSchema("review_request", ReviewRequestReducer),
   __reducerSchema("revise_request", ReviseRequestReducer),
   __reducerSchema("revoke_invite", RevokeInviteReducer),

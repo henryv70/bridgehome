@@ -25,10 +25,11 @@ function useFamilyTables() {
   const [audit, r16] = useTable(tables.visibleAudit);
   const [accounts, r17] = useTable(tables.visiblePaymentMethod);
   const [credentials, r18] = useTable(tables.visibleCredential);
-  const ready = r1 && r2 && r3 && r4 && r5 && r6 && r7 && r8 && r9 && r10 && r11 && r12 && r13 && r14 && r15 && r16 && r17 && r18;
+  const [fraudFlags, r19] = useTable(tables.visibleFraudFlag);
+  const ready = r1 && r2 && r3 && r4 && r5 && r6 && r7 && r8 && r9 && r10 && r11 && r12 && r13 && r14 && r15 && r16 && r17 && r18 && r19;
   return {
     ready, profiles, families, memberships, invitations, requests, budgets, targets, comments, commitments,
-    transfers, revisions, receipts, posts, reactions, contributions, audit, accounts, credentials,
+    transfers, revisions, receipts, posts, reactions, contributions, audit, accounts, credentials, fraudFlags,
   };
 }
 
@@ -58,6 +59,7 @@ function scope(t: Tables, gid: bigint | undefined) {
     reactions: inGroup(t.reactions),
     contributions: inGroup(t.contributions),
     audit: inGroup(t.audit),
+    fraudFlags: inGroup(t.fraudFlags),
   };
 }
 
