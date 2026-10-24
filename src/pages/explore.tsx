@@ -1,8 +1,8 @@
 import { Link } from 'react-router';
 import { useTable } from 'spacetimedb/react';
-import { Users } from 'lucide-react';
+import { HandHeart, Users } from 'lucide-react';
+import { buttonVariants } from '@/components/ui/button';
 import { tables } from '@/module_bindings';
-import { useApp } from '@/lib/data';
 import { formatMoney, sum } from '@/lib/money';
 import { byNewest } from '@/lib/time';
 import { Progress } from '@/components/ui/progress';
@@ -10,13 +10,8 @@ import { Empty, Photo } from '@/components/app/kit';
 import { PublicLayout } from '@/components/app/public-layout';
 
 export default function Explore() {
-  const app = useApp();
-  const [allFamilies, ready] = useTable(tables.publicFamily);
-  // Demo families are only listed for their own members (their links still work for anyone).
-  const families = allFamilies.filter(f => !f.isDemo || app.families.some(g => g.id === f.id));
-  const shown = new Set(families.map(f => f.id));
-  const [allPosts] = useTable(tables.publicPost);
-  const posts = allPosts.filter(p => shown.has(p.groupId));
+  const [families, ready] = useTable(tables.publicFamily);
+  const [posts] = useTable(tables.publicPost);
   const [pledges] = useTable(tables.publicContribution);
   const feed = [...posts].sort(byNewest);
 
@@ -25,6 +20,7 @@ export default function Explore() {
       <section className="mb-10 max-w-2xl">
         <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">Families, supporting each other across borders.</h1>
         <p className="mt-3 text-muted-foreground">These families chose to share their story and the moments support made possible. You can follow along and pledge to help.</p>
+        <Link to="/give" className={buttonVariants({ className: 'mt-5' })}><HandHeart />See needs and top supporters</Link>
       </section>
 
       <h2 className="mb-3 text-sm font-medium text-muted-foreground">Families</h2>
@@ -63,6 +59,9 @@ export default function Explore() {
               <Link key={String(p.id)} to={`/p/${p.slug}`} className="group relative overflow-hidden rounded-md sm:rounded-xl" title={p.caption}>
                 <Photo bytes={p.photo} type={p.photoType} url={p.photoUrl} alt={p.caption} className="aspect-square w-full transition group-hover:scale-[1.02]" />
                 <span className="absolute inset-x-0 bottom-0 hidden bg-gradient-to-t from-black/60 p-2 text-xs text-white sm:block">{p.familyName}</span>
+                {p.requestId !== 0n && (() => { const ps = pledges.filter(c => c.requestId === p.requestId); return ps.length > 0 && (
+                  <span className="tabular absolute top-1.5 left-1.5 rounded-full bg-black/60 px-2 py-0.5 text-[11px] font-medium text-white backdrop-blur">{formatMoney(sum(ps, c => c.amount), ps[0].currency)} pledged</span>
+                ); })()}
               </Link>
             ))}
           </div>

@@ -27,3 +27,8 @@ export function demoFee(amount: bigint, currency: string) {
   const unit = 10n ** BigInt(digits(currency));
   return (99n * unit) / 100n + (amount * 5n) / 1000n;
 }
+
+// Approximate USD value of an amount, for ranking across currencies only.
+export function toUsdApprox(amount: bigint, currency: string) {
+  return Number(amount) / 10 ** digits(currency) / (PER_USD[currency] ?? 1);
+}

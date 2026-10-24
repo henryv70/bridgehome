@@ -41,7 +41,8 @@ export default function Welcome() {
     if (!ready || decided.current) return;
     decided.current = true;
     if (params.get('step')) return;
-    if (profile && code) setStep('join');
+    if (profile && params.get('demo')) { setStep('family'); setDemo(true); }
+    else if (profile && code) setStep('join');
     else if (profile && families.length) navigate('/', { replace: true });
     else if (profile) setStep('family');
   }, [ready, profile, families.length, code, params, navigate]);
@@ -74,7 +75,7 @@ export default function Welcome() {
               const name = formValue(new FormData(e.currentTarget), 'name');
               if (await run(() => reducers?.saveProfile({ name }))) {
                 if (params.get('step') === 'name' && families.length) navigate(-1);
-                else setStep(code ? 'join' : 'family');
+                else { setStep(code ? 'join' : 'family'); if (params.get('demo')) setDemo(true); }
               }
             }}>
               <div>

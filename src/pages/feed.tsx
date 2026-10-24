@@ -9,6 +9,8 @@ import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { AreaField, Drawer, Empty, PageHeader, SelectField, formValue } from '@/components/app/kit';
 import { PostCard, summarize } from '@/components/app/post-card';
+import { SupportBar } from '@/components/app/giving';
+import { sum } from '@/lib/money';
 import { toast } from 'sonner';
 
 export default function Feed() {
@@ -30,6 +32,10 @@ export default function Feed() {
             return (
               <PostCard key={String(p.id)} photo={p.photo} photoType={p.photoType} photoUrl={p.photoUrl} caption={p.caption} author={app.nameOf(p.author)} createdAt={p.createdAt}
                 context={request && <Link to={`/requests/${request.id}`} className="hover:underline">{request.category}</Link>}
+                support={request && (request.isPublic || app.contributions.some(c => c.requestId === request.id)) && (() => {
+                  const ps = app.contributions.filter(c => c.requestId === request.id);
+                  return <SupportBar pledged={sum(ps, c => c.amount)} goal={request.amount} currency={request.currency} supporters={ps.length} />;
+                })()}
                 reactions={summarize(app.reactions.filter(r => r.postId === p.id).map(r => ({ emoji: r.emoji, mine: app.isMe(r.identity) })))}
                 onReact={emoji => run(() => app.reducers?.toggleReaction({ postId: p.id, emoji }))}
                 badge={<span className="inline-flex items-center gap-1 text-xs text-muted-foreground" title={p.visibility === 'public' ? 'Public' : 'Family only'}>

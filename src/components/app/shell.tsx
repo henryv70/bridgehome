@@ -1,7 +1,7 @@
 import { Suspense, useState } from 'react';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router';
 import { useTheme } from '@/lib/theme';
-import { BookOpen, Check, ChevronsUpDown, Compass, Home, Images, Landmark, Moon, Plus, ReceiptText, Sparkles, Sun, Users, Wallet } from 'lucide-react';
+import { BookOpen, Check, HandHeart, ChevronsUpDown, Compass, Home, Images, Landmark, Moon, Plus, ReceiptText, Sparkles, Sun, Users, Wallet } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useApp } from '@/lib/data';
 import { taskFor } from '@/lib/status';
@@ -79,8 +79,10 @@ function AccountMenu() {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => navigate('/about')}><Sparkles className="size-4" />About BridgeHome</DropdownMenuItem>
         <DropdownMenuItem onClick={() => navigate('/how')}><BookOpen className="size-4" />How BridgeHome works</DropdownMenuItem>
         <DropdownMenuItem onClick={() => navigate('/explore')}><Compass className="size-4" />Explore public families</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate('/give')}><HandHeart className="size-4" />Give to families</DropdownMenuItem>
         <DropdownMenuItem onClick={() => navigate('/accounts')}><Landmark className="size-4" />Bank accounts</DropdownMenuItem>
         <DropdownMenuItem onClick={() => setDemo(true)}><Sparkles className="size-4" />Add a demo family</DropdownMenuItem>
       </DropdownMenuContent>

@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from 'react-router';
+import { Navigate, Route, Routes, useLocation } from 'react-router';
 import { useApp } from '@/lib/data';
 import { AppShell, Splash } from '@/components/app/shell';
 import { lazy, Suspense } from 'react';
@@ -14,11 +14,15 @@ const Explore = lazy(() => import('@/pages/explore'));
 const PublicPage = lazy(() => import('@/pages/public-page'));
 const HowItWorks = lazy(() => import('@/pages/how'));
 const Accounts = lazy(() => import('@/pages/accounts'));
+const Give = lazy(() => import('@/pages/give'));
+const Landing = lazy(() => import('@/pages/landing'));
 
+// Families get their dashboard; everyone else sees the landing page at "/".
 function RequireFamily({ children }: { children: React.ReactNode }) {
   const { ready, profile, group } = useApp();
+  const { pathname } = useLocation();
   if (!ready) return <Splash />;
-  if (!profile || !group) return <Navigate to="/welcome" replace />;
+  if (!profile || !group) return pathname === '/' ? <Landing /> : <Navigate to="/welcome" replace />;
   return children;
 }
 
@@ -28,6 +32,8 @@ export default function App() {
     <Routes>
       <Route path="/welcome" element={<Welcome />} />
       <Route path="/explore" element={<Explore />} />
+      <Route path="/give" element={<Give />} />
+      <Route path="/about" element={<Landing />} />
       <Route path="/p/:slug" element={<PublicPage />} />
       <Route path="/how" element={<HowItWorks />} />
       <Route element={<RequireFamily><AppShell /></RequireFamily>}>

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Link } from 'react-router';
+import { Link, NavLink } from 'react-router';
 import { useApp } from '@/lib/data';
 import { buttonVariants } from '@/components/ui/button';
 import { Wordmark } from './brand';
@@ -12,7 +12,9 @@ export function PublicLayout({ children }: { children: ReactNode }) {
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-3 px-4 md:px-8">
           <Link to="/explore"><Wordmark /></Link>
           <nav className="flex items-center gap-1">
-            <Link to="/how" className={buttonVariants({ variant: 'ghost', size: 'sm' })}>How it works</Link>
+            <NavLink to="/explore" className={({ isActive }) => buttonVariants({ variant: 'ghost', size: 'sm', className: isActive ? 'bg-muted' : 'hidden sm:inline-flex' })}>Explore</NavLink>
+            <NavLink to="/give" className={({ isActive }) => buttonVariants({ variant: 'ghost', size: 'sm', className: isActive ? 'bg-muted' : '' })}>Give</NavLink>
+            <NavLink to="/how" className={({ isActive }) => buttonVariants({ variant: 'ghost', size: 'sm', className: isActive ? 'bg-muted' : 'hidden sm:inline-flex' })}>How it works</NavLink>
             <Link to={profile && families.length ? '/' : '/welcome'} className={buttonVariants({ size: 'sm' })}>{profile && families.length ? 'My family' : 'Get started'}</Link>
           </nav>
         </div>

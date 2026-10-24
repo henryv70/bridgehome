@@ -12,9 +12,9 @@ export function summarize(rows: readonly { emoji: string; mine: boolean }[]): Re
   return EMOJIS.map(emoji => ({ emoji, count: rows.filter(r => r.emoji === emoji).length, mine: rows.some(r => r.emoji === emoji && r.mine) }));
 }
 
-export function PostCard({ photo, photoType, photoUrl, caption, author, context, createdAt, reactions, onReact, badge, menu }: {
+export function PostCard({ photo, photoType, photoUrl, caption, author, context, createdAt, reactions, onReact, badge, menu, support }: {
   photo: Uint8Array; photoType: string; photoUrl?: string; caption: string; author: string; context?: ReactNode; createdAt: Timestamp;
-  reactions: ReactionSummary[]; onReact?: (emoji: string) => void; badge?: ReactNode; menu?: ReactNode;
+  reactions: ReactionSummary[]; onReact?: (emoji: string) => void; badge?: ReactNode; menu?: ReactNode; support?: ReactNode;
 }) {
   return (
     <article className="overflow-hidden rounded-2xl border bg-card">
@@ -38,6 +38,7 @@ export function PostCard({ photo, photoType, photoUrl, caption, author, context,
           ))}
         </div>
         <p className="text-sm leading-relaxed"><span className="font-medium">{author}</span> {caption}</p>
+        {support}
       </div>
     </article>
   );

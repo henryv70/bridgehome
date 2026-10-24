@@ -202,6 +202,7 @@ export const PublicPostRow = __t.object("PublicPostRow", {
   requestTitle: __t.string(),
   createdAt: __t.timestamp(),
   photoUrl: __t.string(),
+  requestId: __t.u64(),
 });
 export type PublicPostRow = __Infer<typeof PublicPostRow>;
 

@@ -70,7 +70,12 @@ const SPECS: Record<string, Spec> = {
       ['b', 7, 'laptop', 'family', 'Found a refurbished one at the mall for ₱17,500. Close to the budget!', '/demo/laptop.jpg'],
       ['a', 2, null, 'public', 'Saturday market run. Tomatoes were cheap this week.', '/demo/market.jpg'],
     ],
-    pledges: [['Tita Marissa', 'roof', 10000n, 'For Lola, from all of us in San Diego.', 3], ['Kevin L.', 'roof', 2500n, '', 2], ['Church small group', null, 5000n, 'Praying for your family.', 6]],
+    pledges: [
+      ['Tita Marissa', 'roof', 10000n, 'For Lola, from all of us in San Diego.', 3], ['Kevin L.', 'roof', 2500n, '', 2],
+      ['Church small group', null, 5000n, 'Praying for your family.', 6], ['$me', 'roof', 7500n, 'Hang in there, Lola!', 1],
+      ['Marcus Johnson', 'roof', 5000n, 'Stay dry this typhoon season.', 1], ['Jose Ramirez', 'roof', 6000n, 'Para Lola, con cariño.', 2],
+      ['Priya Patel', null, 2500n, "Rooting for Ana's nursing career.", 4], ['Emily Chen', 'roof', 1500n, '', 0],
+    ],
   },
   nguyen: {
     name: 'The Nguyễn Family', slugBase: 'nguyen', goal: 100000n,
@@ -96,6 +101,7 @@ const SPECS: Record<string, Spec> = {
         title: 'Help Bà Lan welcome the family home for Tết', comments: [['b', 2, "I'll help Bà wrap the bánh chưng this year."]] },
       { key: 'bike', by: 'b', days: 5, amount: 14000n, category: 'Transport', priority: 'routine', due: 10, status: 'approved', approved: 12000n,
         explanation: 'My xe máy needs new brake pads and a rear tire before the rainy season. The shop near campus quoted 3.6 triệu đồng.',
+        title: "Keep Minh's motorbike safe for the rainy season",
         comments: [['me', 4, 'Approved $120 now. Ask the shop if they can do the tire for less.']] },
       { key: 'rice', by: 'a', days: 16, amount: 6000n, category: 'Groceries', priority: 'routine', due: -6, status: 'received', approved: 6000n,
         explanation: 'A 50 kg sack of rice for the month and cooking oil.',
@@ -117,7 +123,12 @@ const SPECS: Record<string, Spec> = {
       ['a', 6, null, 'public', 'Morning at the market before opening the stall.', '/demo/asianmarket.jpg'],
       ['a', 8, 'meds', 'family', "Bà's prescription from the doctor.", '/demo/meds.jpg'],
     ],
-    pledges: [['Cô Hạnh (San Jose)', 'tet', 5000n, 'Chúc mừng năm mới! For the Tết table.', 2], ['Anh Tuấn', 'tet', 2000n, '', 1], ['Viet Student Association', null, 10000n, 'Proud to support families back home.', 5]],
+    pledges: [
+      ['Cô Hạnh (San Jose)', 'tet', 5000n, 'Chúc mừng năm mới! For the Tết table.', 2], ['Anh Tuấn', 'tet', 2000n, '', 1],
+      ['Viet Student Association', null, 10000n, 'Proud to support families back home.', 5], ['$me', 'tet', 5000n, "For Bà's Tết table. Love you all.", 1],
+      ['Linh Tran', 'tet', 3500n, 'From one Huế family to another.', 1], ['Daniel Nguyen', null, 10000n, 'Proud of this family.', 3],
+      ['Priya Patel', 'bike', 2000n, 'Ride safe, Minh!', 2], ['Grace Kim', 'tet', 1500n, 'Chúc mừng năm mới!', 0],
+    ],
   },
 };
 
@@ -232,7 +243,11 @@ export const seedDemo = db.reducer({ family: t.string() }, (ctx, { family }) => 
   });
 
   for (const [name, key, amount, message, days] of spec.pledges) {
-    ctx.db.contribution.insert({ id: 0n, groupId: gid, requestId: key ? requestIds[key] : 0n, contributor: fake(), name, amount, currency: 'USD', message, createdAt: ago(days) });
+    const self = name === '$me';
+    ctx.db.contribution.insert({
+      id: 0n, groupId: gid, requestId: key ? requestIds[key] : 0n, contributor: self ? ctx.sender : fake(), name: self ? me.name : name,
+      amount, currency: 'USD', message, createdAt: ago(days, 45),
+    });
   }
   audit('me', 0, 'Demo data loaded', 'Sample members, requests, accounts, budget, photos and pledges');
 });

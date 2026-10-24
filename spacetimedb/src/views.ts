@@ -56,7 +56,7 @@ const PublicFamilyRow = t.row('PublicFamilyRow', {
 });
 const PublicPostRow = t.row('PublicPostRow', {
   id: t.u64().primaryKey(), groupId: t.u64(), familyName: t.string(), slug: t.string(), authorName: t.string(),
-  caption: t.string(), photo: t.array(t.u8()), photoType: t.string(), requestTitle: t.string(), createdAt: t.timestamp(), photoUrl: t.string(),
+  caption: t.string(), photo: t.array(t.u8()), photoType: t.string(), requestTitle: t.string(), createdAt: t.timestamp(), photoUrl: t.string(), requestId: t.u64(),
 });
 const PublicRequestRow = t.row('PublicRequestRow', {
   id: t.u64().primaryKey(), groupId: t.u64(), title: t.string(), category: t.string(), amount: t.u64(),
@@ -88,7 +88,7 @@ export const publicPost = db.anonymousView({ name: 'public_post', public: true }
     return {
       id: p.id, groupId: p.groupId, familyName: g.name, slug: g.slug, authorName: author?.name ?? 'Family member',
       caption: p.caption, photo: p.photo, photoType: p.photoType, requestTitle: r?.isPublic ? r.publicTitle : '',
-      createdAt: p.createdAt, photoUrl: p.photoUrl,
+      createdAt: p.createdAt, photoUrl: p.photoUrl, requestId: r?.isPublic ? r.id : 0n,
     };
   }));
 

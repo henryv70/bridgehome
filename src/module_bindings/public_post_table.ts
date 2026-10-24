@@ -22,4 +22,5 @@ export default __t.row({
   requestTitle: __t.string().name("request_title"),
   createdAt: __t.timestamp().name("created_at"),
   photoUrl: __t.string().name("photo_url"),
+  requestId: __t.u64().name("request_id"),
 });
