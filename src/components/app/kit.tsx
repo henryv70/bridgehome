@@ -9,6 +9,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { CURRENCIES } from '@/lib/money';
 import { STATUS } from '@/lib/status';
+import { t } from '@/lib/i18n';
 import { usePhotoUrl } from '@/lib/photo';
 import { useIsMobile } from '@/hooks/use-media';
 
@@ -58,7 +59,7 @@ export function StatusBadge({ status, className }: { status: string; className?:
 export function Help({ children }: { children: ReactNode }) {
   return (
     <Popover>
-      <PopoverTrigger render={<button type="button" className="inline-flex align-middle text-muted-foreground hover:text-foreground" aria-label="More info" />}>
+      <PopoverTrigger render={<button type="button" className="inline-flex align-middle text-muted-foreground hover:text-foreground" aria-label={t('More info')} />}>
         <CircleHelp className="size-3.5" />
       </PopoverTrigger>
       <PopoverContent className="w-64 text-sm">{children}</PopoverContent>
@@ -120,7 +121,7 @@ export function MoneyField({ label, hint, name = 'amount', currencyName = 'curre
             className="tabular h-10 min-w-0 flex-1 bg-transparent px-3 text-base outline-none md:text-sm" />
           {lockCurrency
             ? <span className="flex items-center border-l px-3 text-sm text-muted-foreground">{currency}<input type="hidden" name={currencyName} value={currency} /></span>
-            : <select name={currencyName} defaultValue={currency ?? 'USD'} onChange={e => onCurrencyChange?.(e.target.value)} aria-label="Currency"
+            : <select name={currencyName} defaultValue={currency ?? 'USD'} onChange={e => onCurrencyChange?.(e.target.value)} aria-label={t('Currency')}
                 className="border-l bg-transparent px-2 text-sm outline-none">
                 {CURRENCIES.map(c => <option key={c}>{c}</option>)}
               </select>}

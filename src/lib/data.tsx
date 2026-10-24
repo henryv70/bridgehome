@@ -4,6 +4,7 @@ import type { Identity } from 'spacetimedb';
 import { toast } from 'sonner';
 import { DbConnection, tables } from '@/module_bindings';
 import { GROUP_KEY } from './session';
+import { t } from './i18n';
 
 function useFamilyTables() {
   const [profiles, r1] = useTable(tables.visibleProfile);
@@ -99,9 +100,10 @@ export function useApp() {
   return v;
 }
 
+// Server messages are English; known ones are translated, the rest pass through.
 export function errorText(e: unknown) {
   const m = e instanceof Error ? e.message : String(e);
-  return m.replace(/^(Error|SenderError):\s*/i, '').replace(/^The reducer .*? failed: /, '');
+  return t(m.replace(/^(Error|SenderError):\s*/i, '').replace(/^The reducer .*? failed: /, ''));
 }
 
 // Runs a reducer call with consistent feedback. Resolves true on success.
@@ -109,11 +111,11 @@ export function useAction() {
   const { isActive } = useApp();
   const [busy, setBusy] = useState(false);
   const run = useCallback(async (fn: () => Promise<unknown> | undefined, success?: string) => {
-    if (!isActive) { toast.error('Reconnecting to BridgeHome. Try again in a moment.'); return false; }
+    if (!isActive) { toast.error(t('Reconnecting to BridgeHome. Try again in a moment.')); return false; }
     setBusy(true);
     try {
       await fn();
-      if (success) toast.success(success);
+      if (success) toast.success(t(success));
       return true;
     } catch (e) {
       toast.error(errorText(e));

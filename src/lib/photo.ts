@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { t } from './i18n';
 
 const MAX_BYTES = 400_000;
 
@@ -13,13 +14,13 @@ export async function compressPhoto(file: File): Promise<{ bytes: Uint8Array; ty
     canvas.getContext('2d')!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
     for (const quality of [0.82, 0.7, 0.58]) {
       const blob = await new Promise<Blob | null>(res => canvas.toBlob(res, 'image/jpeg', quality));
-      if (!blob) throw Error('Could not read this photo.');
+      if (!blob) throw Error(t('Could not read this photo.'));
       if (blob.size <= MAX_BYTES) {
         return { bytes: new Uint8Array(await blob.arrayBuffer()), type: 'image/jpeg', url: URL.createObjectURL(blob) };
       }
     }
   }
-  throw Error('This photo is too large. Try a different one.');
+  throw Error(t('This photo is too large. Try a different one.'));
 }
 
 const cache = new WeakMap<Uint8Array, string>();

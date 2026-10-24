@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router';
 import { useAction, useApp } from '@/lib/data';
+import { t } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
 import { Drawer } from './kit';
 
@@ -13,17 +14,17 @@ export function DemoPicker({ open, onOpenChange }: { open: boolean; onOpenChange
   const { run, busy } = useAction();
   const navigate = useNavigate();
   return (
-    <Drawer open={open} onOpenChange={onOpenChange} title="Choose a demo family" description="Sample members, requests, bank accounts, budgets and photos. You'll be the sender and owner.">
+    <Drawer open={open} onOpenChange={onOpenChange} title={t('Choose a demo family')} description={t("Sample members, requests, bank accounts, budgets and photos. You'll be the sender and owner.")}>
       <div className="space-y-3">
         {DEMOS.map(d => (
           <button key={d.key} type="button" disabled={busy}
-            onClick={async () => { if (await run(() => reducers?.seedDemo({ family: d.key }), `${d.name} is ready`)) { onOpenChange(false); navigate('/'); } }}
+            onClick={async () => { if (await run(() => reducers?.seedDemo({ family: d.key }), t('{family} is ready', { family: t(d.name) }))) { onOpenChange(false); navigate('/'); } }}
             className={cn('flex w-full gap-4 overflow-hidden rounded-2xl border bg-card p-3 text-left transition hover:border-foreground/30 hover:shadow-sm disabled:opacity-60')}>
             <img src={d.photo} alt="" className="size-20 shrink-0 rounded-xl object-cover" />
             <span className="min-w-0">
-              <span className="block font-medium">{d.name}</span>
-              <span className="block text-xs text-muted-foreground">{d.where} · {d.money}</span>
-              <span className="mt-1 block text-sm text-muted-foreground">{d.blurb}</span>
+              <span className="block font-medium">{t(d.name)}</span>
+              <span className="block text-xs text-muted-foreground">{t(d.where)} · {d.money}</span>
+              <span className="mt-1 block text-sm text-muted-foreground">{t(d.blurb)}</span>
             </span>
           </button>
         ))}

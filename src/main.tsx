@@ -7,6 +7,7 @@ import { DbConnection } from './module_bindings';
 import { Toaster } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { AppDataProvider } from '@/lib/data';
+import { LanguageProvider } from '@/lib/i18n';
 import { DB_NAME, TOKEN_KEY, storedToken } from '@/lib/session';
 import App from './App';
 import './style.css';
@@ -28,12 +29,14 @@ createRoot(document.getElementById('root')!).render(
     <ThemeProvider>
       <SpacetimeDBProvider connectionBuilder={connectionBuilder}>
         <AppDataProvider>
+          <LanguageProvider>
           <TooltipProvider>
             <BrowserRouter>
               <App />
             </BrowserRouter>
             <Toaster position="top-center" />
           </TooltipProvider>
+          </LanguageProvider>
         </AppDataProvider>
       </SpacetimeDBProvider>
     </ThemeProvider>

@@ -3,11 +3,13 @@ import { Link, useNavigate, useSearchParams } from 'react-router';
 import { ArrowLeft, ArrowRight, HandHeart, Home, KeyRound, Send, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAction, useApp } from '@/lib/data';
+import { t } from '@/lib/i18n';
 import { Button } from '@/components/ui/button';
 import { Wordmark } from '@/components/app/brand';
 import { TextField, formValue } from '@/components/app/kit';
 import { Splash } from '@/components/app/shell';
 import { DemoPicker } from '@/components/app/demo-picker';
+import { LanguageSelect } from '@/components/app/language';
 
 type Step = 'name' | 'family' | 'create' | 'join';
 
@@ -49,25 +51,28 @@ export default function Welcome() {
 
   if (!ready) return <Splash />;
 
-  const back = (to: Step) => <Button type="button" variant="ghost" size="sm" className="-ml-2 mb-4" onClick={() => setStep(to)}><ArrowLeft />Back</Button>;
+  const back = (to: Step) => <Button type="button" variant="ghost" size="sm" className="-ml-2 mb-4" onClick={() => setStep(to)}><ArrowLeft />{t('Back')}</Button>;
 
   return (
     <div className="grid min-h-dvh lg:grid-cols-[1.1fr_1fr]">
       <aside className="dark relative hidden flex-col justify-between overflow-hidden bg-[#141413] p-12 text-[#fcfcfb] lg:flex">
         <Wordmark />
         <div className="max-w-md space-y-6">
-          <h1 className="text-4xl font-semibold leading-tight tracking-tight">Support your family across borders, together.</h1>
+          <h1 className="text-4xl font-semibold leading-tight tracking-tight">{t('Support your family across borders, together.')}</h1>
           <ul className="space-y-4 text-white/70">
-            <li className="flex gap-3"><HandHeart className="mt-0.5 size-5 shrink-0" />Family back home asks for what they need, with context.</li>
-            <li className="flex gap-3"><Send className="mt-0.5 size-5 shrink-0" />You approve it, send money however you already do, and record it.</li>
-            <li className="flex gap-3"><Home className="mt-0.5 size-5 shrink-0" />They confirm it arrived and share how it helped.</li>
+            <li className="flex gap-3"><HandHeart className="mt-0.5 size-5 shrink-0" />{t('Family back home asks for what they need, with context.')}</li>
+            <li className="flex gap-3"><Send className="mt-0.5 size-5 shrink-0" />{t('You approve it, send money however you already do, and record it.')}</li>
+            <li className="flex gap-3"><Home className="mt-0.5 size-5 shrink-0" />{t('They confirm it arrived and share how it helped.')}</li>
           </ul>
         </div>
-        <p className="text-xs text-white/45">BridgeHome coordinates. It never holds or moves money.</p>
+        <p className="text-xs text-white/45">{t('BridgeHome coordinates. It never holds or moves money.')}</p>
       </aside>
 
       <main className="pt-safe flex flex-col px-5 py-8 sm:px-10">
-        <Wordmark className="lg:hidden" />
+        <div className="flex items-center justify-between gap-3">
+          <Wordmark className="lg:invisible" />
+          <LanguageSelect />
+        </div>
         <div className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center py-10">
           {step === 'name' && (
             <form className="space-y-6" onSubmit={async e => {
@@ -79,14 +84,14 @@ export default function Welcome() {
               }
             }}>
               <div>
-                <p className="text-sm text-muted-foreground">{code ? "You've been invited to a family" : 'Welcome'}</p>
-                <h2 className="mt-1 text-2xl font-semibold tracking-tight">What should your family call you?</h2>
+                <p className="text-sm text-muted-foreground">{code ? t("You've been invited to a family") : t('Welcome')}</p>
+                <h2 className="mt-1 text-2xl font-semibold tracking-tight">{t('What should your family call you?')}</h2>
               </div>
-              <TextField name="name" label="Display name" placeholder="e.g. Marco" defaultValue={profile?.name} required maxLength={80} autoFocus
-                hint="Shown to people in your family groups. You can change it later." />
-              <Button size="lg" className="h-11 w-full" disabled={busy}>Continue<ArrowRight /></Button>
-              {!profile && <p className="text-center text-sm text-muted-foreground">Already have an account? <Link to="/login" className="font-medium text-foreground underline-offset-4 hover:underline">Log in</Link></p>}
-              <p className="text-center text-sm text-muted-foreground">Just looking? <Link to="/explore" className="font-medium text-foreground underline-offset-4 hover:underline">Explore public families</Link></p>
+              <TextField name="name" label={t('Display name')} placeholder={t('e.g. Marco')} defaultValue={profile?.name} required maxLength={80} autoFocus
+                hint={t('Shown to people in your family groups. You can change it later.')} />
+              <Button size="lg" className="h-11 w-full" disabled={busy}>{t('Continue')}<ArrowRight /></Button>
+              {!profile && <p className="text-center text-sm text-muted-foreground">{t('Already have an account?')} <Link to="/login" className="font-medium text-foreground underline-offset-4 hover:underline">{t('Log in')}</Link></p>}
+              <p className="text-center text-sm text-muted-foreground">{t('Just looking?')} <Link to="/explore" className="font-medium text-foreground underline-offset-4 hover:underline">{t('Explore public families')}</Link></p>
             </form>
           )}
 
@@ -94,14 +99,14 @@ export default function Welcome() {
             <div className="space-y-6">
               <div>
                 {families.length > 0 && back('name')}
-                <p className="text-sm text-muted-foreground">Hi {profile?.name}</p>
-                <h2 className="mt-1 text-2xl font-semibold tracking-tight">How would you like to start?</h2>
+                <p className="text-sm text-muted-foreground">{t('Hi {name}', { name: profile?.name ?? '' })}</p>
+                <h2 className="mt-1 text-2xl font-semibold tracking-tight">{t('How would you like to start?')}</h2>
               </div>
               <div className="space-y-3">
-                <Choice icon={<Home />} title="Start a family group" onClick={() => setStep('create')}>You'll be the owner and can invite others.</Choice>
-                <Choice icon={<KeyRound />} title="I have an invitation" onClick={() => setStep('join')}>Join with a link or code from your family.</Choice>
-                <Choice icon={<Sparkles />} title="Try a demo family" onClick={() => setDemo(true)}>
-                  A Vietnamese or Filipino family with requests, bank accounts, budgets, photos and a public page.
+                <Choice icon={<Home />} title={t('Start a family group')} onClick={() => setStep('create')}>{t("You'll be the owner and can invite others.")}</Choice>
+                <Choice icon={<KeyRound />} title={t('I have an invitation')} onClick={() => setStep('join')}>{t('Join with a link or code from your family.')}</Choice>
+                <Choice icon={<Sparkles />} title={t('Try a demo family')} onClick={() => setDemo(true)}>
+                  {t('A Vietnamese or Filipino family with requests, bank accounts, budgets, photos and a public page.')}
                 </Choice>
               </div>
             </div>
@@ -115,19 +120,19 @@ export default function Welcome() {
             }}>
               <div>
                 {back('family')}
-                <h2 className="text-2xl font-semibold tracking-tight">Start your family group</h2>
+                <h2 className="text-2xl font-semibold tracking-tight">{t('Start your family group')}</h2>
               </div>
-              <TextField name="name" label="Family name" placeholder="e.g. The Reyes Family" required maxLength={80} autoFocus />
+              <TextField name="name" label={t('Family name')} placeholder={t('e.g. The Reyes Family')} required maxLength={80} autoFocus />
               <div className="space-y-2">
-                <p className="text-[13px] font-medium">Your role</p>
-                <Choice icon={<Send />} title="I send support" selected={role === 'sender'} onClick={() => setRole('sender')}>
-                  You review requests, send money (outside the app), and record what you sent.
+                <p className="text-[13px] font-medium">{t('Your role')}</p>
+                <Choice icon={<Send />} title={t('I send support')} selected={role === 'sender'} onClick={() => setRole('sender')}>
+                  {t('You review requests, send money (outside the app), and record what you sent.')}
                 </Choice>
-                <Choice icon={<HandHeart />} title="I receive support" selected={role === 'recipient'} onClick={() => setRole('recipient')}>
-                  You ask for what's needed and confirm what arrives.
+                <Choice icon={<HandHeart />} title={t('I receive support')} selected={role === 'recipient'} onClick={() => setRole('recipient')}>
+                  {t("You ask for what's needed and confirm what arrives.")}
                 </Choice>
               </div>
-              <Button size="lg" className="h-11 w-full" disabled={busy}>Create family</Button>
+              <Button size="lg" className="h-11 w-full" disabled={busy}>{t('Create family')}</Button>
             </form>
           )}
 
@@ -140,11 +145,11 @@ export default function Welcome() {
             }}>
               <div>
                 {back('family')}
-                <h2 className="text-2xl font-semibold tracking-tight">Join your family</h2>
-                <p className="mt-1 text-sm text-muted-foreground">Paste the invitation link or code your family owner shared. Each invitation works once and expires after 7 days.</p>
+                <h2 className="text-2xl font-semibold tracking-tight">{t('Join your family')}</h2>
+                <p className="mt-1 text-sm text-muted-foreground">{t('Paste the invitation link or code your family owner shared. Each invitation works once and expires after 7 days.')}</p>
               </div>
-              <TextField name="code" label="Invitation link or code" defaultValue={code} required autoFocus={!code} />
-              <Button size="lg" className="h-11 w-full" disabled={busy}>Join family</Button>
+              <TextField name="code" label={t('Invitation link or code')} defaultValue={code} required autoFocus={!code} />
+              <Button size="lg" className="h-11 w-full" disabled={busy}>{t('Join family')}</Button>
             </form>
           )}
         </div>

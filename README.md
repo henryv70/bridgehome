@@ -53,6 +53,13 @@ Each browser profile, device and the Expo app has its own identity, which makes 
 - **Log in and log out**: set a username and password from the profile menu (Home also nudges you), then log out and log back in at `/login`, on the same device or another one. Logging out without a username warns first, because the device's anonymous identity can't be recovered. Five wrong passwords lock the username for five minutes.
 - **Missing bank accounts**: when a sender has no linked bank, or the recipient has no receiving account, the send flow explains what to do and offers to link one or to remind the recipient in the conversation. Recipients see the same guidance on their open requests.
 - **Onboarding and guidance**: role explanations, invitation links (`/welcome?code=…`), status explanations, a How it works page (`/how`), and a one-tap demo family.
+- **Languages**: English, Vietnamese (Tiếng Việt) and Simplified Chinese (简体中文). The language follows the browser or phone setting on first visit and can be changed from the profile menu or the globe picker on public and sign-in pages. The choice is remembered per device. Dates, months and relative times follow the language. Text family members type stays as written.
+
+## Translations
+
+Interface text goes through `t()` from `src/lib/i18n.tsx`. The English sentence is the key, and `{name}` placeholders are filled in: `t('Send {amount}', { amount })`. Use `tn(one, other, n)` for counts. Translations live in `src/locales/vi.ts` and `src/locales/zh.ts`. A missing entry falls back to English. Known server messages (errors and audit actions) are translated on the client the same way.
+
+After adding or changing interface text, run `npm run i18n:check`. It lists every string the app can show that is missing from either language, and any translation that dropped a placeholder.
 
 ## Data and authorization
 

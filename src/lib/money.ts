@@ -1,3 +1,5 @@
+import { currencyLabel, t } from './i18n';
+
 // Code, symbol, name. Order matches the server's supported list, grouped by region.
 const TABLE: [string, string, string][] = [
   ['USD', '$', 'US dollar'], ['EUR', '€', 'Euro'], ['GBP', '£', 'British pound'], ['CAD', 'CA$', 'Canadian dollar'],
@@ -14,7 +16,7 @@ const TABLE: [string, string, string][] = [
   ['PLN', 'zł ', 'Polish złoty'], ['TRY', '₺', 'Turkish lira'],
 ];
 export const CURRENCIES = TABLE.map(([c]) => c);
-export const currencyName = (c: string) => TABLE.find(([x]) => x === c)?.[2] ?? c;
+export const currencyName = (c: string) => currencyLabel(c, TABLE.find(([x]) => x === c)?.[2] ?? c);
 
 // Currencies with no minor unit in everyday use.
 const ZERO_DECIMAL = new Set(['JPY', 'KRW', 'VND']);
@@ -25,7 +27,7 @@ export function toMinor(v: string, c: string) {
   const d = digits(c);
   const clean = v.trim().replace(/,/g, '');
   if (!(d ? /^\d+(\.\d{1,2})?$/ : /^\d+$/).test(clean)) {
-    throw Error(`Enter a ${c} amount with at most ${d} decimal places.`);
+    throw Error(t('Enter a {currency} amount with at most {n} decimal places.', { currency: c, n: d }));
   }
   const [a, b = ''] = clean.split('.');
   return BigInt(a) * 10n ** BigInt(d) + BigInt(b.padEnd(d, '0') || '0');

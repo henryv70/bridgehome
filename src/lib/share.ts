@@ -1,4 +1,5 @@
 import { toast } from 'sonner';
+import { t } from './i18n';
 
 declare global {
   interface Window { ReactNativeWebView?: { postMessage: (data: string) => void } }
@@ -19,7 +20,7 @@ export async function copyText(text: string) {
 }
 
 // Native share sheet in the Expo app, Web Share where supported, otherwise copy.
-export async function shareLink(title: string, url: string, copied = 'Link copied') {
+export async function shareLink(title: string, url: string, copied = t('Link copied')) {
   if (window.ReactNativeWebView) {
     window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'share', title, url }));
     return;
