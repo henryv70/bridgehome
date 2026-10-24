@@ -68,10 +68,10 @@ The `translate_content` procedure calls the Messages API over HTTPS. The module 
 Translation is off until you give the module an API key. The key lives only in the module environment, not in tables, files or the browser. From a terminal where `ANTHROPIC_API_KEY` is set:
 
 ```sh
-spacetime publish bridgehome-hinson --env-only --server local --yes
+spacetime publish bridgehome-3386g --env-only --server local --yes
 ```
 
-To use a different model, also set `TRANSLATION_MODEL` (for example `claude-haiku-5-5` for lower cost) before publishing. To turn translation off again: `spacetime publish bridgehome-hinson --env-only --unset-env ANTHROPIC_API_KEY --server local --yes`.
+To use a different model, also set `TRANSLATION_MODEL` (for example `claude-haiku-5-5` for lower cost) before publishing. To turn translation off again: `spacetime publish bridgehome-3386g --env-only --unset-env ANTHROPIC_API_KEY --server local --yes`.
 
 After adding or changing interface text, run `npm run i18n:check`. It lists every string the app can show that is missing from either language, and any translation that dropped a placeholder.
 
