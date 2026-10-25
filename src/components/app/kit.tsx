@@ -29,9 +29,9 @@ export function Choice({ icon, title, children, onClick, selected }: { icon: Rea
 
 export function PageHeader({ title, subtitle, actions, className }: { title: ReactNode; subtitle?: ReactNode; actions?: ReactNode; className?: string }) {
   return (
-    <header className={cn('mb-5 flex flex-wrap items-center justify-between gap-3 sm:mb-6', className)}>
+    <header className={cn('mb-4 flex flex-wrap items-center justify-between gap-3 sm:mb-6', className)}>
       <div className="min-w-0 max-w-full">
-        <h1 className="break-words text-[26px] leading-tight font-bold tracking-tight md:text-3xl">{title}</h1>
+        <h1 className="break-words text-2xl leading-tight font-bold tracking-tight md:text-3xl">{title}</h1>
         {subtitle && <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>}
       </div>
       {actions && <div className="flex max-w-full flex-wrap items-center gap-2 [&_button]:h-auto [&_button]:min-h-11 [&_button]:whitespace-normal [&_button]:py-2">{actions}</div>}

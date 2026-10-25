@@ -203,23 +203,23 @@ export function AppShell() {
 
       <div className="min-w-0">
         {/* Mobile top bar */}
-        <header className="pt-safe sticky top-0 z-30 bg-background/95 backdrop-blur-md md:hidden">
-          <div className="flex h-16 items-center justify-between gap-2 px-4">
+        <header className="pt-safe sticky top-0 z-30 bg-background md:hidden">
+          <div className="flex h-14 items-center justify-between gap-2 px-4">
             <FamilySwitcher compact />
             <AccountMenu />
           </div>
           {!app.isActive && <p className="bg-amber-500/10 px-4 py-1 text-center text-xs text-amber-700">{t('Reconnecting…')}</p>}
         </header>
 
-        <main className="mx-auto w-full max-w-5xl px-4 pt-5 pb-28 md:px-8 md:pt-10 md:pb-16">
+        <main className="app-content mx-auto w-full max-w-5xl px-4 pt-4 pb-24 md:px-8 md:pt-10 md:pb-16">
           <Suspense fallback={null}><Outlet /></Suspense>
         </main>
 
         {/* Mobile tab bar */}
-        <nav aria-label={t('Family navigation')} className="pb-safe fixed inset-x-0 bottom-0 z-30 border-t border-border/60 bg-card/95 backdrop-blur-md md:hidden">
-          <div className="grid h-16 grid-cols-5">
+        <nav aria-label={t('Family navigation')} className="pb-safe fixed inset-x-0 bottom-0 z-30 border-t border-border/60 bg-card md:hidden">
+          <div className="grid h-15 grid-cols-5">
             {NAV.map(n => (
-              <NavLink key={n.to} to={n.to} end={n.end} className={({ isActive }) => cn('relative flex h-16 min-w-0 touch-manipulation flex-col items-center justify-center gap-1 text-[10px] leading-4 font-semibold whitespace-nowrap text-muted-foreground select-none', isActive && 'text-primary')}>
+              <NavLink key={n.to} to={n.to} end={n.end} className={({ isActive }) => cn('mobile-tab relative flex h-15 min-w-0 touch-manipulation flex-col items-center justify-center gap-1 text-[10px] leading-4 font-semibold whitespace-nowrap text-muted-foreground select-none', isActive && 'text-primary')}>
                 <n.icon className="size-5 shrink-0" strokeWidth={1.75} aria-hidden="true" />
                 <span className="block h-4">{t(n.label)}</span>
                 {n.to === '/' && tasks > 0 && <span className="absolute top-1 left-1/2 ml-2 size-2 rounded-full bg-brand" />}

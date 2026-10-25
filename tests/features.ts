@@ -1,5 +1,6 @@
 import { DbConnection, tables } from '../src/module_bindings/index';
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
 
 const connect = () => new Promise<DbConnection>((resolve, reject) => {
   DbConnection.builder().withUri('ws://localhost:3000').withDatabaseName('bridgehome-3386g-v2')
@@ -8,6 +9,7 @@ const connect = () => new Promise<DbConnection>((resolve, reject) => {
 const ready = (c: DbConnection) => new Promise<void>((resolve, reject) => {
   c.subscriptionBuilder().onApplied(() => resolve()).onError(e => reject(e)).subscribe([
     tables.visibleFamily, tables.visibleMembership, tables.visibleRequest, tables.visibleRecordedTransfer,
+    tables.visibleFraudFlag, tables.visibleAudit,
     tables.visibleTransferRevision, tables.visiblePost, tables.visibleBudgetTarget, tables.visibleContribution,
     tables.visibleInvitation, tables.visiblePaymentMethod, tables.visibleCredential, tables.visibleSignInResult, tables.publicFamily, tables.publicPost, tables.publicRequest, tables.publicContribution,
   ]);
@@ -152,6 +154,165 @@ try {
   } finally {
     newcomer.disconnect();
   }
+
+  // Fraud flags use isolated, labeled families so prior test runs cannot affect history.
+  let fraudPassed = 0, fraudFailed = 0, fraudSerial = 0;
+  const fraudCase = async (name: string, test: () => Promise<void>) => {
+    try { await test(); fraudPassed++; console.log(`PASS: fraud ${name}`); }
+    catch (e) { fraudFailed++; console.error(`FAIL: fraud ${name}: ${String(e)}`); }
+  };
+  const fixture = async () => {
+    const name = `Fraud test ${Date.now()}-${++fraudSerial}`;
+    await owner.reducers.createGroup({ name, role: 'sender' });
+    await wait(() => rows(owner.db.visibleFamily.iter()).some(f => f.name === name));
+    const group = rows(owner.db.visibleFamily.iter()).find(f => f.name === name)!;
+    await owner.reducers.inviteMember({ groupId: group.id, role: 'recipient' });
+    await wait(() => rows(owner.db.visibleInvitation.iter()).some(i => i.groupId === group.id));
+    const invitation = rows(owner.db.visibleInvitation.iter()).find(i => i.groupId === group.id)!;
+    await recipient.reducers.joinGroup({ code: invitation.code });
+    await wait(() => rows(recipient.db.visibleFamily.iter()).some(f => f.id === group.id));
+    await wait(() => rows(owner.db.visibleAudit.iter()).some(a => a.groupId === group.id && a.action === 'Member joined'));
+    let serial = 0;
+    const request = async (amount: bigint, category = 'groceries', currency = 'USD', draft = false) => {
+      const explanation = `${name} request ${++serial}`;
+      await recipient.reducers.createRequest({ groupId: group.id, category, amount, currency, explanation, priority: roof.priority, dueDate: new Date().toISOString().slice(0, 10), draft });
+      await wait(() => rows(owner.db.visibleRequest.iter()).some(r => r.explanation === explanation));
+      return rows(owner.db.visibleRequest.iter()).find(r => r.explanation === explanation)!;
+    };
+    const flags = (id: bigint, kind?: string) => rows(owner.db.visibleFraudFlag.iter()).filter(f => f.requestId === id && (!kind || f.kind === kind));
+    const revise = async (id: bigint, amount: bigint, submit = true) => {
+      const explanation = `${name} revision ${++serial}`;
+      await recipient.reducers.reviseRequest({ requestId: id, amount, explanation, submit });
+      await wait(() => rows(owner.db.visibleRequest.iter()).some(r => r.id === id && r.explanation === explanation));
+    };
+    const audits = () => rows(owner.db.visibleAudit.iter()).filter(a => a.groupId === group.id);
+    return { group, request, flags, revise, audits };
+  };
+
+  await fraudCase('amount_spike', async () => {
+    for (const [amount, severity, history] of [[50000n, 'high', 2], [30000n, 'medium', 2], [20000n, undefined, 2], [50000n, undefined, 1]] as const) {
+      const f = await fixture();
+      for (let i = 0; i < history; i++) await f.request(10000n);
+      const r = await f.request(amount);
+      assert.deepEqual(f.flags(r.id, 'amount_spike').map(x => x.severity), severity ? [severity] : []);
+    }
+  });
+
+  await fraudCase('currency separation', async () => {
+    const f = await fixture();
+    await f.request(10000n); await f.request(10000n);
+    const r = await f.request(50000n, 'groceries', 'VND');
+    assert.deepEqual(f.flags(r.id), [], 'USD history must not flag a VND request');
+  });
+
+  await fraudCase('rapid_repeat', async () => {
+    const f = await fixture();
+    for (let i = 1; i <= 5; i++) {
+      const r = await f.request(10000n);
+      if (i === 2) assert.deepEqual(f.flags(r.id, 'rapid_repeat'), []);
+      if (i === 3 || i === 5) assert.deepEqual(f.flags(r.id, 'rapid_repeat').map(x => x.severity), [i === 3 ? 'low' : 'medium']);
+    }
+  });
+
+  await fraudCase('possible_duplicate', async () => {
+    for (const [amount, expected] of [[10500n, ['medium']], [11500n, []]] as const) {
+      const f = await fixture(); await f.request(10000n);
+      const r = await f.request(amount);
+      assert.deepEqual(f.flags(r.id, 'possible_duplicate').map(x => x.severity), [...expected]);
+    }
+  });
+
+  await fraudCase('draft submission screens', async () => {
+    const f = await fixture(); await f.request(10000n); await f.request(10000n);
+    const r = await f.request(50000n, 'groceries', 'USD', true);
+    assert.equal(r.status, 'draft'); assert.deepEqual(f.flags(r.id), []);
+    await f.revise(r.id, 50000n, false);
+    assert.deepEqual(f.flags(r.id), [], 'editing a draft must not screen it');
+    await f.revise(r.id, 50000n);
+    assert.equal(rows(owner.db.visibleRequest.iter()).find(x => x.id === r.id)!.status, 'submitted');
+    assert.deepEqual(f.flags(r.id, 'amount_spike').map(x => x.severity), ['high']);
+    assert.deepEqual(f.flags(r.id, 'rapid_repeat').map(x => x.severity), ['low']);
+  });
+
+  await fraudCase('raised_after_rejection', async () => {
+    for (const amount of [11000n, 10000n, 9000n]) {
+      const f = await fixture(), r = await f.request(10000n);
+      await owner.reducers.reviewRequest({ requestId: r.id, approved: 0n, note: 'Fraud test rejection' });
+      await wait(() => rows(owner.db.visibleRequest.iter()).find(x => x.id === r.id)?.status === 'rejected');
+      await f.revise(r.id, amount);
+      assert.equal(f.flags(r.id, 'raised_after_rejection').length, amount > 10000n ? 1 : 0);
+    }
+  });
+
+  await fraudCase('new_payout_account and payout_changed', async () => {
+    const f = await fixture();
+    await owner.reducers.addPaymentMethod({ purpose: 'send', institution: 'Fraud test bank', kind: 'checking', holderName: 'Feature test owner', last4: '4321', currency: 'USD', country: 'US' });
+    await wait(() => rows(owner.db.visiblePaymentMethod.iter()).some(m => m.institution === 'Fraud test bank' && m.purpose === 'send'));
+    const funding = rows(owner.db.visiblePaymentMethod.iter()).find(m => m.institution === 'Fraud test bank' && m.purpose === 'send')!;
+    for (const last4 of ['8811', '8822']) {
+      await recipient.reducers.addPaymentMethod({ purpose: 'receive', institution: 'Fraud test payout', kind: 'savings', holderName: 'Feature test recipient', last4, currency: 'VND', country: 'VN' });
+      await wait(() => rows(owner.db.visiblePaymentMethod.iter()).some(m => m.institution === 'Fraud test payout' && m.last4 === last4));
+      const payout = rows(owner.db.visiblePaymentMethod.iter()).find(m => m.institution === 'Fraud test payout' && m.last4 === last4)!;
+      const r = await f.request(10000n);
+      await owner.reducers.reviewRequest({ requestId: r.id, approved: 10000n, note: 'Fraud test approval' });
+      await owner.reducers.sendMoney({ requestId: r.id, fundingId: funding.id, payoutId: payout.id, amount: 10000n, fee: 0n, expected: 2500000n, rate: '25000' });
+      await wait(() => rows(owner.db.visibleRecordedTransfer.iter()).some(t => t.requestId === r.id));
+      assert.equal(f.flags(r.id, 'new_payout_account').length, 1);
+      assert.equal(f.flags(r.id, 'payout_changed').length, last4 === '8822' ? 1 : 0);
+    }
+  });
+
+  await fraudCase('open flag deduplication', async () => {
+    const f = await fixture(); await f.request(10000n); await f.request(10000n);
+    const r = await f.request(50000n), before = f.flags(r.id).map(x => x.id).sort();
+    assert.ok(before.length >= 2);
+    await f.revise(r.id, 50000n); await f.revise(r.id, 50000n);
+    assert.deepEqual(f.flags(r.id).map(x => x.id).sort(), before);
+    assert.ok(f.flags(r.id).every(x => x.status === 'open'));
+  });
+
+  // my_fraud_flag exposes open flags only. Check persisted dismissal as the local DB owner.
+  const storedFlagStatus = (flagId: bigint) => {
+    const result = spawnSync('spacetime', ['sql', 'bridgehome-3386g-v2',
+      `SELECT status FROM fraud_flag WHERE id = ${flagId}`, '-s', 'http://localhost:3000', '--format', 'json'],
+      { encoding: 'utf8', timeout: 10000 });
+    assert.equal(result.status, 0, result.stderr || String(result.error ?? 'SQL query failed'));
+    const query = JSON.parse(result.stdout);
+    assert.equal(query[0].rows.length, 1, 'dismissed flag remains stored');
+    return query[0].rows[0][0];
+  };
+
+  await fraudCase('resolveFraudFlag permissions', async () => {
+    const f = await fixture(); await f.request(10000n); await f.request(10000n);
+    const r = await f.request(50000n), flag = f.flags(r.id, 'amount_spike')[0];
+    assert.ok(flag);
+    await assert.rejects(recipient.reducers.resolveFraudFlag({ flagId: flag.id }));
+    await assert.rejects(visitor.reducers.resolveFraudFlag({ flagId: flag.id }));
+    assert.equal(f.flags(r.id, 'amount_spike')[0].status, 'open');
+    await owner.reducers.resolveFraudFlag({ flagId: flag.id });
+    await wait(() => !f.flags(r.id, 'amount_spike').some(x => x.id === flag.id));
+    assert.equal(storedFlagStatus(flag.id), 'dismissed');
+  });
+
+  await fraudCase('privacy and audit isolation', async () => {
+    const f = await fixture(), beforeFirst = new Set(f.audits().map(a => a.id));
+    await f.request(10000n);
+    const normalActions = f.audits().filter(a => !beforeFirst.has(a.id)).map(a => a.action).sort();
+    assert.ok(normalActions.length > 0, 'request audit control must be visible');
+    await f.request(10000n);
+    const beforeFlag = new Set(f.audits().map(a => a.id)), r = await f.request(50000n);
+    assert.ok(f.flags(r.id).length > 0);
+    assert.deepEqual(f.audits().filter(a => !beforeFlag.has(a.id)).map(a => a.action).sort(), normalActions, 'flag creation adds no audit actions');
+    assert.equal(rows(recipient.db.visibleFraudFlag.iter()).length, 0, 'recipient my_fraud_flag view is empty');
+    assert.equal(rows(visitor.db.visibleFraudFlag.iter()).length, 0, 'non-member my_fraud_flag view is empty');
+    const beforeDismiss = new Set(f.audits().map(a => a.id)), flag = f.flags(r.id)[0];
+    await owner.reducers.resolveFraudFlag({ flagId: flag.id });
+    await wait(() => !f.flags(r.id).some(x => x.id === flag.id));
+    assert.equal(storedFlagStatus(flag.id), 'dismissed');
+    assert.deepEqual(f.audits().filter(a => !beforeDismiss.has(a.id)).map(a => a.action), ['Review flag dismissed']);
+  });
+  console.log(`Fraud cases: ${fraudPassed} passed, ${fraudFailed} failed; skipped assertions: 0.`);
+  assert.equal(fraudFailed, 0, 'fraud cases must all pass');
 
   console.log('PASS: demo seeds (PH + VN), demo payments, public-view isolation, pledge rules, photo posts and visibility, transfer edits with revisions, edit locks, budget target upsert, public page ownership, username sign-in and lockout, sign-up.');
 } finally {

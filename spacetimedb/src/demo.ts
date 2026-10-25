@@ -181,7 +181,7 @@ export const seedDemo = db.reducer({ family: t.string() }, (ctx, { family }) => 
 
   // Demo accounts. Reuse the caller's sending account if they already linked one.
   const account = (who: Who, a: Account) => ctx.db.paymentMethod.insert({
-    ...a, id: 0n, owner: ids[who], purpose: who === 'me' ? 'send' : 'receive', holderName: nameOf(who), createdAt: ago(70),
+    ...a, id: 0n, owner: ids[who], purpose: who === 'me' ? 'send' : 'receive', holderName: nameOf(who), createdAt: ago(30),
   });
   const myAccount = [...ctx.db.paymentMethod.owner.filter(ctx.sender)].find(m => m.purpose === 'send') ?? account('me', spec.accounts.me);
   const payout = { a: account('a', spec.accounts.a), b: account('b', spec.accounts.b) };

@@ -47,7 +47,7 @@ export default function Welcome() {
 
   return (
     <div className="grid min-h-dvh lg:grid-cols-[1.1fr_1fr]">
-      <aside className="dark relative hidden flex-col justify-between overflow-hidden bg-[#141413] p-12 text-[#fcfcfb] lg:flex">
+      <aside className="dark relative hidden flex-col justify-between overflow-hidden bg-[#102a43] p-12 text-[#f3f7fb] lg:flex">
         <Wordmark />
         <div className="max-w-md space-y-6">
           <h1 className="text-4xl font-semibold leading-tight tracking-tight">{t('Support your family across borders, together.')}</h1>

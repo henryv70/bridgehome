@@ -33,11 +33,11 @@ export default function Home() {
   const actionText = (action: string) => (lang() === 'en' ? auditAction(action).toLowerCase() : auditAction(action));
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5 sm:space-y-6">
       <PageHeader title={t('{greeting}, {name}', { greeting: greeting(), name: profile?.name.split(' ')[0] ?? '' })} subtitle={group?.name} />
 
-      <section className="support-summary flex flex-col items-center rounded-3xl px-4 py-5 text-center md:flex-row-reverse md:justify-between md:px-8 md:text-left">
-        <SupportIllustration className="w-44 shrink-0 md:w-52" />
+      <section className="support-summary flex flex-row-reverse items-center justify-between gap-3 rounded-2xl px-4 py-4 text-left md:rounded-3xl md:px-8 md:py-5">
+        <SupportIllustration className="w-24 shrink-0 sm:w-36 md:w-52" />
         <div className="min-w-0">
           <p className="text-sm font-medium text-muted-foreground">{role === 'recipient' ? t('Received this month') : t('Sent this month')}</p>
           <p className="tabular mt-1 break-words text-[clamp(1.75rem,8vw,2.25rem)] font-bold tracking-tight md:text-5xl">{formatMoney(sum(monthTransfers.filter(x => x.currency === mainCurrency), x => x.amount), mainCurrency)}</p>
@@ -45,7 +45,7 @@ export default function Home() {
         </div>
       </section>
 
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div className="grid grid-cols-2 gap-2.5 md:grid-cols-4 md:gap-3">
         <Link to={role === 'recipient' ? '/requests?new=1' : '/requests'} className="action-tile">{role === 'recipient' ? <Plus /> : <ArrowRight />}{role === 'recipient' ? t('Ask for support') : t('Requests')}</Link>
         <Link to="/feed?new=1" className="action-tile"><ImagePlus />{t('Share a moment')}</Link>
         <Link to="/budget" className="action-tile"><Wallet />{t('Household budget')}</Link>
